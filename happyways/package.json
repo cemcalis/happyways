@@ -1,0 +1,47 @@
+{
+  "name": "happyways",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/checkbox": "^0.5.20",
+    "@react-navigation/bottom-tabs": "^7.4.4",
+    "@react-navigation/native": "^7.1.16",
+    "@react-navigation/native-stack": "^7.3.21",
+    "expo": "~53.0.17",
+    "expo-crypto": "^14.1.5",
+    "expo-file-system": "^18.1.11",
+    "expo-secure-store": "~14.2.3",
+    "expo-sqlite": "~15.2.14",
+    "expo-status-bar": "~2.2.3",
+    "nativewind": "^4.1.23",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "react": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-checkbox": "^2.0.0",
+    "react-native-elements": "^3.4.3",
+    "react-native-gesture-handler": "^2.27.2",
+    "react-native-heroicons": "^4.0.0",
+    "react-native-maps": "1.20.1",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-safe-area-context": "^5.5.2",
+    "react-native-screens": "^4.13.1",
+    "react-native-svg": "15.11.2",
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-webview": "13.13.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.0.10",
+    "react-native-svg-transformer": "^1.5.1",
+    "tailwindcss": "^3.3.2",
+    "typescript": "~5.8.3"
+  },
+  "private": true
+}
