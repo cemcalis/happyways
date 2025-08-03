@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
     }
 
    
-    car.image = `http://10.0.2.2:3000/${car.image}`;
+    car.image = car.image ? `http://10.0.2.2:3000/assets/cars/${car.image}` : null;
 
     res.status(200).json({ car });
   } catch (error) {

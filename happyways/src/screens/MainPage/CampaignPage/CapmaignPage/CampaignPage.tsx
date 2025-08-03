@@ -8,8 +8,11 @@ type Campaign = {
   id: number;
   title: string;
   description: string;
+  transaction_date: string;
+  rent_date: string;
   image: string;
-  price?: string;
+  subtitle1: string;
+  subtitle2: string;
 };
 
 const CampaignPage = () => {
@@ -22,7 +25,7 @@ const CampaignPage = () => {
       try {
         const response = await fetch("http://10.0.2.2:3000/api/campaign");
         const data = await response.json();
-        setCampaigns(data);
+        setCampaigns(data.campaigns);
       } catch (error) {
         console.error("Kampanyalar alınamadı:", error);
       } finally {
@@ -48,7 +51,7 @@ const CampaignPage = () => {
         <Text className="text-lg font-bold text-black">Kampanyalar</Text>
       </View>
 
-      {/* Grid Liste */}
+      {/* Kampanya Grid Liste */}
       <FlatList
         data={campaigns}
         numColumns={2}
@@ -59,7 +62,7 @@ const CampaignPage = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             className="bg-white rounded-lg shadow-md mb-4 w-[48%] border border-gray-100"
-            onPress={() => navigation.navigate("CampaignPage", { id: item.id })}
+            onPress={() => navigation.navigate("CampaignDetailPage", { campaignId: item.id })}
           >
             {/* Fotoğraf */}
             <Image
@@ -69,17 +72,20 @@ const CampaignPage = () => {
             />
             {/* İçerik */}
             <View className="p-2">
-              <Text className="text-black text-[13px] font-bold" numberOfLines={2}>
+              <Text className="text-black text-[13px] font-bold mb-1" numberOfLines={2}>
                 {item.title}
               </Text>
-              {item.price && (
-                <Text className="text-orange-500 text-[12px] font-semibold mt-1">
-                  Günlük {item.price}
-                </Text>
-              )}
-              <Text className="text-gray-500 text-[11px]" numberOfLines={1}>
+              <Text className="text-gray-500 text-[11px]" numberOfLines={2}>
                 {item.description}
               </Text>
+
+              <Text className="text-gray-600 text-[11px] mt-1"> {item.transaction_date}</Text>
+              <Text className="text-gray-600 text-[11px]"> {item.rent_date}</Text>
+
+              <View className="mt-1">
+                <Text className="text-orange-500 text-[11px] font-semibold">{item.subtitle1}</Text>
+                <Text className="text-blue-500 text-[11px] font-semibold">{item.subtitle2}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}

@@ -16,9 +16,11 @@ const seed = async () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT,
       description TEXT,
-      price TEXT,
+      transaction_date TEXT,
+      rent_date TEXT,
       image TEXT,
-      discount INTEGER
+      subtitle1 TEXT,
+      subtitle2 TEXT
     );
   `);
 
@@ -32,7 +34,28 @@ const seed = async () => {
       gear TEXT,
       fuel TEXT,
       seats INTEGER,
-      ac BOOLEAN
+      ac BOOLEAN,
+      kosullar TEXT,
+      available BOOLEAN DEFAULT 1
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS reservations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      car_id INTEGER,
+      pickup_location TEXT NOT NULL,
+      dropoff_location TEXT,
+      pickup_date TEXT NOT NULL,
+      dropoff_date TEXT NOT NULL,
+      pickup_time TEXT NOT NULL,
+      dropoff_time TEXT NOT NULL,
+      total_price TEXT,
+      status TEXT DEFAULT 'active',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (car_id) REFERENCES cars(id)
     );
   `);
 
@@ -42,22 +65,44 @@ const seed = async () => {
 
 
   await db.exec(`
-    INSERT INTO campaigns (title, description, price, image, discount)
+    INSERT INTO campaigns 
+      (title, description, transaction_date, rent_date, image, subtitle1, subtitle2)
     VALUES
-      ('Premium Modellerde Sezon Finali', 'Sezon sonu özel kampanya', '4.000 ₺', '/assets/campaigns/premium.png', 10),
-      ('Yaza Özel İndirim!', 'Sınırlı süreli yaz indirimi', '3.500 ₺', '/assets/campaigns/yaz_indirimi.png', 10);
+      ('Premium Modellerde Sezon Finali',
+       'Sezon sonu özel kampanya fırsatı sizlerle!',
+       '01.08.2025 - 31.08.2025',
+       '05.08.2025 - 30.08.2025',
+       'kampanya1.svg',
+       'Günlük 4.000 ₺',
+       'En iyi fiyat garantisi'),
+
+      ('Yaza Özel İndirim!',
+       'Sınırlı süreli yaz indirimlerini kaçırmayın!',
+       '15.07.2025 - 15.08.2025',
+       '20.07.2025 - 10.08.2025',
+       'kampanya2.svg',
+       '%25 indirim fırsatı',
+       'Hızlı rezervasyon avantajı'),
+       
+      ('Ekonomik Araçlarda Fırsat',
+       'Bütçe dostu araçlarla keyifli yolculuklar!',
+       '10.08.2025 - 25.08.2025',
+       '12.08.2025 - 23.08.2025',
+       'kampanya3.svg',
+       'Günlük 2.500 ₺',
+       'Ücretsiz kilometre');
   `);
 
-
+ 
   await db.exec(`
-    INSERT INTO cars (model, year, price, image, gear, fuel, seats, ac) VALUES
-      ('Mercedes C220', 2024, '5.000 ₺', '/assets/cars/mercedes.png', 'Otomatik', 'Dizel', 5, 1),
-      ('BMW 3 Serisi', 2020, '4.500 ₺', '/assets/cars/bmw.png', 'Otomatik', 'Benzin', 5, 1),
-      ('Mercedes C220', 2024, '5.000 ₺', '/assets/cars/mercedes.png', 'Otomatik', 'Dizel', 5, 1),
-      ('BMW 3 Serisi', 2020, '4.500 ₺', '/assets/cars/bmw.png', 'Otomatik', 'Benzin', 5, 1);
+    INSERT INTO cars (model, year, price, image, gear, fuel, seats, ac, kosullar) VALUES
+      ('Mercedes C220', 2024, '5.000 ₺', 'mercedes.png', 'Otomatik', 'Dizel', 5, 1, 
+       '• Minimum yaş: 21\n• Ehliyet süresi: En az 2 yıl\n• Kredi kartı gerekli\n• Depozito: 2.000 TL\n• Günlük km limiti: 300 km'),
+      ('BMW 3 Serisi', 2020, '4.500 ₺', 'bmw.png', 'Otomatik', 'Benzin', 5, 1,
+       '• Minimum yaş: 23\n• Ehliyet süresi: En az 3 yıl\n• Kredi kartı gerekli\n• Depozito: 1.800 TL\n• Günlük km limiti: 250 km');
   `);
 
-  console.log(" Seed  tamamlandı");
+  console.log(" Seed tamamlandı");
 };
 
 seed();

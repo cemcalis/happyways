@@ -3,6 +3,8 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "../../database/db.js";
 import jwt from "jsonwebtoken";
+import { generateRefreshToken } from "../auth/refresh.js";
+
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -25,19 +27,28 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Şifre hatalı." });
     }
 
-      const token = jwt.sign(
+    // Access token (kısa süreli)
+    const accessToken = jwt.sign(
       {
         id: user.id,
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" } // 15 dakika
     );
+
+    // Refresh token (uzun süreli)
+    const refreshToken = generateRefreshToken(user.id);
 
     return res.status(200).json({
       message: "Giriş başarılı",
-      token , 
-      user: { email: user.email, phone: user.phone },
+      accessToken,
+      refreshToken,
+      user: { 
+        id: user.id,
+        email: user.email, 
+        phone: user.phone 
+      },
     });
   } catch (error) {
     return res.status(500).json({ message: "Sunucu hatası", error: error.message });

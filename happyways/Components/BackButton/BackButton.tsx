@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import BackButtons from "../../assets/BackButton/backButton.svg"; 
+import BackButtons from "../../assets/BackButtons/backButtons.svg"; 
 
 type Props = {
   onPress: () => void;

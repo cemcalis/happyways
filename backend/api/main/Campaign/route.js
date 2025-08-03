@@ -3,26 +3,27 @@ import { getDB } from "../../../database/db.js";
 
 const router = express.Router();
 
-router.get("/:id", async (req, res) => {
-  const db = getDB();
-  const { id } = req.params;
-
+router.get("/", async (req, res) => {
   try {
-    const campaign = await db.get("SELECT * FROM campaigns WHERE id = ?", [id]);
+    const db = getDB();
+    const campaigns = await db.all("SELECT * FROM campaigns");
 
-    if (!campaign) {
-      return res.status(404).json({ success: false, message: "Kampanya bulunamadı." });
-    }
+    // Resim yolu düzeltme
+    const updatedCampaigns = campaigns.map(c => ({
+      ...c,
+      image: c.image
+        ? `http://10.0.2.2:3000/assets/campaign/${c.image}`
+        : null
+    }));
 
-  
-    if (campaign.image && !campaign.image.startsWith("http")) {
-      campaign.image = `http://10.0.2.2:3000/assets/campaigns/${campaign.image}`;
-    }
-
-    return res.status(200).json({ success: true, ...campaign });
+    res.status(200).json({ campaigns: updatedCampaigns });
   } catch (error) {
-    console.error("Kampanya detayı alınamadı:", error);
-    return res.status(500).json({ success: false, message: "Veritabanı hatası", error: error.message });
+    console.error("Kampanyalar alınamadı:", error);
+    res.status(500).json({
+      success: false,
+      message: "Veritabanı hatası",
+      error: error.message,
+    });
   }
 });
 

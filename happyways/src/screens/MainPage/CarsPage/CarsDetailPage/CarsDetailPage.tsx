@@ -20,7 +20,7 @@ type CarDetail = {
 
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
-  const { carId } = route.params;
+  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime } = route.params;
 
   const [car, setCar] = useState<CarDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +82,20 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
           <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
 
           {/* Hemen Kirala Butonu */}
-          <TouchableOpacity className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80">
+          <TouchableOpacity 
+            className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
+            onPress={() => navigation.navigate("PaymentPage", {
+              carId: car.id,
+              carModel: car.model,
+              carPrice: car.price,
+              pickupDate: pickupDate,
+              dropDate: dropoffDate,
+              pickupTime: pickupTime,
+              dropTime: dropoffTime,
+              pickup: pickupLocation,
+              drop: dropoffLocation,
+            })}
+          >
             <Text className="text-white text-center font-bold text-lg">🚗 Hemen Kirala</Text>
           </TouchableOpacity>
         </View>

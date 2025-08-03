@@ -22,16 +22,20 @@
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        phone TEXT);
+        full_name TEXT,
+        phone TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
       `);
     await db.exec(`
     CREATE TABLE IF NOT EXISTS campaigns (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     description TEXT,
-    price TEXT,
+    transaction_date TEXT,
+    rent_date TEXT,
     image TEXT,
-    discount INTEGER);
+    subtitle1 TEXT,
+    subtitle2 TEXT);
   `);
   await db.exec(`
     CREATE TABLE IF NOT EXISTS cars (
@@ -43,7 +47,38 @@
       gear TEXT,
       fuel TEXT,
       seats INTEGER,
-      ac BOOLEAN
+      ac BOOLEAN,
+      kosullar TEXT
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS reservations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      car_id INTEGER,
+      user_name TEXT,
+      user_email TEXT,
+      user_phone TEXT,
+      car_model TEXT,
+      car_year INTEGER,
+      car_image TEXT,
+      pickup_location TEXT NOT NULL,
+      dropoff_location TEXT,
+      pickup_date TEXT NOT NULL,
+      dropoff_date TEXT NOT NULL,
+      pickup_time TEXT NOT NULL,
+      dropoff_time TEXT NOT NULL,
+      pickup_datetime TEXT,
+      dropoff_datetime TEXT,
+      total_price TEXT,
+      status TEXT DEFAULT 'pending',
+      payment_status TEXT DEFAULT 'pending',
+      payment_id TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (car_id) REFERENCES cars(id)
     );
   `);
 

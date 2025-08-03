@@ -10,6 +10,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FormValidator, CommonValidationRules, hasError, getError } from "../../../utils/formValidation";
+import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/errorHandling";
+import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
 
 type RegisterPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "RegisterPage">;
@@ -21,39 +24,56 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  // Form validation rules
+  const validator = new FormValidator({
+    email: CommonValidationRules.email,
+    phoneNumber: CommonValidationRules.phone,
+    password: CommonValidationRules.password,
+    confirmPassword: CommonValidationRules.confirmPassword(password)
+  });
 
   const handleRegister = async () => {
-    if (!email || !password || !phoneNumber) {
-      Alert.alert("Hata", "Lütfen tüm alanları doldurun.");
+    const formData = { email, phoneNumber, password, confirmPassword };
+    const validationErrors = validator.validate(formData);
+    
+    if (!agree) {
+      validationErrors.agree = 'Kullanım koşullarını kabul etmelisiniz';
+    }
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-    if (password !== confirmPassword) {
-      Alert.alert("Hata", "Şifreler eşleşmiyor.");
-      return;
-    }
+
+    setErrors({});
+    setLoading(true);
 
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/register", {
+      const data = await apiRequest("http://10.0.2.2:3000/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, phone: phoneNumber }),
+        body: JSON.stringify({ email, password, phone: phoneNumber })
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        Alert.alert("Kayıt başarılı");
-        navigation.navigate("LoginPage");
-      } else {
-        Alert.alert("Hata", data.message || "Kayıt başarısız");
-      }
-    } catch (error) {
-      Alert.alert("Hata", "Sunucu hatası");
-      console.error(error);
+      Alert.alert("Kayıt Başarılı! 🎉", "Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.", [
+        {
+          text: "Giriş Yap",
+          onPress: () => navigation.navigate("LoginPage")
+        }
+      ]);
+    } catch (error: any) {
+      const apiError = handleApiError(error);
+      showErrorAlert(apiError);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner text="Hesap oluşturuluyor..." />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">

@@ -12,6 +12,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import  ReusableTextInput  from "../../../Components/ReusableTextInput/ReusableTextInput";
 import { useAuth } from "../../../context/AuthContext";
+import { FormValidator, CommonValidationRules, hasError, getError } from "../../../utils/formValidation";
+import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/errorHandling";
+import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
 type LoginPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "LoginPage">;
 };
@@ -19,36 +22,59 @@ type LoginPageProp = {
 const LoginPage = ({ navigation }: LoginPageProp) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const {login} = useAuth();
+
+  // Form validation rules
+  const validator = new FormValidator({
+    email: CommonValidationRules.email,
+    password: [
+      { required: true, message: 'Şifre gerekli' },
+      { minLength: 6, message: 'Şifre en az 6 karakter olmalı' }
+    ]
+  });
+  
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Hata", "Lütfen tüm alanları doldurun.");
+    const formData = { email, password };
+    const validationErrors = validator.validate(formData);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
+    setErrors({});
+    setLoading(true);
+
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/login", {
+      const data = await apiRequest("http://10.0.2.2:3000/api/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        Alert.alert("Hata", data.message || "Giriş başarısız.");
-        return;
+      if (data.accessToken && data.refreshToken) {
+        // Yeni token sistemi ile login
+        await login(data.accessToken, data.refreshToken);
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
+        
+        Alert.alert("Başarılı", "Giriş yapıldı.", [
+          { text: "Tamam", onPress: () => navigation.navigate("HomePage") }
+        ]);
+      } else {
+        Alert.alert("Hata", "Giriş bilgileri alınamadı");
       }
-
-      await login (data.token);
-
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      Alert.alert("Başarılı", "Giriş yapıldı.");
-      navigation.navigate("HomePage");
-    } catch (error) {
-      Alert.alert("Hata", "Sunucuya ulaşılamadı.");
+    } catch (error: any) {
+      const apiError = handleApiError(error);
+      showErrorAlert(apiError);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner text="Giriş yapılıyor..." />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-gradient-to-b from-blue-50 to-white">
@@ -82,21 +108,39 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
         
           <View>
             <ReusableTextInput
-    label="Email Adresiniz"
-    placeholder="ornek@email.com"
-    value={email}
-    onChangeText={setEmail}
-    keyboardType="email-address"
-    autoCapitalize="none"
-  />
+              label="Email Adresiniz"
+              placeholder="ornek@email.com"
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text);
+                if (hasError(errors, 'email')) {
+                  const newErrors = {...errors};
+                  delete newErrors.email;
+                  setErrors(newErrors);
+                }
+              }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={hasError(errors, 'email')}
+              errorMessage={getError(errors, 'email')}
+            />
 
-  <ReusableTextInput
-    label="Şifreniz"
-    placeholder="••••••••"
-    value={password}
-    onChangeText={setPassword}
-    secureTextEntry
-  />
+            <ReusableTextInput
+              label="Şifreniz"
+              placeholder="••••••••"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                if (hasError(errors, 'password')) {
+                  const newErrors = {...errors};
+                  delete newErrors.password;
+                  setErrors(newErrors);
+                }
+              }}
+              secureTextEntry
+              error={hasError(errors, 'password')}
+              errorMessage={getError(errors, 'password')}
+            />
           </View>
 
    
@@ -121,15 +165,16 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
 
         
           <View className="items-center mt-8 mb-6">
-            <Text className="text-gray-600 text-base">
-              Üyeliğiniz yok mu?{" "}
-              <Text
-                className="text-orange-500 font-bold"
-                onPress={() => navigation.navigate("RegisterPage" as never)}
-              >
-                Şimdi Kaydolun
+            <View className="flex-row">
+              <Text className="text-gray-600 text-base">
+                Üyeliğiniz yok mu?{" "}
               </Text>
-            </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("RegisterPage" as never)}>
+                <Text className="text-orange-500 font-bold text-base">
+                  Şimdi Kaydolun
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
