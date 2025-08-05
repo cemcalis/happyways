@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { WebView } from "react-native-webview";
 
-// SVG Iconlar
+
 import HomeSvg from "../../../../../assets/HomePage/home.svg";
 import CarSvg from "../../../../../assets/HomePage/car.svg";
 import CampaignSvg from "../../../../../assets/HomePage/campaign.svg";
@@ -53,7 +53,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
   return (
     <View className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        {/* MAP */}
+ 
         <View className="w-full h-48 mb-5 rounded-lg overflow-hidden border border-gray-200">
           <WebView
             originWhitelist={["*"]}
@@ -62,7 +62,6 @@ const ContactPage = ({ navigation }: ContactProp) => {
           />
         </View>
 
-        {/* GENEL MERKEZ BİLGİLERİ */}
         <Text className="text-lg font-semibold text-[#000000] mb-2">Genel Merkez</Text>
         <Text className="text-sm text-[#565656] mb-4">
           Adres: Lefkoşa, KKTC - Yakın Doğu Bulvarı No: 123
@@ -72,7 +71,6 @@ const ContactPage = ({ navigation }: ContactProp) => {
         <Text className="text-sm text-[#565656]">+90 533 111 22 33</Text>
         <Text className="text-sm text-[#565656] mb-6">+90 533 444 55 66</Text>
 
-        {/* FORM */}
         <Text className="text-sm font-semibold text-[#000000] mb-2">Bize Yazın</Text>
         <TextInput
           placeholder="Ad Soyad"
@@ -93,13 +91,11 @@ const ContactPage = ({ navigation }: ContactProp) => {
           placeholderTextColor="#565656"
         />
 
-        {/* GÖNDER BUTONU */}
         <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8">
           <Text className="text-white text-center text-base font-semibold">Gönder</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      {/* ALT TAB BAR */}
       <View className="flex-row bg-white border-t border-gray-200 py-1">
         {tabItems.map(({ icon, label, route }, i) => (
           <TouchableOpacity

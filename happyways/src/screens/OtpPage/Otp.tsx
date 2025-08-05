@@ -14,10 +14,10 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
+import BackButton from "../../../Components/BackButton/BackButton";
 const Otp = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const route = useRoute();
   const { email } = route.params as { email: string };
 
@@ -88,6 +88,7 @@ const Otp = () => {
           Email'inize bir kod gönderdik
         </Text>
         <Text className="text-center text-orange-500 font-semibold mb-6">
+        <BackButton onPress={() => navigation.goBack()} />
           {email}
         </Text>
 

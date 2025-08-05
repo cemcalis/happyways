@@ -11,7 +11,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 
-// SVG Iconlar
+
 import HomeSvg from "../../../../../assets/HomePage/home.svg";
 import CarSvg from "../../../../../assets/HomePage/car.svg";
 import CampaignSvg from "../../../../../assets/HomePage/campaign.svg";
@@ -36,10 +36,8 @@ const MePage = ({ navigation }: MeProp) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ Backend URL
-  const API_URL = "http://192.168.1.10:3000/api/main/profile/1"; // kendi IP adresini yaz
+  const API_URL = "http://192.168.1.10:3000/api/main/profile/1"; 
 
-  // ✅ Sayfa açıldığında verileri çek
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -57,7 +55,6 @@ const MePage = ({ navigation }: MeProp) => {
     fetchProfile();
   }, []);
 
-  // ✅ Kaydet butonu
   const handleSave = async () => {
     if (!name || !email || !phone || !password) {
       return Alert.alert("Hata", "Tüm alanları doldurun.");
@@ -83,7 +80,7 @@ const MePage = ({ navigation }: MeProp) => {
   return (
     <View className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        {/* Profil Fotoğrafı */}
+     
         <View className="items-center mb-5">
           <Image
             source={{ uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }}
@@ -92,7 +89,6 @@ const MePage = ({ navigation }: MeProp) => {
           <Text className="text-lg font-semibold">Üyelik Bilgilerim</Text>
         </View>
 
-        {/* Form Alanları */}
         <Text className="text-sm text-black mb-1">İsim Soyisim</Text>
         <TextInput
           value={name}
@@ -128,13 +124,10 @@ const MePage = ({ navigation }: MeProp) => {
           className="border border-gray-300 rounded-md px-4 py-3 mb-5 text-sm text-black"
         />
 
-        {/* Kaydet Butonu */}
         <TouchableOpacity onPress={handleSave} className="bg-[#F37E08] py-3 rounded-md mb-8">
           <Text className="text-white text-center text-base font-semibold">Kaydet</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Alt Tab Bar */}
       <View className="flex-row bg-white border-t border-gray-200 py-1">
         {tabItems.map(({ icon, label, route }, i) => (
           <TouchableOpacity

@@ -1,3 +1,4 @@
+import BackButton from "../../../Components/BackButton/BackButton";
 import { StyleSheet, Text, View, Alert, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -51,25 +52,22 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
 
   return (
     <SafeAreaView className="flex-1 p-6 bg-white">
-      <BackButtons onPress={() => navigation.goBack()} />
+      <BackButton onPress={() => navigation.goBack()} />
       <Text className="text-xl font-bold text-center mb-4">Yeni Şifre Belirle</Text>
-
-     <ReusableTextInput
-  label="Yeni Şifre"
-  placeholder="Yeni şifrenizi girin"
-  secureTextEntry
-  value={newPassword}
-  onChangeText={setNewPassword}
-/>
-
-<ReusableTextInput
-  label="Şifreyi Onayla"
-  placeholder="Şifreyi tekrar girin"
-  secureTextEntry
-  value={confirmPassword}
-  onChangeText={setConfirmPassword}
-/>
-
+      <ReusableTextInput
+        label="Yeni Şifre"
+        placeholder="Yeni şifrenizi girin"
+        secureTextEntry
+        value={newPassword}
+        onChangeText={setNewPassword}
+      />
+      <ReusableTextInput
+        label="Şifreyi Onayla"
+        placeholder="Şifreyi tekrar girin"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
       <TouchableOpacity
         className="bg-orange-500 py-3 rounded-lg items-center"
         onPress={handleResetPassword}

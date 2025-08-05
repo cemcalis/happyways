@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Modal } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 
-// ICONS
+
 import HomeSvg from "../../../../../assets/HomePage/home.svg";
 import CarSvg from "../../../../../assets/HomePage/car.svg";
 import CampaignSvg from "../../../../../assets/HomePage/campaign.svg";
@@ -67,16 +67,15 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
 
   return (
     <View className="flex-1 bg-white">
-      {/* Header */}
+
       <View className="flex-row justify-between items-center px-4 py-4 border-b border-gray-200">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <LeftArrowSvg width={20} height={20} />
         </TouchableOpacity>
         <Text className="text-lg font-semibold text-black">Rezervasyonlar</Text>
-        <View className="w-5" /> {/* Placeholder */}
+        <View className="w-5" /> 
       </View>
 
-      {/* Filtre ve Sıralama */}
       <View className="flex-row justify-between items-center px-4 py-3">
         <TouchableOpacity className="flex-row items-center">
           <FilterSvg width={18} height={18} />
@@ -87,7 +86,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         </TouchableOpacity>
       </View>
 
-      {/* Liste */}
       <FlatList
         data={reservations}
         renderItem={renderItem}
@@ -95,7 +93,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         contentContainerStyle={{ paddingHorizontal: 12 }}
       />
 
-      {/* Sıralama Menüsü */}
       <Modal transparent visible={modalVisible} animationType="fade">
         <TouchableOpacity
           className="flex-1 bg-black/30 justify-center items-center"
@@ -118,7 +115,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         </TouchableOpacity>
       </Modal>
 
-      {/* Alt Tab Bar */}
       <View className="flex-row bg-white border-t border-gray-200 py-2">
         {tabItems.map(({ icon, label, route }, i) => (
           <TouchableOpacity

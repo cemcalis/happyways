@@ -1,3 +1,4 @@
+import BackButton from "../../../Components/BackButton/BackButton";
 import React, { useState } from "react";
 import {
   Text,
@@ -24,9 +25,7 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const {login} = useAuth();
-
-  // Form validation rules
+  const { login } = useAuth();
   const validator = new FormValidator({
     email: CommonValidationRules.email,
     password: [
@@ -34,46 +33,36 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
       { minLength: 6, message: 'Şifre en az 6 karakter olmalı' }
     ]
   });
-  
+
   const handleLogin = async () => {
     const formData = { email, password };
     const validationErrors = validator.validate(formData);
-    
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     setErrors({});
     setLoading(true);
-
     try {
       const data = await apiRequest("http://10.0.2.2:3000/api/login", {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
-
       if (data.accessToken && data.refreshToken) {
-        // Yeni token sistemi ile login
         await login(data.accessToken, data.refreshToken);
         await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        
-        Alert.alert("Başarılı", "Giriş yapıldı.", [
-          { text: "Tamam", onPress: () => navigation.navigate("HomePage") }
-        ]);
-      } else {
-        Alert.alert("Hata", "Giriş bilgileri alınamadı");
+        Alert.alert("Başarılı", "Giriş yapıldı.");
+        navigation.navigate("HomePage");
       }
-    } catch (error: any) {
-      const apiError = handleApiError(error);
-      showErrorAlert(apiError);
+    } catch (error) {
+      showErrorAlert(handleApiError(error));
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <LoadingSpinner text="Giriş yapılıyor..." />;
+    return <LoadingSpinner text="Giriş yapılıyo" />;
   }
 
   return (

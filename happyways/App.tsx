@@ -28,12 +28,12 @@ import MineReservationPage from "./src/screens/MainPage/ProfilePage/reservation/
 import MePage from "./src/screens/MainPage/ProfilePage/me/me";
 import ContactPage from "./src/screens/MainPage/ProfilePage/contact/contact";
 import ProfilePage from "./src/screens/MainPage/ProfilePage/account/account";
+import NotificationPage from "./src/screens/NotificationPage/NotificationPage";
 
 
 const Tab = createBottomTabNavigator();
 const Stack = StackNavigator<RootStackParamList>();
 
-// Protected Screen Wrapper
 const ProtectedScreen = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthGuard>
@@ -227,6 +227,11 @@ export default function App() {
            <Stack.Screen
             name="MineReservationPage"
             component={MineReservationPage}
+            options={{ headerShown: false }}
+          />
+           <Stack.Screen
+            name="NotificationPage"
+            component={NotificationPage}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

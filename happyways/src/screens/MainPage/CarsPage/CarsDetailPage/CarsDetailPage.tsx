@@ -60,43 +60,39 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView>
-        {/* Araç Fotoğrafı */}
+
         <Image
           source={{ uri: car.image }}
           className="w-full h-60 rounded-b-2xl"
           resizeMode="cover"
         />
 
-        {/* Araç Bilgileri */}
         <View className="px-5 py-4">
           <Text className="text-2xl font-bold text-gray-900">{car.model}</Text>
           <Text className="text-gray-500 text-base mb-4">{car.year}</Text>
 
-          {/* Kullanım Koşulları */}
           <Text className="text-lg font-semibold mb-2 text-gray-800">Kiralama Koşulları</Text>
           <Text className="text-gray-600 mb-6 leading-5">{car.kosullar}</Text>
 
-          {/* Alış - Bırakış Bilgileri */}
           <Text className="text-lg font-semibold mb-2 text-gray-800">Alış ve Bırakış Yeri</Text>
-          <Text className="text-gray-600">Ercan ➝ Lefkoşa</Text>
+          <Text className="text-gray-600">Ercan - Lefkoşa</Text>
           <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
 
-          {/* Hemen Kirala Butonu */}
           <TouchableOpacity 
             className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
-            onPress={() => navigation.navigate("PaymentPage", {
+            onPress={() => navigation.navigate("ReservationPage", {
               carId: car.id,
               carModel: car.model,
               carPrice: car.price,
-              pickupDate: pickupDate,
-              dropDate: dropoffDate,
-              pickupTime: pickupTime,
-              dropTime: dropoffTime,
-              pickup: pickupLocation,
-              drop: dropoffLocation,
+              pickupDate: pickupDate || "",
+              dropDate: dropoffDate || "",
+              pickupTime: pickupTime || "",
+              dropTime: dropoffTime || "",
+              pickup: pickupLocation || "",
+              drop: dropoffLocation || "",
             })}
           >
-            <Text className="text-white text-center font-bold text-lg">🚗 Hemen Kirala</Text>
+            <Text className="text-white text-center font-bold text-lg">Hemen Kirala</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

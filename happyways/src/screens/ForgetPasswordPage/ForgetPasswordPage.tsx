@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
-import BackButtons from "../../../assets/BackButtons/backButtons.svg";
+import BackButton from "../../../Components/BackButton/BackButton";
 
 type ForgetPasswordPageProp = {
   navigation: NativeStackNavigationProp<
@@ -54,8 +54,7 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1">
-       
-<BackButtons onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => navigation.goBack()} />
 
   
         <View className="px-6">

@@ -20,7 +20,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
   return (
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1 bg-white">
-        {/* Başlık */}
+ 
         <Text className="text-center text-lg font-semibold my-3 text-[#000000]">Hesabım</Text>
 
        

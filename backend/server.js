@@ -20,6 +20,7 @@ import RezervRoute from "./api/main/Rezerv/route.js";
 import CarsDetailRoute from "./api/main/Cars/CarsDetailPage/route.js";
 import ProfileRoute from "./api/main/Profile/route.js";
 import authRefreshRoute from "./api/auth/refresh.js";
+import locationRoute from "./api/Location/route.js";
 
 dotenv.config();  
 const app = express();
@@ -30,10 +31,8 @@ const __dirname = path.dirname(__filename);
 app.use(cors()); 
 app.use(express.json()); 
 
-// Static files middleware - assets klasörünü serve et
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
-// Debug için hangi dosyaların serve edildiğini log'la
 app.use("/assets", (req, res, next) => {
   console.log("Asset request:", req.url);
   next();
@@ -54,7 +53,7 @@ app.use("/api/reservation", ReservationRoute);
 app.use("/api/cars/carsdetail", CarsDetailRoute);
 app.use("/api/main/rezerv", RezervRoute);
 app.use("/api/main/profile", ProfileRoute);
-
+app.use("/api/location", locationRoute);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 const startServer = async () => {

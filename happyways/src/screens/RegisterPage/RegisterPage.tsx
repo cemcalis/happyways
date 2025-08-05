@@ -1,3 +1,4 @@
+import BackButton from "../../../Components/BackButton/BackButton";
 import React, { useState } from "react";
 import {
   Text,
@@ -27,7 +28,6 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-  // Form validation rules
   const validator = new FormValidator({
     email: CommonValidationRules.email,
     phoneNumber: CommonValidationRules.phone,
@@ -45,19 +45,18 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
     
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      const firstError = Object.values(validationErrors)[0];
+      Alert.alert('Hata', firstError || 'Eksik veya hatalı bilgi girdiniz.');
       return;
     }
-
     setErrors({});
     setLoading(true);
-
     try {
       const data = await apiRequest("http://10.0.2.2:3000/api/register", {
         method: "POST",
         body: JSON.stringify({ email, password, phone: phoneNumber })
       });
-
-      Alert.alert("Kayıt Başarılı! 🎉", "Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.", [
+      Alert.alert("Kayıt Başarılı! ", "Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.", [
         {
           text: "Giriş Yap",
           onPress: () => navigation.navigate("LoginPage")
@@ -95,7 +94,7 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
             <Text className="text-orange-500 text-center font-bold">Giriş Yap</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-1 py-3 rounded-r-xl bg-orange-500">
+          <TouchableOpacity className="flex-1 py-3 rounded-r-xl bg-orange-500" onPress={handleRegister}>
             <Text className="text-white text-center font-bold">Üye OL</Text>
           </TouchableOpacity>
         </View>

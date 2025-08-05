@@ -11,13 +11,11 @@ router.get("/", authenticateToken, async (req, res) => {
 
     let cars;
     
-    // If search parameters are provided, filter available cars
     if (pickup && pickupDate && dropDate && pickupTime && dropTime) {
       // Convert date and time to datetime format for comparison
       const startDateTime = `${pickupDate} ${pickupTime}`;
       const endDateTime = `${dropDate} ${dropTime}`;
 
-      // Get cars that are NOT reserved during the requested time period
       const reservedCarsQuery = `
         SELECT DISTINCT car_id 
         FROM reservations 
@@ -29,9 +27,9 @@ router.get("/", authenticateToken, async (req, res) => {
       `;
 
       const reservedCars = await db.all(reservedCarsQuery, [
-        endDateTime, startDateTime,    // Mevcut rezervasyon başlangıçtan önce başlayıp başlangıçtan sonra bitiyor
-        startDateTime, endDateTime,    // Mevcut rezervasyon bitiş tarihinden önce başlayıp bitiş tarihinden sonra bitiyor
-        startDateTime, endDateTime     // Mevcut rezervasyon tamamen istenen dönem içinde
+        endDateTime, startDateTime,    
+        startDateTime, endDateTime,    
+        startDateTime, endDateTime     
       ]);
 
       const reservedCarIds = reservedCars.map(row => row.car_id);
@@ -43,7 +41,7 @@ router.get("/", authenticateToken, async (req, res) => {
         cars = await db.all("SELECT * FROM cars");
       }
     } else {
-      // No filters, return all cars
+
       cars = await db.all("SELECT * FROM cars");
     }
 

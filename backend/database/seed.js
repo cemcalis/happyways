@@ -10,6 +10,15 @@ const dbPath = join(__dirname, "happyways.db");
 const seed = async () => {
   const db = await open({ filename: dbPath, driver: sqlite3.Database });
 
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS locations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      address TEXT
+    );
+  `);
+
+  await db.exec(`DELETE FROM locations`);
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS campaigns (
@@ -59,10 +68,8 @@ const seed = async () => {
     );
   `);
 
-
   await db.exec(`DELETE FROM campaigns`);
   await db.exec(`DELETE FROM cars`);
-
 
   await db.exec(`
     INSERT INTO campaigns 
@@ -102,6 +109,15 @@ const seed = async () => {
        '• Minimum yaş: 23\n• Ehliyet süresi: En az 3 yıl\n• Kredi kartı gerekli\n• Depozito: 1.800 TL\n• Günlük km limiti: 250 km');
   `);
 
+
+   await db.exec(`   INSERT INTO locations (name, address) VALUES
+    ('Ercan Havalimanı', 'Ercan Havalimanı, Lefkoşa'),
+    ('Girne Merkez', 'Atatürk Cd. No:12, Girne'),
+    ('Gazimağusa Otogar', 'Otogar Sk. No:5, Gazimağusa'),
+    ('Güzelyurt Terminal', 'Terminal Cd. No:3, Güzelyurt'),
+    ('Lefke Meydan', 'Meydan Sk. No:1, Lefke')
+  `);
+    
   console.log(" Seed tamamlandı");
 };
 

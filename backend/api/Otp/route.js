@@ -1,4 +1,3 @@
-// backend/api/Otp/route.js
 import express from "express";
 import {
   getOtpForEmail,

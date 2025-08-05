@@ -1,3 +1,5 @@
+import LocationSelect from "../../../../Components/LocationSelect/LocationSelect";
+import BackButton from "../../../../Components/BackButton/BackButton";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -90,20 +92,14 @@ const HomePage = ({navigation} : HomePageProps) => {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner text="Ana sayfa yükleniyor..." />;
+    return <LoadingSpinner text="Ana sayfa yükleniyo" />;
   }
 
   const renderHeader = () => (
     <View className="px-4">
-      {/* Header with location and profile */}
+
       <View className="flex-row justify-between items-center pt-4 pb-2">
-        <View className="flex-row items-center">
-          <LocationSvg width={16} height={16} />
-          <Text className="text-black text-sm ml-1">Ercan Havaalanı, KKTC</Text>
-          <TouchableOpacity className="ml-1">
-            <LeftArrowSvg width={12} height={12} style={{transform: [{rotate: '90deg'}]}} fill="#9CA3AF" />
-          </TouchableOpacity>
-        </View>
+      <LocationSelect />
         <View className="flex-row items-center">
           <TouchableOpacity className="mr-2">
             <NotificationSvg width={24} height={24} fill="#f97316" />
@@ -115,12 +111,10 @@ const HomePage = ({navigation} : HomePageProps) => {
         </View>
       </View>
 
-      {/* Title */}
       <Text className="text-black text-[22px] font-extrabold mb-4 leading-7">
         İhtiyacınıza Uygun Aracı{"\n"}Hızlıca Bulun!
       </Text>
 
-      {/* Search Bar */}
       <View className="flex-row items-center bg-white border border-gray-300 rounded-xl px-4 py-3 mb-6 shadow-sm">
         <SearchSvg width={18} height={18} />
         <TextInput
@@ -133,7 +127,6 @@ const HomePage = ({navigation} : HomePageProps) => {
         </TouchableOpacity>
       </View>
 
-      {/* Campaigns Section */}
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-lg font-semibold text-black">Kampanyalar</Text>
         <TouchableOpacity onPress={() => navigation.navigate("CampaignPage")}>
@@ -141,7 +134,6 @@ const HomePage = ({navigation} : HomePageProps) => {
         </TouchableOpacity>
       </View>
 
-      {/* Campaigns Horizontal FlatList */}
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -180,7 +172,6 @@ const HomePage = ({navigation} : HomePageProps) => {
         className="mb-6"
       />
 
-      {/* Cars Section Header */}
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-lg font-semibold text-black">Araçlar</Text>
         <TouchableOpacity onPress={() => navigation.navigate("AllCarsPage", {})}>

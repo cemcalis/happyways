@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, ActivityIndicator, FlatList } from
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
+import TabBar from "../../../../../Components/TabBar/TapBar";
 
 type Campaign = {
   id: number;
@@ -46,12 +47,12 @@ const CampaignPage = () => {
 
   return (
     <View className="flex-1 bg-white">
-      {/* Üst Bar */}
+
       <View className="px-4 py-3 border-b border-gray-200">
         <Text className="text-lg font-bold text-black">Kampanyalar</Text>
       </View>
 
-      {/* Kampanya Grid Liste */}
+
       <FlatList
         data={campaigns}
         numColumns={2}
@@ -64,13 +65,13 @@ const CampaignPage = () => {
             className="bg-white rounded-lg shadow-md mb-4 w-[48%] border border-gray-100"
             onPress={() => navigation.navigate("CampaignDetailPage", { campaignId: item.id })}
           >
-            {/* Fotoğraf */}
+  
             <Image
               source={{ uri: item.image }}
               className="w-full h-28 rounded-t-lg"
               resizeMode="cover"
             />
-            {/* İçerik */}
+   
             <View className="p-2">
               <Text className="text-black text-[13px] font-bold mb-1" numberOfLines={2}>
                 {item.title}
@@ -90,6 +91,7 @@ const CampaignPage = () => {
           </TouchableOpacity>
         )}
       />
+      <TabBar navigation={navigation} activeRoute="CampaignPage" />
     </View>
   );
 };

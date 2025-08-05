@@ -12,11 +12,20 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../../../types";
 import ReusableTextInput from "../../../../Components/ReusableTextInput/ReusableTextInput";
+import LocationSelect from "../../../../Components/LocationSelect/LocationSelect";
 import TabBar from "../../../../Components/TabBar/TapBar";
 
 import DoublelocationSvg from "../../../../assets/reservation/doublelocation.svg";
 import ClockSvg from "../../../../assets/reservation/clock.svg";
 import DateSvg from "../../../../assets/reservation/date.svg";
+
+type LocationType = {
+  id: number;
+  name: string;
+  address?: string;
+  city?: string;
+  country?: string;
+};
 
 
 
@@ -26,13 +35,13 @@ type ReservationPageProps = {
 };
 
 const ReservationPage = ({ navigation }: ReservationPageProps) => {
-  const [ofis, setOfis] = useState("");
+  const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
+  const [dropoffLocation, setDropoffLocation] = useState<LocationType | null>(null);
+  const [usePickupAsDropoff, setUsePickupAsDropoff] = useState(true);
   const [getdate, setGetdate] = useState("");
   const [backdate, setBackDate] = useState("");
   const [gettime, setGetTime] = useState("");
   const [backtime, setBackTime] = useState("");
-  const [differentDrop, setDifferentDrop] = useState(false);
-  const [returnOffice, setReturnOffice] = useState("");
   const [lastSearches, setLastSearches] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -51,9 +60,29 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
     fetchSearches();
   }, []);
 
+  const handlePickupLocationSelect = (location: LocationType) => {
+    setPickupLocation(location);
+    if (usePickupAsDropoff) {
+      setDropoffLocation(location);
+    }
+  };
+
+  const handleDropoffLocationSelect = (location: LocationType) => {
+    setDropoffLocation(location);
+    setUsePickupAsDropoff(false);
+  };
+
+  const toggleDropoffSameAsPickup = () => {
+    if (!usePickupAsDropoff) {
+      setUsePickupAsDropoff(true);
+      setDropoffLocation(pickupLocation);
+    } else {
+      setUsePickupAsDropoff(false);
+    }
+  };
 
   const handleSearch = async () => {
-    if (!ofis || !getdate || !backdate || !gettime || !backtime) {
+    if (!pickupLocation || !getdate || !backdate || !gettime || !backtime) {
       Alert.alert("Eksik Bilgi", "Lütfen tüm alanları doldurun");
       return;
     }
@@ -61,23 +90,25 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
     try {
       setIsSearching(true);
 
+      const dropLocation = usePickupAsDropoff ? pickupLocation : dropoffLocation || pickupLocation;
+
       const searchData = {
-        pickup: ofis,
-        drop: differentDrop ? returnOffice : ofis,
+        pickup: pickupLocation.name,
+        drop: dropLocation.name,
         date: `${getdate}, ${gettime} - ${backdate}, ${backtime}`,
       };
 
-      // Search parameters for filtering
       const searchParams = {
-        pickup: ofis,
-        drop: differentDrop ? returnOffice : ofis,
+        pickup: pickupLocation.name,
+        drop: dropLocation.name,
+        pickupLocationId: pickupLocation.id,
+        dropoffLocationId: dropLocation.id,
         pickupDate: getdate,
         dropDate: backdate,
         pickupTime: gettime,
         dropTime: backtime,
       };
 
-      // Save search to history
       const existingSearches = await AsyncStorage.getItem("lastSearches");
       const searches = existingSearches ? JSON.parse(existingSearches) : [];
 
@@ -91,7 +122,6 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
       await AsyncStorage.setItem("lastSearches", JSON.stringify(updatedSearches));
       setLastSearches(updatedSearches);
 
-      // Navigate with search parameters
       navigation.navigate("AllCarsPage", { searchParams });
     } catch (error) {
       console.log("Arama hatası:", error);
@@ -110,25 +140,21 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView showsVerticalScrollIndicator={false} className="px-4">
-        {/* Header */}
+   
         <View className="flex-row items-center justify-center py-4 mb-2">
-          <Text className="text-xl font-bold text-black">🚗 Araç Ara</Text>
+          <Text className="text-xl font-bold text-black">Araç Ara</Text>
         </View>
 
-        {/* Main Form Card */}
         <View className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-4">
           
-          {/* Office Selection */}
           <View className="mb-4">
-            <ReusableTextInput
-              placeholder="Alış Ofisi"
-              value={ofis}
-              onChangeText={setOfis}
-              icon={<DoublelocationSvg width={20} height={20} />}
-            />
+            <Text className="text-sm font-medium text-gray-700 mb-2">Alış Lokasyonu</Text>
+            <LocationSelect onSelect={handlePickupLocationSelect} />
+            {pickupLocation && (
+              <Text className="text-xs text-gray-500 mt-1">Seçilen: {pickupLocation.name}</Text>
+            )}
           </View>
 
-          {/* Date Selection Row */}
           <View className="flex-row space-x-3 mb-4">
             <View className="flex-1">
               <ReusableTextInput
@@ -148,7 +174,6 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
             </View>
           </View>
 
-          {/* Time Selection Row */}
           <View className="flex-row space-x-3 mb-4">
             <View className="flex-1">
               <ReusableTextInput
@@ -168,18 +193,17 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
             </View>
           </View>
 
-          {/* Checkbox */}
           <TouchableOpacity
             className="flex-row items-center mb-6"
-            onPress={() => setDifferentDrop(!differentDrop)}
+            onPress={toggleDropoffSameAsPickup}
           >
             <View
               className={`w-5 h-5 rounded border-2 mr-3 items-center justify-center ${
-                differentDrop ? "bg-orange-500 border-orange-500" : "border-gray-400 bg-white"
+                !usePickupAsDropoff ? "bg-orange-500 border-orange-500" : "border-gray-400 bg-white"
               }`}
             >
-              {differentDrop && (
-                <Text className="text-white font-bold text-xs">✓</Text>
+              {!usePickupAsDropoff && (
+                <Text className="text-white font-bold text-xs"> </Text>
               )}
             </View>
             <Text className="text-sm text-gray-700">
@@ -187,34 +211,30 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
             </Text>
           </TouchableOpacity>
 
-          {/* Different Drop Location */}
-          {differentDrop && (
+          {!usePickupAsDropoff && (
             <View className="mb-4">
-              <ReusableTextInput
-                placeholder="İade Ofisi"
-                value={returnOffice}
-                onChangeText={setReturnOffice}
-                icon={<DoublelocationSvg width={20} height={20} />}
-              />
+              <Text className="text-sm font-medium text-gray-700 mb-2">İade Lokasyonu</Text>
+              <LocationSelect onSelect={handleDropoffLocationSelect} />
+              {dropoffLocation && (
+                <Text className="text-xs text-gray-500 mt-1">Seçilen: {dropoffLocation.name}</Text>
+              )}
             </View>
           )}
 
-          {/* Search Button */}
           <TouchableOpacity
             onPress={handleSearch}
             disabled={isSearching}
             className={`rounded-xl py-4 shadow-lg ${isSearching ? 'bg-gray-400' : 'bg-orange-500'}`}
           >
             <Text className="text-center text-white text-lg font-bold">
-              {isSearching ? "Aranıyor..." : "Araç Ara"}
+              {isSearching ? "Aranıyo." : "Araç Ara"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Search History */}
         {lastSearches.length > 0 && (
           <View className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-4">
-            <Text className="text-lg font-bold text-gray-800 mb-4">📝 Son Aramalar</Text>
+            <Text className="text-lg font-bold text-gray-800 mb-4">Son Aramalar</Text>
             <FlatList
               data={lastSearches}
               keyExtractor={(_, index) => index.toString()}
@@ -231,7 +251,7 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
             />
             <TouchableOpacity onPress={clearHistory} className="mt-2">
               <Text className="text-red-500 text-sm text-center font-semibold">
-                🗑️ Geçmişi Temizle
+                Geçmişi Temizle
               </Text>
             </TouchableOpacity>
           </View>

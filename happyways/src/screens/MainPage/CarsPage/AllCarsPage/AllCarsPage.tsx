@@ -1,3 +1,4 @@
+import BackButton from "../../../../../Components/BackButton/BackButton";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -52,7 +53,6 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   const [searchInfo, setSearchInfo] = useState<any>(null);
   const { token } = useAuth();
 
-  // Rezervasyon bilgilerini al
   const searchParams = route.params?.searchParams;
 
   useEffect(() => {
@@ -64,8 +64,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
       try {
         let url = "http://10.0.2.2:3000/api/cars/allcars";
-        
-        // Add query parameters if search params exist
+    
         if (searchParams) {
           const queryParams = new URLSearchParams({
             pickup: searchParams.pickup,
@@ -120,23 +119,23 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
         </View>
       ) : (
         <>
-          {/* Header */}
+  
           <View className="px-4 pt-2 pb-2">
             <Text className="text-xl font-semibold text-center mb-2">
               {searchInfo ? "Müsait Araçlar" : "Tüm Araçlar"}
             </Text>
+            <BackButton onPress={() => navigation.goBack()} />
             
-            {/* Search Info */}
             {searchInfo && (
               <View className="bg-orange-50 rounded-xl p-3 mb-3 border border-orange-200">
                 <Text className="text-sm font-semibold text-gray-800 mb-1">
-                  📍 {searchInfo.pickup} → {searchInfo.drop}
+                  {searchInfo.pickup} - {searchInfo.drop}
                 </Text>
                 <Text className="text-xs text-gray-600">
-                  📅 {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}
+                  {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}
                 </Text>
                 <Text className="text-xs text-orange-600 font-semibold mt-1">
-                  ✅ {searchInfo.availableCarsCount} araç müsait
+                  {searchInfo.availableCarsCount} araç müsait
                 </Text>
               </View>
             )}
@@ -175,7 +174,6 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
             </View>
           </View>
 
-          {/* Filtre Modal */}
           {showFilter && (
             <View className="absolute left-0 right-0 top-0 bottom-0 z-50 bg-black/50 justify-center items-center">
               <View className="bg-white rounded-xl p-6">
@@ -189,8 +187,6 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
               </View>
             </View>
           )}
-
-          {/* Araçlar Listesi */}
           <ScrollView className="px-4">
             <View
               className={`flex-row flex-wrap ${

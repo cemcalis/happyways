@@ -1,3 +1,4 @@
+import BackButton from "../../../Components/BackButton/BackButton";
 import { Text, TouchableOpacity, View, ImageBackground, Image, Animated } from "react-native";
 import React, { useRef, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -53,9 +54,8 @@ const InfoPage = ({ navigation }: InfoPageProp) => {
       className="flex-1"
     >
       <StatusBar style="light" />
-
       <SafeAreaView className="flex-1 justify-between">
-   
+        <BackButton onPress={() => navigation.goBack()} />
         <View className="items-center mt-8">
           <Image
             source={require("../../../assets/InfoPage/Logo.png")}

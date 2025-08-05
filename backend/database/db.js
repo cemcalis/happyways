@@ -1,4 +1,3 @@
-  // backend/database/db.js
   import sqlite3 from "sqlite3";
   import { open } from "sqlite";
   import { fileURLToPath } from "url";
@@ -65,6 +64,8 @@
       car_image TEXT,
       pickup_location TEXT NOT NULL,
       dropoff_location TEXT,
+      pickup_location_id INTEGER,
+      dropoff_location_id INTEGER,
       pickup_date TEXT NOT NULL,
       dropoff_date TEXT NOT NULL,
       pickup_time TEXT NOT NULL,
@@ -78,8 +79,17 @@
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (car_id) REFERENCES cars(id)
+      FOREIGN KEY (car_id) REFERENCES cars(id),
+      FOREIGN KEY (pickup_location_id) REFERENCES locations(id),
+      FOREIGN KEY (dropoff_location_id) REFERENCES locations(id)
     );
+  `);
+
+    await db.exec(`
+    CREATE TABLE IF NOT EXISTS locations (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    address TEXT);
   `);
 
     return db;

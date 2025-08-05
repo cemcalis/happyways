@@ -1,4 +1,3 @@
-// backend/api/Register/route.js
 import express from "express";
 import { getDB } from "../../database/db.js";
 import bcrypt from "bcryptjs";

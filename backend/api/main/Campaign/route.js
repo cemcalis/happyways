@@ -6,9 +6,8 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
-    const campaigns = await db.all("SELECT * FROM campaigns");
+    const campaigns = await db.all(",SELECT * FROM campaigns");
 
-    // Resim yolu düzeltme
     const updatedCampaigns = campaigns.map(c => ({
       ...c,
       image: c.image
