@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import CheckBox from 'react-native-check-box';
 
-interface PaymentFormProps {
+interface CreditCardFormProps {
   carInfo: {
     model: string;
     pickup: string;
@@ -17,7 +17,7 @@ interface PaymentFormProps {
   onSuccess: () => void;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ carInfo, userEmail, onSuccess }) => {
+const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onSuccess }) => {
   const [name, setName] = useState("");
   const [cardNo, setCardNo] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
@@ -100,4 +100,4 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ carInfo, userEmail, onSuccess
   );
 };
 
-export default PaymentForm;
+export default CreditCardForm;

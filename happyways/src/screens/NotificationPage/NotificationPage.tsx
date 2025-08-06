@@ -73,10 +73,10 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'success': return '✅';
-      case 'warning': return '⚠️';
-      case 'error': return '❌';
-      default: return 'ℹ️';
+      case 'success': return 'başarılı';
+      case 'warning': return 'dikkat';
+      case 'error': return 'hata';
+      default: return 'info';
     }
   };
 
@@ -117,14 +117,14 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      {/* Header */}
+
       <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
         <BackButton onPress={() => navigation.goBack()} />
         <Text className="text-lg font-bold text-gray-900">Bildirimler</Text>
         <View className="w-8" />
       </View>
 
-      {/* Notifications List */}
+
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id.toString()}
@@ -136,7 +136,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
         }
         ListEmptyComponent={
           <View className="items-center justify-center py-20">
-            <Text className="text-4xl mb-4">🔔</Text>
+            <Text className="text-4xl mb-4"></Text>
             <Text className="text-gray-500 text-center">
               Henüz bildiriminiz bulunmuyor
             </Text>

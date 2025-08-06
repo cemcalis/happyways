@@ -4,9 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../../types';
 import TabBar from '../../../../Components/TabBar/TapBar';
-import PaymentHeader from './PaymentPageComponent/PaymentHeader';
-import ReservationSummary from './PaymentPageComponent/ReservationSummary';
-import CreditCardForm from './PaymentPageComponent/CreditCardForm';
+import { PaymentHeader, ReservationSummary, CreditCardForm } from "../../Components/PaymentPageComponent";
 
 type PaymentPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "PaymentPage">

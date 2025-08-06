@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
+import LeftArrowSvg from "../../../assets/HomePage/leftarrow.svg";
 
 type InfoPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "InfoPage">;
@@ -86,7 +87,12 @@ const InfoPage = ({ navigation }: InfoPageProp) => {
   activeOpacity={0.8}
   className="w-14 h-14 rounded-full bg-orange-500 items-center justify-center self-end shadow-md active:bg-orange-600 active:scale-95"
 >
-  <Text className="text-white text-xl font-bold">→</Text>
+  <LeftArrowSvg 
+    width={24} 
+    height={24} 
+    fill="#FFFFFF" 
+    style={{ transform: [{ rotate: '180deg' }] }} 
+  />
 </TouchableOpacity>
 
          
