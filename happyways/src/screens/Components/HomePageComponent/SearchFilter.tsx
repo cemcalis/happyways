@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import FilterSvg from "../../../../../assets/HomePage/filter.svg";
+import FilterSvg from "../../../../assets/HomePage/filter.svg";
 
 type Campaign = {
   id: number;

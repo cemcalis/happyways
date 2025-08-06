@@ -43,30 +43,70 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
   const searchParams = route.params?.searchParams;
 
-  const handleApplyFilters = useCallback((fuelTypes: string[], gearTypes: string[]) => {
+  const handleApplyFilters = useCallback(async (fuelTypes: string[], gearTypes: string[]) => {
     setActiveFilters({ fuelTypes, gearTypes });
     
-    let filtered = cars;
-    
-    // Search text filtresi
-    if (searchText.trim() !== "") {
-      filtered = filtered.filter((car) => 
-        car.model.toLowerCase().includes(searchText.toLowerCase()) ||
-        car.year.toString().includes(searchText)
-      );
+    try {
+      // Backend'den filtreleme yap
+      const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cars,
+          searchText,
+          fuelTypes,
+          gearTypes,
+          sortBy: 'price_asc'
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setFilteredCars(data.cars);
+      } else {
+        // Fallback: eski filtreleme mantığı
+        let filtered = cars;
+        
+        if (searchText.trim() !== "") {
+          filtered = filtered.filter((car) => 
+            car.model.toLowerCase().includes(searchText.toLowerCase()) ||
+            car.year.toString().includes(searchText)
+          );
+        }
+        
+        if (fuelTypes.length > 0) {
+          filtered = filtered.filter(car => fuelTypes.includes(car.fuel));
+        }
+        
+        if (gearTypes.length > 0) {
+          filtered = filtered.filter(car => gearTypes.includes(car.gear));
+        }
+        
+        setFilteredCars(filtered);
+      }
+    } catch (error) {
+      console.error("Filtreleme hatası:", error);
+      // Fallback: eski filtreleme mantığı
+      let filtered = cars;
+      
+      if (searchText.trim() !== "") {
+        filtered = filtered.filter((car) => 
+          car.model.toLowerCase().includes(searchText.toLowerCase()) ||
+          car.year.toString().includes(searchText)
+        );
+      }
+      
+      if (fuelTypes.length > 0) {
+        filtered = filtered.filter(car => fuelTypes.includes(car.fuel));
+      }
+      
+      if (gearTypes.length > 0) {
+        filtered = filtered.filter(car => gearTypes.includes(car.gear));
+      }
+      
+      setFilteredCars(filtered);
     }
-    
-    // Fuel type filtresi
-    if (fuelTypes.length > 0) {
-      filtered = filtered.filter(car => fuelTypes.includes(car.fuel));
-    }
-    
-    // Gear type filtresi
-    if (gearTypes.length > 0) {
-      filtered = filtered.filter(car => gearTypes.includes(car.gear));
-    }
-    
-    setFilteredCars(filtered);
   }, [cars, searchText]);
 
   const handleFilterPress = useCallback(() => {
@@ -122,26 +162,73 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   }, [searchParams, token]);
 
   useEffect(() => {
-    let filtered = cars;
-    
-    // Search text filtresi
-    if (searchText.trim() !== "") {
-      filtered = filtered.filter((car) => 
-        car.model.toLowerCase().includes(searchText.toLowerCase()) ||
-        car.year.toString().includes(searchText)
-      );
+    const filterCars = async () => {
+      try {
+        // Backend'den filtreleme yap
+        const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cars,
+            searchText,
+            fuelTypes: activeFilters.fuelTypes,
+            gearTypes: activeFilters.gearTypes,
+            sortBy: 'price_asc'
+          }),
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          setFilteredCars(data.cars);
+        } else {
+          // Fallback: eski filtreleme mantığı
+          let filtered = cars;
+          
+          if (searchText.trim() !== "") {
+            filtered = filtered.filter((car) => 
+              car.model.toLowerCase().includes(searchText.toLowerCase()) ||
+              car.year.toString().includes(searchText)
+            );
+          }
+          
+          if (activeFilters.fuelTypes.length > 0) {
+            filtered = filtered.filter(car => activeFilters.fuelTypes.includes(car.fuel));
+          }
+          
+          if (activeFilters.gearTypes.length > 0) {
+            filtered = filtered.filter(car => activeFilters.gearTypes.includes(car.gear));
+          }
+          
+          setFilteredCars(filtered);
+        }
+      } catch (error) {
+        console.error("Filtreleme hatası:", error);
+        // Fallback: eski filtreleme mantığı
+        let filtered = cars;
+        
+        if (searchText.trim() !== "") {
+          filtered = filtered.filter((car) => 
+            car.model.toLowerCase().includes(searchText.toLowerCase()) ||
+            car.year.toString().includes(searchText)
+          );
+        }
+        
+        if (activeFilters.fuelTypes.length > 0) {
+          filtered = filtered.filter(car => activeFilters.fuelTypes.includes(car.fuel));
+        }
+        
+        if (activeFilters.gearTypes.length > 0) {
+          filtered = filtered.filter(car => activeFilters.gearTypes.includes(car.gear));
+        }
+        
+        setFilteredCars(filtered);
+      }
+    };
+
+    if (cars.length > 0) {
+      filterCars();
     }
-    
-    // Active filters filtresi
-    if (activeFilters.fuelTypes.length > 0) {
-      filtered = filtered.filter(car => activeFilters.fuelTypes.includes(car.fuel));
-    }
-    
-    if (activeFilters.gearTypes.length > 0) {
-      filtered = filtered.filter(car => activeFilters.gearTypes.includes(car.gear));
-    }
-    
-    setFilteredCars(filtered);
   }, [cars, searchText, activeFilters]);
 
   return (

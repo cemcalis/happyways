@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
-import CarCard from "../../MainPage/CarsPage/AllCarsPage/CarsComponents/CarCard";
+import CarCard from "./CarCard";
 
 type Car = {
   id: number;

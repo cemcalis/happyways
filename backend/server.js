@@ -21,6 +21,9 @@ import CarsDetailRoute from "./api/main/Cars/CarsDetailPage/route.js";
 import ProfileRoute from "./api/main/Profile/route.js";
 import authRefreshRoute from "./api/auth/refresh.js";
 import locationRoute from "./api/Location/route.js";
+import priceCalculationRoute from "./api/Payment/PriceCalculation/route.js";
+import paymentValidationRoute from "./api/Payment/FormValidation/route.js";
+import carFilterRoute from "./api/main/Cars/FilterCars/route.js";
 
 dotenv.config();  
 const app = express();
@@ -54,6 +57,9 @@ app.use("/api/cars/carsdetail", CarsDetailRoute);
 app.use("/api/main/rezerv", RezervRoute);
 app.use("/api/main/profile", ProfileRoute);
 app.use("/api/location", locationRoute);
+app.use("/api/payment/calculate-price", priceCalculationRoute);
+app.use("/api/payment/validate-form", paymentValidationRoute);
+app.use("/api/cars/filter", carFilterRoute);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 const startServer = async () => {

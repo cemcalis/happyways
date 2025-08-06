@@ -175,7 +175,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    // Token kontrolü
+
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ message: "Token gerekli" });
@@ -185,6 +185,11 @@ router.get("/", async (req, res) => {
     const user_id = decoded.id;
 
     const db = getDB();
+  
+    const user = await db.get("SELECT * FROM users WHERE id = ?", [user_id]);
+    if (!user) {
+      return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+    }
     
     const reservations = await db.all(`
       SELECT 
@@ -194,25 +199,140 @@ router.get("/", async (req, res) => {
         c.image,
         c.gear,
         c.fuel,
-        c.seats
+        c.seats,
+        c.price
       FROM reservations r
       JOIN cars c ON r.car_id = c.id
       WHERE r.user_id = ?
-      ORDER BY r.created_at DESC
+      ORDER BY r.pickup_date DESC, r.pickup_time DESC
     `, [user_id]);
 
-    const updatedReservations = reservations.map(reservation => ({
-      ...reservation,
-      image: `http://10.0.2.2:3000/${reservation.image}`
-    }));
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0]; 
+    const currentTimeString = currentDate.toTimeString().split(' ')[0].slice(0, 5); 
 
-    res.status(200).json({ reservations: updatedReservations });
+  
+    const categorizedReservations = {
+      active: [], 
+      upcoming: [], 
+      completed: [], 
+      cancelled: [] 
+    };
+
+    reservations.forEach(reservation => {
+      const updatedReservation = {
+        ...reservation,
+        image: reservation.image ? `http://10.0.2.2:3000/${reservation.image}` : null,
+       
+        duration: calculateDuration(reservation.pickup_date, reservation.pickup_time, reservation.dropoff_date, reservation.dropoff_time),
+      
+        status_info: getStatusInfo(reservation, currentDateString, currentTimeString)
+      };
+
+     
+      if (reservation.status === 'cancelled') {
+        categorizedReservations.cancelled.push(updatedReservation);
+      }
+      else if (reservation.dropoff_date < currentDateString || 
+               (reservation.dropoff_date === currentDateString && reservation.dropoff_time <= currentTimeString)) {
+        categorizedReservations.completed.push(updatedReservation);
+      }
+      else if (reservation.pickup_date > currentDateString || 
+               (reservation.pickup_date === currentDateString && reservation.pickup_time > currentTimeString)) {
+        categorizedReservations.upcoming.push(updatedReservation);
+      }
+      else {
+        categorizedReservations.active.push(updatedReservation);
+      }
+    });
+
+    const stats = {
+      total: reservations.length,
+      active: categorizedReservations.active.length,
+      upcoming: categorizedReservations.upcoming.length,
+      completed: categorizedReservations.completed.length,
+      cancelled: categorizedReservations.cancelled.length,
+      user_info: {
+        name: user.name,
+        email: user.email,
+        total_reservations: reservations.length
+      }
+    };
+
+    res.status(200).json({ 
+      success: true,
+      reservations: categorizedReservations,
+      stats,
+      message: `${reservations.length} rezervasyon bulundu`
+    });
 
   } catch (error) {
     console.error("Rezervasyonlar alınamadı:", error);
-    res.status(500).json({ message: "Rezervasyonlar alınamadı", error: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: "Rezervasyonlar alınamadı", 
+      error: error.message 
+    });
   }
 });
+
+function calculateDuration(pickupDate, pickupTime, dropoffDate, dropoffTime) {
+  const startDateTime = new Date(`${pickupDate}T${pickupTime}:00`);
+  const endDateTime = new Date(`${dropoffDate}T${dropoffTime}:00`);
+  
+  const diffTime = Math.abs(endDateTime - startDateTime);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+  
+  if (diffDays >= 1) {
+    return `${diffDays} gün`;
+  } else {
+    return `${diffHours} saat`;
+  }
+}
+
+function getStatusInfo(reservation, currentDate, currentTime) {
+  const pickupDateTime = new Date(`${reservation.pickup_date}T${reservation.pickup_time}:00`);
+  const dropoffDateTime = new Date(`${reservation.dropoff_date}T${reservation.dropoff_time}:00`);
+  const currentDateTime = new Date(`${currentDate}T${currentTime}:00`);
+  
+  if (reservation.status === 'cancelled') {
+    return {
+      status: 'cancelled',
+      message: 'İptal edildi',
+      color: '#FF6B6B',
+      icon: 'cancel'
+    };
+  }
+  
+  if (currentDateTime < pickupDateTime) {
+    const timeDiff = pickupDateTime - currentDateTime;
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    
+    return {
+      status: 'upcoming',
+      message: daysDiff === 1 ? 'Yarın başlıyor' : `${daysDiff} gün sonra`,
+      color: '#4ECDC4',
+      icon: 'schedule'
+    };
+  }
+  
+  if (currentDateTime >= pickupDateTime && currentDateTime <= dropoffDateTime) {
+    return {
+      status: 'active',
+      message: 'Devam ediyor',
+      color: '#45B7D1',
+      icon: 'directions_car'
+    };
+  }
+  
+  return {
+    status: 'completed',
+    message: 'Tamamlandı',
+    color: '#96CEB4',
+    icon: 'check_circle'
+  };
+}
 
 router.delete("/:id", async (req, res) => {
   try {

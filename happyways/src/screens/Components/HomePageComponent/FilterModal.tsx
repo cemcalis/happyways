@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
-import FilterSvg from "../../../../../assets/HomePage/filter.svg";
+import FilterSvg from "../../../../assets/HomePage/filter.svg";
 
 type FilterModalProps = {
   showFilter: boolean;

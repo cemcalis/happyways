@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import BackButton from '../../../../../Components/BackButton/BackButton';
+import BackButton from '../../../../Components/BackButton/BackButton';
 
 interface PaymentHeaderProps {
   onBack: () => void;

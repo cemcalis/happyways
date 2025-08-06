@@ -7,9 +7,9 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
-import FuelSvg from "../../../../../assets/HomePage/fuel.svg";
-import GearSvg from "../../../../../assets/HomePage/gear.svg";
-import SnowSvg from "../../../../../assets/HomePage/snow.svg";
+import FuelSvg from "../../../../assets/HomePage/fuel.svg";
+import GearSvg from "../../../../assets/HomePage/gear.svg";
+import SnowSvg from "../../../../assets/HomePage/snow.svg";
 
 type Car = {
   id: number;

@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import FilterSvg from "../../../../../../../assets/HomePage/filter.svg";
-import GridSvg from "../../../../../../../assets/HomePage/grid.svg";
-import ListSvg from "../../../../../../../assets/HomePage/list.svg";
+import FilterSvg from "../../../../assets/HomePage/filter.svg";
+import GridSvg from "../../../../assets/HomePage/grid.svg";
+import ListSvg from "../../../../assets/HomePage/list.svg";
 
 type CarsFilterProps = {
   searchText: string;

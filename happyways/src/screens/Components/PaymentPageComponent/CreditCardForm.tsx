@@ -30,8 +30,64 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
 
   const handlePayment = async () => {
     setLoading(true);
+    
     try {
-      const res = await fetch("http://localhost:3000/api/payment", {
+      // Önce backend'den form validasyonu al
+      const validationResponse = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          cardNo,
+          expiryMonth,
+          expiryYear,
+          cvv,
+          carInfo,
+          userEmail,
+          secure,
+          emailChecked,
+          smsChecked,
+        }),
+      });
+
+      const validationData = await validationResponse.json();
+      
+      if (!validationData.success) {
+        Alert.alert(
+          "Form Hatası", 
+          validationData.validation.errors.join("\n"), 
+          [{ text: "TAMAM" }]
+        );
+        setLoading(false);
+        return;
+      }
+
+      // Uyarılar varsa kullanıcıya sor
+      if (validationData.validation.warnings.length > 0) {
+        Alert.alert(
+          "Uyarı", 
+          validationData.validation.warnings.join("\n") + "\n\nDevam etmek istiyor musunuz?",
+          [
+            { text: "İptal", style: "cancel", onPress: () => setLoading(false) },
+            { text: "Devam Et", onPress: () => processPayment() }
+          ]
+        );
+        return;
+      }
+
+      // Validasyon başarılı, ödemeye devam et
+      await processPayment();
+      
+    } catch (err) {
+      console.error("Validasyon hatası:", err);
+      Alert.alert("Validasyon Hatası", "Form doğrulaması yapılamadı. Lütfen tekrar deneyiniz.", [{ text: "TAMAM" }]);
+      setLoading(false);
+    }
+  };
+
+  const processPayment = async () => {
+    try {
+      const res = await fetch("http://10.0.2.2:3000/api/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -54,8 +110,9 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
       ]);
     } catch (err) {
       Alert.alert("Sunucuya ulaşılamıyor.", "Lütfen daha sonra tekrar deneyiniz.", [{ text: "TAMAM" }]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
