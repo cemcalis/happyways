@@ -10,24 +10,18 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
-
-
-import HomeSvg from "../../../../../assets/HomePage/home.svg";
-import CarSvg from "../../../../../assets/HomePage/car.svg";
-import CampaignSvg from "../../../../../assets/HomePage/campaign.svg";
-import ReservationSvg from "../../../../../assets/HomePage/search.svg";
-import UserSvg from "../../../../../assets/HomePage/user.svg";
+import Icon from "../../../../../Components/Icons/Icons";
 
 type MeProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "MePage">;
 };
 
 const tabItems = [
-  { icon: <HomeSvg width={20} height={20} />, label: "Anasayfa", route: "HomePage" },
-  { icon: <CarSvg width={20} height={20} />, label: "Araçlar", route: "AllCarsPage" },
-  { icon: <ReservationSvg width={20} height={20} />, label: "Rezervasyon", route: "ReservationPage" },
-  { icon: <CampaignSvg width={20} height={20} />, label: "Kampanyalar", route: "CampaignPage" },
-  { icon: <UserSvg width={20} height={20} />, label: "Hesabım", route: "ProfilePage" },
+  { icon: <Icon name="home" size={20} />, label: "Anasayfa", route: "HomePage" },
+  { icon: <Icon name="car" size={20} />, label: "Araçlar", route: "AllCarsPage" },
+  { icon: <Icon name="search" size={20} />, label: "Rezervasyon", route: "ReservationPage" },
+  { icon: <Icon name="campaign" size={20} />, label: "Kampanyalar", route: "CampaignPage" },
+  { icon: <Icon name="user" size={20} />, label: "Hesabım", route: "ProfilePage" },
 ];
 
 const MePage = ({ navigation }: MeProp) => {

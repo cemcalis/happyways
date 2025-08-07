@@ -24,6 +24,7 @@ import locationRoute from "./api/Location/route.js";
 import priceCalculationRoute from "./api/Payment/PriceCalculation/route.js";
 import paymentValidationRoute from "./api/Payment/FormValidation/route.js";
 import carFilterRoute from "./api/main/Cars/FilterCars/route.js";
+import additionalServicesRoute from "./api/main/Cars/AdditionalServices/route.js";
 
 dotenv.config();  
 const app = express();
@@ -60,6 +61,7 @@ app.use("/api/location", locationRoute);
 app.use("/api/payment/calculate-price", priceCalculationRoute);
 app.use("/api/payment/validate-form", paymentValidationRoute);
 app.use("/api/cars/filter", carFilterRoute);
+app.use("/api/cars/additional-services", additionalServicesRoute);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 const startServer = async () => {

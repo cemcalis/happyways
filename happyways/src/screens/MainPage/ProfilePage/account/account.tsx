@@ -2,15 +2,7 @@ import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../types';
-
-import EarthSvg from "../../../../../assets/account/earth.svg";
-import MoneySvg from "../../../../../assets/account/money.svg";
-import ThemaSvg from "../../../../../assets/account/thema.svg";
-import LinkedinSvg from "../../../../../assets/account/linkedin.svg";
-import IgSvg from "../../../../../assets/account/ig.svg";
-import XSvg from "../../../../../assets/account/x.svg";
-import YoutubeSvg from "../../../../../assets/account/youtube.svg";
-import FacebookSvg from "../../../../../assets/account/facebook.svg";
+import Icon from '../../../../../Components/Icons/Icons';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
@@ -45,7 +37,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
 
           <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
             <View className="flex-row items-center space-x-3">
-              <EarthSvg width={20} height={20} />
+              <Icon name="earth" size={20} />
               <Text className="text-[#000000]">Dil</Text>
             </View>
             <Text className="text-[#565656]">Türkçe</Text>
@@ -53,7 +45,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
 
           <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
             <View className="flex-row items-center space-x-3">
-              <MoneySvg width={20} height={20} />
+              <Icon name="money" size={20} />
               <Text className="text-[#000000]">Para Birimi</Text>
             </View>
             <Text className="text-[#565656]">₺ TRY</Text>
@@ -61,7 +53,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
 
           <TouchableOpacity className="flex-row items-center justify-between py-3">
             <View className="flex-row items-center space-x-3">
-              <ThemaSvg width={20} height={20} />
+              <Icon name="thema" size={20} />
               <Text className="text-[#000000]">Tema</Text>
             </View>
             <Text className="text-[#565656]">Açık</Text>
@@ -85,11 +77,11 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         <View className="p-4 items-center">
           <Text className="text-[#565656] mb-3">Sosyal Medya Hesaplarımız</Text>
           <View className="flex-row space-x-6">
-            <LinkedinSvg width={22} height={22} />
-            <IgSvg width={22} height={22} />
-            <XSvg width={22} height={22} />
-            <YoutubeSvg width={22} height={22} />
-            <FacebookSvg width={22} height={22} />
+            <Icon name="linkedin" size={22} />
+            <Icon name="instagram" size={22} />
+            <Icon name="x" size={22} />
+            <Icon name="youtube" size={22} />
+            <Icon name="facebook" size={22} />
           </View>
           <Text className="text-gray-400 mt-3">Yazılım Versiyon</Text>
           <Text className="text-gray-400">01.01</Text>

@@ -9,6 +9,17 @@ export type RootStackParamList = {
   ProfilePage: undefined;
   CampaignPage: undefined;
   NotificationPage: undefined;
+  AdditionalRequests: {
+    carId: number;
+    carModel: string;
+    carPrice: string;
+    pickupDate: string;
+    dropDate: string;
+    pickupTime: string;
+    dropTime: string;
+    pickup: string;
+    drop: string;
+  };
   AllCarsPage: { 
     searchParams?: {
       pickup: string;

@@ -7,8 +7,8 @@ import { RootStackParamList } from "../../../../../types";
 import { useAuth } from "../../../../../context/AuthContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../../utils/errorHandling";
 import TabBar from "../../../../../Components/TabBar/TapBar";
-import FilterModal from "../../../Components/HomePageComponent/FilterModal";
-import { CarsHeader, CarsLoadingState, CarsFilter, CarsList } from "../../../Components/CarsComponents";
+import FilterModal from "../../HomePage/HomePageComponent/FilterModal";
+import { CarsHeader, CarsLoadingState, CarsFilter, CarsList } from "./CarsComponents";
 
 type AllCarsPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "AllCarsPage">;
@@ -119,10 +119,11 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
   useEffect(() => {
     const fetchCars = async () => {
-      if (!token) {
-        Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
-        return;
-      }
+      // Geçici olarak token kontrolü kaldırıldı
+      // if (!token) {
+      //   Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
+      //   return;
+      // }
 
       try {
         let url = "http://10.0.2.2:3000/api/cars/allcars";
@@ -139,20 +140,39 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
           url += `?${queryParams.toString()}`;
         }
 
-        const data = await apiRequest(url, {
+        console.log("API Request URL:", url);
+
+        // Basit fetch denemesi - token kaldırıldı
+        const response = await fetch(url, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`
+            "Content-Type": "application/json"
           }
         });
+
+        console.log("Response status:", response.status);
+        console.log("Response ok:", response.ok);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.log("Error response:", errorText);
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log("API Response:", data);
 
         setCars(data.cars || []);
         setFilteredCars(data.cars || []);
         setSearchInfo(data.searchInfo);
       } catch (error: any) {
         console.error("Arabalar alınamadı:", error);
-        const apiError = handleApiError(error);
-        showErrorAlert(apiError);
+        console.error("Error details:", {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+        Alert.alert("API Hatası", error.message);
       } finally {
         setLoading(false);
       }

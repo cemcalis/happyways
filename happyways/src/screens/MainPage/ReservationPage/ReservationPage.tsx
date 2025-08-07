@@ -14,10 +14,7 @@ import { RootStackParamList } from "../../../../types";
 import ReusableTextInput from "../../../../Components/ReusableTextInput/ReusableTextInput";
 import LocationSelect from "../../../../Components/LocationSelect/LocationSelect";
 import TabBar from "../../../../Components/TabBar/TapBar";
-
-import DoublelocationSvg from "../../../../assets/reservation/doublelocation.svg";
-import ClockSvg from "../../../../assets/reservation/clock.svg";
-import DateSvg from "../../../../assets/reservation/date.svg";
+import Icon from "../../../../Components/Icons/Icons";
 
 type LocationType = {
   id: number;
@@ -161,7 +158,7 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
                 placeholder="4 Nisan"
                 value={getdate}
                 onChangeText={setGetdate}
-                icon={<DateSvg width={20} height={20} />}
+                icon={<Icon name="date" size={20} />}
               />
             </View>
             <View className="flex-1">
@@ -169,7 +166,7 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
                 placeholder="7 Nisan"
                 value={backdate}
                 onChangeText={setBackDate}
-                icon={<DateSvg width={20} height={20} />}
+                icon={<Icon name="date" size={20} />}
               />
             </View>
           </View>
@@ -180,7 +177,7 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
                 placeholder="Ös 12:00"
                 value={gettime}
                 onChangeText={setGetTime}
-                icon={<ClockSvg width={20} height={20} />}
+                icon={<Icon name="clock" size={20} />}
               />
             </View>
             <View className="flex-1">
@@ -188,7 +185,7 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
                 placeholder="Ös 12:00"
                 value={backtime}
                 onChangeText={setBackTime}
-                icon={<ClockSvg width={20} height={20} />}
+                icon={<Icon name="clock" size={20} />}
               />
             </View>
           </View>
@@ -238,6 +235,8 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
             <FlatList
               data={lastSearches}
               keyExtractor={(_, index) => index.toString()}
+              nestedScrollEnabled={false}
+              scrollEnabled={false}
               renderItem={({ item }) => (
                 <View className="flex-row justify-between items-center p-4 bg-gray-50 rounded-xl mb-3 shadow-sm">
                   <View className="flex-1">

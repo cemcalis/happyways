@@ -3,15 +3,8 @@ import { View, Text, TouchableOpacity, FlatList, Modal, ActivityIndicator, Alert
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { useAuth } from "../../../../../context/AuthContext";
-
-import HomeSvg from "../../../../../assets/HomePage/home.svg";
-import CarSvg from "../../../../../assets/HomePage/car.svg";
-import CampaignSvg from "../../../../../assets/HomePage/campaign.svg";
-import ReservationSvg from "../../../../../assets/HomePage/search.svg";
-import UserSvg from "../../../../../assets/HomePage/user.svg";
-import FilterSvg from "../../../../../assets/HomePage/filter.svg";
-import SortSvg from "../../../../../assets/HomePage/sort.svg";
-import LeftArrowSvg from "../../../../../assets/HomePage/leftarrow.svg";
+import Icon from "../../../../../Components/Icons/Icons";
+import ReservationCard from "../../../../../Components/ReservationCard/ReservationCard";
 
 type ReservationPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ReservationPage">;
@@ -61,11 +54,11 @@ type ReservationStats = {
 };
 
 const tabItems = [
-  { icon: <HomeSvg width={20} height={20} />, label: "Anasayfa", route: "HomePage" },
-  { icon: <CarSvg width={20} height={20} />, label: "Araçlar", route: "AllCarsPage" },
-  { icon: <ReservationSvg width={20} height={20} />, label: "Rezervasyon", route: "ReservationPage" },
-  { icon: <CampaignSvg width={20} height={20} />, label: "Kampanyalar", route: "CampaignPage" },
-  { icon: <UserSvg width={20} height={20} />, label: "Hesabım", route: "ProfilePage" },
+  { icon: <Icon name="home" size={20} />, label: "Anasayfa", route: "HomePage" },
+  { icon: <Icon name="car" size={20} />, label: "Araçlar", route: "AllCarsPage" },
+  { icon: <Icon name="search" size={20} />, label: "Rezervasyon", route: "ReservationPage" },
+  { icon: <Icon name="campaign" size={20} />, label: "Kampanyalar", route: "CampaignPage" },
+  { icon: <Icon name="user" size={20} />, label: "Hesabım", route: "ProfilePage" },
 ];
 
 const ReservationListPage = ({ navigation }: ReservationPageProp) => {
@@ -159,6 +152,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
 
   const renderItem = ({ item }: { item: Reservation }) => (
     <View className="bg-white rounded-lg mx-4 my-2 shadow-md">
+      {/* Car Info Header */}
       <View className="p-4 border-b border-gray-100">
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-bold text-black">{item.model} ({item.year})</Text>
@@ -170,24 +164,21 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         <Text className="text-gray-500 text-xs">Süre: {item.duration}</Text>
       </View>
       
-      <View className="p-4">
-        <View className="flex-row justify-between mb-3">
-          <View className="flex-1">
-            <Text className="text-sm font-semibold text-gray-700">Alış Yeri</Text>
-            <Text className="text-base font-semibold text-black">{item.pickup_location}</Text>
-            <Text className="text-xs text-gray-500 mt-1">{item.pickup_date} {item.pickup_time}</Text>
-          </View>
-          <View className="w-px bg-gray-200 mx-4" />
-          <View className="flex-1">
-            <Text className="text-sm font-semibold text-gray-700">Dönüş Yeri</Text>
-            <Text className="text-base font-semibold text-black">{item.dropoff_location}</Text>
-            <Text className="text-xs text-gray-500 mt-1">{item.dropoff_date} {item.dropoff_time}</Text>
-          </View>
-        </View>
-        
-        <View className="border-t border-gray-100 pt-3">
-          <Text className="text-lg font-bold text-green-600 text-center">₺{item.total_price}</Text>
-        </View>
+      {/* Reservation Details using ReservationCard */}
+      <View className="p-2">
+        <ReservationCard
+          pickupLocation={item.pickup_location}
+          dropoffLocation={item.dropoff_location}
+          pickupDate={item.pickup_date}
+          dropoffDate={item.dropoff_date}
+          pickupTime={item.pickup_time}
+          dropoffTime={item.dropoff_time}
+        />
+      </View>
+      
+      {/* Price */}
+      <View className="p-4 border-t border-gray-100">
+        <Text className="text-lg font-bold text-green-600 text-center">₺{item.total_price}</Text>
       </View>
     </View>
   );
@@ -197,7 +188,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       {/* Header */}
       <View className="flex-row justify-between items-center px-4 py-4 border-b border-gray-200 bg-white">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <LeftArrowSvg width={20} height={20} />
+          <Icon name="leftarrow" size={20} />
         </TouchableOpacity>
         <Text className="text-lg font-semibold text-black">Rezervasyonlar</Text>
         <View className="w-5" /> 
@@ -246,11 +237,11 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       {/* Filter and Sort */}
       <View className="flex-row justify-between items-center px-4 py-3 bg-white mx-4 mt-2 rounded-lg shadow-sm">
         <TouchableOpacity className="flex-row items-center">
-          <FilterSvg width={18} height={18} />
+          <Icon name="filter" size={18} />
           <Text className="ml-2 text-sm text-black">Filtre</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <SortSvg width={20} height={20} />
+          <Icon name="sort" size={20} />
         </TouchableOpacity>
       </View>
 
@@ -267,6 +258,8 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingVertical: 8 }}
+          nestedScrollEnabled={false}
+          scrollEnabled={true}
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center py-20">
               <Text className="text-gray-500 text-center">Bu kategoride rezervasyon bulunmuyor</Text>

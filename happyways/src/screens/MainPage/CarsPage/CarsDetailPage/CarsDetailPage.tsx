@@ -80,7 +80,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
           <TouchableOpacity 
             className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
-            onPress={() => navigation.navigate("ReservationPage", {
+            onPress={() => navigation.navigate("AdditionalRequests", {
               carId: car.id,
               carModel: car.model,
               carPrice: car.price,

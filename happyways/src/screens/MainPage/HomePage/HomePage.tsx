@@ -17,7 +17,7 @@ import { apiRequest, handleApiError, showErrorAlert } from "../../../../utils/er
 import LoadingSpinner from "../../../../Components/LoadingSpinner/LoadingSpinner";
 import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
 
-import { SearchFilter, FilterModal, CampaignSection, CarSection } from "../../Components/HomePageComponent";
+import { SearchFilter, FilterModal, CampaignSection, CarSection } from "./HomePageComponent";
 
 type HomePageProps={
 navigation: NativeStackNavigationProp <RootStackParamList, "HomePage">;}
