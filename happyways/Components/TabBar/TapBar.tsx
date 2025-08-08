@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import Icon from "../Icons/Icons";
+import { useTheme } from "../../contexts/ThemeContext";
 
 
 type TabBarProps = {
@@ -8,11 +9,11 @@ navigation: any;
   activeRoute: string;
 };
 export default function TabBar({ navigation, activeRoute }: TabBarProps) {
-  
+  const { isDark } = useTheme();
 
   
   return (
-    <View className="flex-row bg-white border-t border-gray-200 py-1">
+    <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-t py-1`}>
       <TouchableOpacity
         className="flex-1 items-center py-2"
         onPress={() => navigation.navigate("HomePage")}

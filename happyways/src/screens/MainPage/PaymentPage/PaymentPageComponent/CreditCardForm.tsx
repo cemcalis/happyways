@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import CheckBox from 'react-native-check-box';
+import { useTheme } from "../../../../../contexts/ThemeContext";
 
 interface CreditCardFormProps {
   carInfo: {
@@ -27,6 +28,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
   const [emailChecked, setEmailChecked] = useState(false);
   const [smsChecked, setSmsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { isDark } = useTheme();
 
   const handlePayment = async () => {
     setLoading(true);
@@ -117,13 +119,90 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
 
   return (
     <View style={{ padding: 16 }}>
-      <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 8 }}>Kredi Kartı Bilgileri</Text>
-      <TextInput placeholder="Ad Soyad" value={name} onChangeText={setName} style={{ borderWidth: 1, marginBottom: 8, padding: 8 }} />
-      <TextInput placeholder="Kart No" value={cardNo} onChangeText={setCardNo} style={{ borderWidth: 1, marginBottom: 8, padding: 8 }} keyboardType="numeric" />
+      <Text style={{ 
+        fontWeight: "bold", 
+        fontSize: 16, 
+        marginBottom: 8, 
+        color: isDark ? "#FFFFFF" : "#000000" 
+      }}>Kredi Kartı Bilgileri</Text>
+      <TextInput 
+        placeholder="Ad Soyad" 
+        value={name} 
+        onChangeText={setName} 
+        style={{ 
+          borderWidth: 1, 
+          marginBottom: 8, 
+          padding: 8,
+          borderColor: isDark ? "#374151" : "#D1D5DB",
+          backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#000000"
+        }}
+        placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+      />
+      <TextInput 
+        placeholder="Kart No" 
+        value={cardNo} 
+        onChangeText={setCardNo} 
+        style={{ 
+          borderWidth: 1, 
+          marginBottom: 8, 
+          padding: 8,
+          borderColor: isDark ? "#374151" : "#D1D5DB",
+          backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#000000"
+        }} 
+        keyboardType="numeric"
+        placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+      />
       <View style={{ flexDirection: "row", marginBottom: 8 }}>
-        <TextInput placeholder="Ay" value={expiryMonth} onChangeText={setExpiryMonth} style={{ borderWidth: 1, flex: 1, marginRight: 4, padding: 8 }} keyboardType="numeric" />
-        <TextInput placeholder="Yıl" value={expiryYear} onChangeText={setExpiryYear} style={{ borderWidth: 1, flex: 1, marginLeft: 4, padding: 8 }} keyboardType="numeric" />
-        <TextInput placeholder="CVV" value={cvv} onChangeText={setCvv} style={{ borderWidth: 1, flex: 1, marginLeft: 4, padding: 8 }} keyboardType="numeric" />
+        <TextInput 
+          placeholder="Ay" 
+          value={expiryMonth} 
+          onChangeText={setExpiryMonth} 
+          style={{ 
+            borderWidth: 1, 
+            flex: 1, 
+            marginRight: 4, 
+            padding: 8,
+            borderColor: isDark ? "#374151" : "#D1D5DB",
+            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+            color: isDark ? "#FFFFFF" : "#000000"
+          }} 
+          keyboardType="numeric"
+          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+        />
+        <TextInput 
+          placeholder="Yıl" 
+          value={expiryYear} 
+          onChangeText={setExpiryYear} 
+          style={{ 
+            borderWidth: 1, 
+            flex: 1, 
+            marginLeft: 4, 
+            padding: 8,
+            borderColor: isDark ? "#374151" : "#D1D5DB",
+            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+            color: isDark ? "#FFFFFF" : "#000000"
+          }} 
+          keyboardType="numeric"
+          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+        />
+        <TextInput 
+          placeholder="CVV" 
+          value={cvv} 
+          onChangeText={setCvv} 
+          style={{ 
+            borderWidth: 1, 
+            flex: 1, 
+            marginLeft: 4, 
+            padding: 8,
+            borderColor: isDark ? "#374151" : "#D1D5DB",
+            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+            color: isDark ? "#FFFFFF" : "#000000"
+          }} 
+          keyboardType="numeric"
+          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+        />
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
         <CheckBox
@@ -131,24 +210,38 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
           onClick={() => setSecure(!secure)}
           checkBoxColor="orange"
         />
-        <Text style={{ marginLeft: 8 }}>3D Secure ile ödemek istiyorum</Text>
+        <Text style={{ 
+          marginLeft: 8, 
+          color: isDark ? "#D1D5DB" : "#000000" 
+        }}>3D Secure ile ödemek istiyorum</Text>
       </View>
   
-      <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 8 }}>İletişim Tercihiniz</Text>
+      <Text style={{ 
+        fontWeight: "bold", 
+        fontSize: 16, 
+        marginBottom: 8, 
+        color: isDark ? "#FFFFFF" : "#000000" 
+      }}>İletişim Tercihiniz</Text>
       <View style={{ flexDirection: "row", marginBottom: 8 }}>
         <CheckBox
           isChecked={emailChecked}
           onClick={() => setEmailChecked(!emailChecked)}
           checkBoxColor="orange"
         />
-        <Text style={{ marginLeft: 8 }}>E-Posta</Text>
+        <Text style={{ 
+          marginLeft: 8, 
+          color: isDark ? "#D1D5DB" : "#000000" 
+        }}>E-Posta</Text>
         <CheckBox
           isChecked={smsChecked}
           onClick={() => setSmsChecked(!smsChecked)}
           checkBoxColor="orange"
           style={{ marginLeft: 16 }}
         />
-        <Text style={{ marginLeft: 8 }}>SMS</Text>
+        <Text style={{ 
+          marginLeft: 8, 
+          color: isDark ? "#D1D5DB" : "#000000" 
+        }}>SMS</Text>
       </View>
       <TouchableOpacity onPress={handlePayment} style={{ backgroundColor: "orange", padding: 12, borderRadius: 8, alignItems: "center" }} disabled={loading}>
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>Öde</Text>

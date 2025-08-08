@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-nativ
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { WebView } from "react-native-webview";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 import Icon from "../../../../../Components/Icons/Icons";
 
 type ContactProp = {
@@ -18,6 +19,7 @@ const tabItems = [
 ];
 
 const ContactPage = ({ navigation }: ContactProp) => {
+  const { isDark } = useTheme();
   const latitude = 35.1856;
   const longitude = 33.3823;
 
@@ -45,10 +47,10 @@ const ContactPage = ({ navigation }: ContactProp) => {
   `;
 
   return (
-    <View className="flex-1 bg-white">
+    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
  
-        <View className="w-full h-48 mb-5 rounded-lg overflow-hidden border border-gray-200">
+        <View className={`w-full h-48 mb-5 rounded-lg overflow-hidden border ${isDark ? 'border-gray-600' : 'border-gray-200'}`}>
           <WebView
             originWhitelist={["*"]}
             source={{ html: mapHTML }}
@@ -56,33 +58,33 @@ const ContactPage = ({ navigation }: ContactProp) => {
           />
         </View>
 
-        <Text className="text-lg font-semibold text-[#000000] mb-2">Genel Merkez</Text>
-        <Text className="text-sm text-[#565656] mb-4">
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>Genel Merkez</Text>
+        <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'} mb-4`}>
           Adres: Lefkoşa, KKTC - Yakın Doğu Bulvarı No: 123
         </Text>
 
-        <Text className="text-sm text-[#000000] font-semibold">Telefon:</Text>
-        <Text className="text-sm text-[#565656]">+90 533 111 22 33</Text>
-        <Text className="text-sm text-[#565656] mb-6">+90 533 444 55 66</Text>
+        <Text className={`text-sm ${isDark ? 'text-white' : 'text-[#000000]'} font-semibold`}>Telefon:</Text>
+        <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'}`}>+90 533 111 22 33</Text>
+        <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'} mb-6`}>+90 533 444 55 66</Text>
 
-        <Text className="text-sm font-semibold text-[#000000] mb-2">Bize Yazın</Text>
+        <Text className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>Bize Yazın</Text>
         <TextInput
           placeholder="Ad Soyad"
-          className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-[#000000]"
-          placeholderTextColor="#565656"
+          className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
         <TextInput
           placeholder="Telefon Numaranız"
           keyboardType="phone-pad"
-          className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-[#000000]"
-          placeholderTextColor="#565656"
+          className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
         <TextInput
           placeholder="Mesajınız"
           multiline
           numberOfLines={4}
-          className="border border-gray-300 rounded-md px-4 py-3 mb-5 text-sm text-[#000000] h-28"
-          placeholderTextColor="#565656"
+          className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-5 text-sm h-28`}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
 
         <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8">
@@ -90,7 +92,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
         </TouchableOpacity>
       </ScrollView>
 
-      <View className="flex-row bg-white border-t border-gray-200 py-1">
+      <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} border-t py-1`}>
         {tabItems.map(({ icon, label, route }, i) => (
           <TouchableOpacity
             key={i}
@@ -98,7 +100,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
             onPress={() => navigation.navigate(route as any)}
           >
             <View>{icon}</View>
-            <Text className="text-xs text-[#000000]">{label}</Text>
+            <Text className={`text-xs ${isDark ? 'text-white' : 'text-[#000000]'}`}>{label}</Text>
           </TouchableOpacity>
         ))}
       </View>

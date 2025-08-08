@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
 import LocationSvg from "../../assets/HomePage/location.svg";
 import LeftArrowSvg from "../../assets/HomePage/leftarrow.svg";
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const LocationSelect: React.FC<Props> = ({ onSelect }) => {
+  const { isDark } = useTheme();
   const [locations, setLocations] = useState<LocationType[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(null);
   const [showLocationList, setShowLocationList] = useState(false);
@@ -46,37 +48,23 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
     <View style={{ position: 'relative', flexDirection: 'row', alignItems: 'center' }}>
       <LocationSvg width={16} height={16} />
       <TouchableOpacity onPress={() => setShowLocationList(!showLocationList)}>
-        <Text style={{ color: '#111827', fontSize: 14, marginLeft: 6 }}>
+        <Text className={`text-sm ml-1.5 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
           {selectedLocation ? selectedLocation.name + ', ' + (selectedLocation.country || '') : 'Konum Seç'}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => setShowLocationList(!showLocationList)}>
-        <LeftArrowSvg width={12} height={12} style={{ transform: [{ rotate: showLocationList ? '180deg' : '90deg' }] }} fill="#9CA3AF" />
+        <LeftArrowSvg width={12} height={12} style={{ transform: [{ rotate: showLocationList ? '180deg' : '90deg' }] }} fill={isDark ? "#9CA3AF" : "#6B7280"} />
       </TouchableOpacity>
       {showLocationList && (
-        <View style={{
-          position: 'absolute',
-          top: 28,
-          left: 24,
-          minWidth: 160,
-          maxWidth: 220,
-          backgroundColor: 'white',
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#e5e7eb',
-          shadowColor: '#000',
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          zIndex: 10,
-        }}>
+        <View className={`absolute top-7 left-6 min-w-40 max-w-55 rounded-lg border z-10 shadow-lg ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'}`}>
           <ScrollView style={{ maxHeight: 90 }}>
             {locations.map((loc) => (
               <TouchableOpacity
                 key={loc.id}
                 onPress={() => handleSelect(loc)}
-                style={{ padding: 8, borderBottomWidth: 1, borderBottomColor: '#f3f4f6' }}
+                className={`p-2 border-b ${isDark ? 'border-gray-600' : 'border-gray-100'}`}
               >
-                <Text style={{ fontSize: 14 }}>{loc.name}, {loc.country}</Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{loc.name}, {loc.country}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>

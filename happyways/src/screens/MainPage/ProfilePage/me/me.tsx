@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 import Icon from "../../../../../Components/Icons/Icons";
 
 type MeProp = {
@@ -25,6 +26,7 @@ const tabItems = [
 ];
 
 const MePage = ({ navigation }: MeProp) => {
+  const { isDark } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");

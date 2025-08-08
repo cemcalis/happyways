@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
+import { useTheme } from "../../../contexts/ThemeContext";
 type ResetPasswordPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ResetPasswordPage">;
 };
@@ -17,6 +18,7 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { isDark } = useTheme();
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
@@ -51,9 +53,9 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 p-6 bg-white">
+    <SafeAreaView className={`flex-1 p-6 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <BackButton onPress={() => navigation.goBack()} />
-      <Text className="text-xl font-bold text-center mb-4">Yeni Şifre Belirle</Text>
+      <Text className={`text-xl font-bold text-center mb-4 ${isDark ? 'text-white' : 'text-black'}`}>Yeni Şifre Belirle</Text>
       <ReusableTextInput
         label="Yeni Şifre"
         placeholder="Yeni şifrenizi girin"

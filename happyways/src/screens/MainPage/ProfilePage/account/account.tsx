@@ -3,61 +3,60 @@ import React from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../types';
 import Icon from '../../../../../Components/Icons/Icons';
+import ThemeSelector from '../../../../../Components/ThemeSelector/ThemeSelector';
+import { useTheme } from '../../../../../contexts/ThemeContext';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
 };
 
 const AccountPage = ({ navigation }: ProfilePageProp) => {
-  return (
-    <View className="flex-1 bg-white">
-      <ScrollView className="flex-1 bg-white">
+  const { theme, isDark } = useTheme();
+  
  
-        <Text className="text-center text-lg font-semibold my-3 text-[#000000]">Hesabım</Text>
+  
+  return (
+    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <ScrollView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+ 
+        <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>Hesabım</Text>
 
        
-        <TouchableOpacity className="px-4 py-4 border-b border-gray-200 flex-row justify-between mb-[16px]"
+        
+        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MePage")}
         >
-          <Text className="text-base text-[#000000]">Üyelik Bilgilerim</Text>
-          <Text className="text-gray-400">{'>'}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>Üyelik Bilgilerim</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
         
-        <TouchableOpacity className="px-4 py-4 border-b border-gray-200 flex-row justify-between mb-[16px]"
+        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MineReservationPage")}
         >
-          <Text className="text-base text-[#000000]">Rezervasyonlarım</Text>
-          <Text className="text-gray-400">{'>'}</Text>
-        </TouchableOpacity>
-
-       
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>Rezervasyonlarım</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
+        </TouchableOpacity>       
         <View className="px-4 mb-[10px]">
-          <Text className="text-[#FE5502] font-semibold mb-3">Ayarlar</Text>
+          <Text className={`${isDark ? 'text-orange-400' : 'text-[#FE5502]'} font-semibold mb-3`}>Ayarlar</Text>
 
-          <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
+          <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <View className="flex-row items-center space-x-3">
               <Icon name="earth" size={20} />
-              <Text className="text-[#000000]">Dil</Text>
+              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Dil</Text>
             </View>
-            <Text className="text-[#565656]">Türkçe</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Türkçe</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
+          <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <View className="flex-row items-center space-x-3">
               <Icon name="money" size={20} />
-              <Text className="text-[#000000]">Para Birimi</Text>
+              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Para Birimi</Text>
             </View>
-            <Text className="text-[#565656]">₺ TRY</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>₺ TRY</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between py-3">
-            <View className="flex-row items-center space-x-3">
-              <Icon name="thema" size={20} />
-              <Text className="text-[#000000]">Tema</Text>
-            </View>
-            <Text className="text-[#565656]">Açık</Text>
-          </TouchableOpacity>
+          <ThemeSelector />
         </View>
 
        
@@ -66,16 +65,16 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         </TouchableOpacity>
 
        
-        <TouchableOpacity className="p-4 border-t border-gray-200 flex-row justify-between mb-[20px]"
+        <TouchableOpacity className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[20px]`}
         onPress={() => navigation.navigate("ContactPage")}
         >
-          <Text className="text-base text-[#000000]">HappyWays İletişim</Text>
-          <Text className="text-gray-400">{'>'}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>HappyWays İletişim</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
        
         <View className="p-4 items-center">
-          <Text className="text-[#565656] mb-3">Sosyal Medya Hesaplarımız</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>Sosyal Medya Hesaplarımız</Text>
           <View className="flex-row space-x-6">
             <Icon name="linkedin" size={22} />
             <Icon name="instagram" size={22} />
@@ -83,8 +82,8 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
             <Icon name="youtube" size={22} />
             <Icon name="facebook" size={22} />
           </View>
-          <Text className="text-gray-400 mt-3">Yazılım Versiyon</Text>
-          <Text className="text-gray-400">01.01</Text>
+          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>Yazılım Versiyon</Text>
+          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
         </View>
       </ScrollView>
     </View>

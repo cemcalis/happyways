@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../../types";
+import { useTheme } from "../../../../../../contexts/ThemeContext";
 import Icon from "../../../../../../Components/Icons/Icons";
 
 type Car = {
@@ -31,9 +32,11 @@ type CarCardProps = {
 };
 
 const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
+  const { isDark } = useTheme();
+  
   return (
     <View
-      className={`bg-gray-100 rounded-xl ${
+      className={`${isDark ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl ${
         isGrid ? "w-[48%]" : "w-full"
       } mb-4 shadow-sm`}
     >
@@ -43,20 +46,20 @@ const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
         resizeMode="cover"
       />
       <View className="p-3">
-        <Text className="text-gray-900 font-semibold text-sm mb-1">
+        <Text className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold text-sm mb-1`}>
           {car.model} {car.year}
         </Text>
         <View className="flex-row items-center mb-2 flex-wrap">
           <Icon name="fuel" size={14} className="mr-1" />
-          <Text className="text-gray-500 text-xs mr-2">{car.fuel}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs mr-2`}>{car.fuel}</Text>
           <Icon name="gear" size={14} className="mr-1" />
-          <Text className="text-gray-500 text-xs mr-2">{car.gear}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs mr-2`}>{car.gear}</Text>
           <Icon name="seat" size={14} className="mr-1" />
-          <Text className="text-gray-500 text-xs mr-2">{car.seats}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs mr-2`}>{car.seats}</Text>
           {car.ac && (
             <>
               <Icon name="snow" size={14} className="mr-1" />
-              <Text className="text-gray-500 text-xs mr-2">AC</Text>
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs mr-2`}>AC</Text>
             </>
           )}
         </View>

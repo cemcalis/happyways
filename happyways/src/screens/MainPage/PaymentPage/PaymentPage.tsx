@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../../types';
 import TabBar from '../../../../Components/TabBar/TapBar';
+import { useTheme } from '../../../../contexts/ThemeContext';
 import { PaymentHeader, ReservationSummary, CreditCardForm } from "./PaymentPageComponent";
 
 type PaymentPageProp = {
@@ -16,8 +17,9 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
   
   const [carInfo, setCarInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { isDark } = useTheme();
 
-  // Backend'den fiyat hesaplaması al
+ 
   useEffect(() => {
     const calculatePrice = async () => {
       try {
@@ -29,8 +31,8 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
             carPrice,
             pickupDate,
             dropDate,
-            discountCode: null, // İleride kullanıcıdan alınabilir
-            insuranceOptions: [] // İleride kullanıcıdan alınabilir
+            discountCode: null, 
+            insuranceOptions: [] 
           }),
         });
 
@@ -43,10 +45,10 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
             dropoff: drop || "",
             pickupDate: pickupDate || "",
             dropoffDate: dropDate || "",
-            ...data.pricing // Backend'den gelen hesaplanmış fiyatlar
+            ...data.pricing 
           });
         } else {
-          // Fallback: eski hesaplama mantığı
+       
           const price = Number(carPrice?.replace(/[^0-9]/g, "")) || 0;
           const kdv = Math.round(price * 0.075);
           const total = price + kdv;
@@ -64,7 +66,7 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
         }
       } catch (error) {
         console.error("Fiyat hesaplama hatası:", error);
-        // Fallback: eski hesaplama mantığı
+     
         const price = Number(carPrice?.replace(/[^0-9]/g, "")) || 0;
         const kdv = Math.round(price * 0.075);
         const total = price + kdv;
@@ -91,16 +93,16 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
 
   if (loading || !carInfo) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#111827' : '#F9FAFB' }}>
         <PaymentHeader onBack={() => navigation.goBack()} />
-        {/* Loading state component eklenebilir */}
+      
         <TabBar navigation={navigation} activeRoute="HomePage" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#111827' : '#F9FAFB' }}>
       <PaymentHeader onBack={() => navigation.goBack()} />
       <ScrollView>
         <ReservationSummary carInfo={carInfo} />

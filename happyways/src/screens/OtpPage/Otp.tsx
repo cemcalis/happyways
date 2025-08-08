@@ -15,15 +15,15 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
 import BackButton from "../../../Components/BackButton/BackButton";
+import { useTheme } from "../../../contexts/ThemeContext";
 const Otp = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    
   const route = useRoute();
   const { email } = route.params as { email: string };
-
   const [otp, setOtp] = useState(["", "", "", ""]);
-
-  const handleOtpChange = (value: string, index: number) => {
+  const { isDark } = useTheme();  const handleOtpChange = (value: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -77,14 +77,14 @@ const Otp = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-6">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'} px-6`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1 justify-center"
       >
 <BackButtons onPress={() => navigation.goBack()} />
-        <Text className="text-center text-2xl font-bold mb-3">Doğrulama</Text>
-        <Text className="text-center text-gray-600 text-sm mb-1">
+        <Text className={`text-center text-2xl font-bold mb-3 ${isDark ? 'text-white' : 'text-black'}`}>Doğrulama</Text>
+        <Text className={`text-center text-sm mb-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
           Email'inize bir kod gönderdik
         </Text>
         <Text className="text-center text-orange-500 font-semibold mb-6">
@@ -101,13 +101,18 @@ const Otp = () => {
               onChangeText={(value) => handleOtpChange(value, index)}
               keyboardType="number-pad"
               maxLength={1}
-              className="w-12 h-12 border border-gray-300 rounded-xl text-center text-lg"
+              className={`w-12 h-12 border rounded-xl text-center text-lg ${
+                isDark 
+                  ? 'border-gray-600 bg-gray-800 text-white' 
+                  : 'border-gray-300 bg-white text-black'
+              }`}
+              placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
             />
           ))}
         </View>
 
         <TouchableOpacity onPress={resendOtp} className="mb-6">
-          <Text className="text-center text-sm text-gray-600">
+          <Text className={`text-center text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
             Kodu almadınız mı?{' '}
             <Text className="text-orange-500 font-semibold">Tekrar Gönder</Text>
           </Text>

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 
 type Campaign = {
   id: number;
@@ -27,9 +28,11 @@ type CampaignSectionProps = {
 };
 
 const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionProps) => {
+  const { isDark } = useTheme();
+  
   const renderCampaignItem = ({ item }: { item: Campaign }) => (
     <TouchableOpacity
-      className="bg-white rounded-xl mr-4 w-72 shadow-sm border border-gray-200"
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl mr-4 w-72 shadow-sm border`}
       onPress={() => navigation.navigate("CampaignDetailPage", { campaignId: item.id })}
     >
       <View className="relative">
@@ -45,7 +48,7 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
         </View>
       </View>
       <View className="p-4">
-        <Text className="text-black font-semibold text-base mb-1">
+        <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-base mb-1`}>
           {item.title}
         </Text>
         <Text className="text-[13px] text-gray-600 mb-2">
@@ -61,7 +64,7 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
   return (
     <>
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold text-black">
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
           {searchText ? `Kampanyalar: "${searchText}" (${campaigns.length} sonuç)` : "Kampanyalar"}
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("CampaignPage")}>

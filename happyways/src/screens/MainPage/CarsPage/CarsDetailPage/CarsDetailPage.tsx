@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../../types";
-
+import TabBar from "../../../../../Components/TabBar/TapBar";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 type CarsDetailPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "CarsDetailPage">;
 };
@@ -21,6 +22,7 @@ type CarDetail = {
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
   const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime } = route.params;
+  const { isDark } = useTheme();
 
   const [car, setCar] = useState<CarDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
         <ActivityIndicator size="large" color="#f97316" />
       </View>
     );
@@ -51,14 +53,14 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
   if (!car) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
         <Text className="text-gray-500 text-lg">Araç bulunamadı</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView>
 
         <Image
@@ -68,13 +70,13 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
         />
 
         <View className="px-5 py-4">
-          <Text className="text-2xl font-bold text-gray-900">{car.model}</Text>
+          <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.model}</Text>
           <Text className="text-gray-500 text-base mb-4">{car.year}</Text>
 
-          <Text className="text-lg font-semibold mb-2 text-gray-800">Kiralama Koşulları</Text>
+          <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>Kiralama Koşulları</Text>
           <Text className="text-gray-600 mb-6 leading-5">{car.kosullar}</Text>
 
-          <Text className="text-lg font-semibold mb-2 text-gray-800">Alış ve Bırakış Yeri</Text>
+          <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>Alış ve Bırakış Yeri</Text>
           <Text className="text-gray-600">Ercan - Lefkoşa</Text>
           <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
 
@@ -96,6 +98,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <TabBar navigation={navigation} activeRoute="AllCarsPage"/>
     </SafeAreaView>
   );
 };

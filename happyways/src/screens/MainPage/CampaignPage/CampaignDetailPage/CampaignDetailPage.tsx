@@ -4,10 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../../types";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import BackButton from "../../../../../Components/BackButton/BackButton";
 
-// Import component'leri
+
 import { 
   CampaignHeader, 
   CampaignContent, 
@@ -33,6 +34,7 @@ type CampaignDetail = {
 const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
   const route = useRoute<RouteProp<RootStackParamList, "CampaignDetailPage">>();
   const { campaignId } = route.params;
+  const { isDark } = useTheme();
 
   const [campaign, setCampaign] = useState<CampaignDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,32 +56,28 @@ const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
     fetchCampaignDetail();
   }, [campaignId]);
 
-  // Loading ve Error state'leri
   if (loading || !campaign) {
     return <LoadingState loading={loading} error={!campaign && !loading} navigation={navigation} />;
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
+    
+        <View className={`flex-row items-center justify-between px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
           <BackButton onPress={() => navigation.goBack()} />
-          <Text className="text-lg font-semibold text-black">Kampanya Detayı</Text>
+          <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>Kampanya Detayı</Text>
           <View className="w-8" />
         </View>
 
-        {/* Campaign Header Component */}
         <CampaignHeader campaign={campaign} />
 
-        {/* Campaign Content Component */}
+     
         <CampaignContent campaign={campaign} />
 
-        {/* Campaign Actions Component */}
         <CampaignActions navigation={navigation} campaignId={campaignId} />
       </ScrollView>
 
-      {/* Tab Bar */}
       <TabBar navigation={navigation} activeRoute="CampaignPage" />
     </SafeAreaView>
   );

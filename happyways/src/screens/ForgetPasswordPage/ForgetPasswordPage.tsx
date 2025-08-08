@@ -12,6 +12,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
 import BackButton from "../../../Components/BackButton/BackButton";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 type ForgetPasswordPageProp = {
   navigation: NativeStackNavigationProp<
@@ -22,6 +23,7 @@ type ForgetPasswordPageProp = {
 
 const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
   const [email, setEmail] = useState("");
+  const { isDark } = useTheme();
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -52,13 +54,13 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <ScrollView className="flex-1">
         <BackButton onPress={() => navigation.goBack()} />
 
   
         <View className="px-6">
-          <Text className="text-gray-900 text-2xl font-bold mb-8">
+          <Text className={`text-2xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Şifremi Unuttum!
           </Text>
 

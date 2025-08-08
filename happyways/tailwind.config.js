@@ -12,4 +12,5 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  darkMode: 'class', // Dark mode için gerekli
 };

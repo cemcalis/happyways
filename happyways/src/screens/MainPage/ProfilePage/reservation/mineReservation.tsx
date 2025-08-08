@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Modal, ActivityIndicator, Alert
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { useAuth } from "../../../../../context/AuthContext";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 import Icon from "../../../../../Components/Icons/Icons";
 import ReservationCard from "../../../../../Components/ReservationCard/ReservationCard";
 
@@ -62,6 +63,7 @@ const tabItems = [
 ];
 
 const ReservationListPage = ({ navigation }: ReservationPageProp) => {
+  const { isDark } = useTheme();
   const [categorizedReservations, setCategorizedReservations] = useState<CategorizedReservations>({
     active: [],
     upcoming: [],
@@ -151,17 +153,17 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
   };
 
   const renderItem = ({ item }: { item: Reservation }) => (
-    <View className="bg-white rounded-lg mx-4 my-2 shadow-md">
-      {/* Car Info Header */}
-      <View className="p-4 border-b border-gray-100">
+    <View className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg mx-4 my-2 shadow-md`}>
+     
+      <View className={`p-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
         <View className="flex-row justify-between items-center mb-2">
-          <Text className="text-lg font-bold text-black">{item.model} ({item.year})</Text>
+          <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>{item.model} ({item.year})</Text>
           <View className={`px-3 py-1 rounded-full`} style={{backgroundColor: item.status_info.color}}>
             <Text className="text-white text-xs font-semibold">{item.status_info.status}</Text>
           </View>
         </View>
-        <Text className="text-gray-600 text-sm mb-2">{item.status_info.message}</Text>
-        <Text className="text-gray-500 text-xs">Süre: {item.duration}</Text>
+        <Text className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-sm mb-2`}>{item.status_info.message}</Text>
+        <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>Süre: {item.duration}</Text>
       </View>
       
       {/* Reservation Details using ReservationCard */}
@@ -177,39 +179,39 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       </View>
       
       {/* Price */}
-      <View className="p-4 border-t border-gray-100">
+      <View className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
         <Text className="text-lg font-bold text-green-600 text-center">₺{item.total_price}</Text>
       </View>
     </View>
   );
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
-      <View className="flex-row justify-between items-center px-4 py-4 border-b border-gray-200 bg-white">
+      <View className={`flex-row justify-between items-center px-4 py-4 border-b ${isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'}`}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="leftarrow" size={20} />
         </TouchableOpacity>
-        <Text className="text-lg font-semibold text-black">Rezervasyonlar</Text>
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>Rezervasyonlar</Text>
         <View className="w-5" /> 
       </View>
 
       {/* User Stats */}
       {stats && (
-        <View className="bg-white mx-4 mt-4 p-4 rounded-lg shadow-sm">
-          <Text className="text-lg font-bold text-black mb-2">{stats.user_info.name}</Text>
-          <Text className="text-gray-600 mb-3">Toplam {stats.total} rezervasyon</Text>
+        <View className={`${isDark ? 'bg-gray-800' : 'bg-white'} mx-4 mt-4 p-4 rounded-lg shadow-sm`}>
+          <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'} mb-2`}>{stats.user_info.name}</Text>
+          <Text className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mb-3`}>Toplam {stats.total} rezervasyon</Text>
           <View className="flex-row justify-between">
             <Text className="text-sm text-green-600">Aktif: {stats.active}</Text>
             <Text className="text-sm text-blue-600">Yaklaşan: {stats.upcoming}</Text>
-            <Text className="text-sm text-gray-600">Tamamlanan: {stats.completed}</Text>
+            <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Tamamlanan: {stats.completed}</Text>
             <Text className="text-sm text-red-600">İptal: {stats.cancelled}</Text>
           </View>
         </View>
       )}
 
       {/* Tab Navigation */}
-      <View className="flex-row bg-white mx-4 mt-4 rounded-lg shadow-sm">
+      <View className={`flex-row ${isDark ? 'bg-gray-800' : 'bg-white'} mx-4 mt-4 rounded-lg shadow-sm`}>
         {(['active', 'upcoming', 'completed', 'cancelled'] as const).map((tab, index) => {
           const labels = {
             active: 'Aktif',
@@ -225,7 +227,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
               onPress={() => setActiveTab(tab)}
             >
               <Text className={`text-center text-xs font-semibold ${
-                activeTab === tab ? 'text-blue-500' : 'text-gray-500'
+                activeTab === tab ? 'text-blue-500' : isDark ? 'text-gray-400' : 'text-gray-500'
               }`}>
                 {labels[tab]} ({getTabCount(tab)})
               </Text>
@@ -235,10 +237,10 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       </View>
 
       {/* Filter and Sort */}
-      <View className="flex-row justify-between items-center px-4 py-3 bg-white mx-4 mt-2 rounded-lg shadow-sm">
+      <View className={`flex-row justify-between items-center px-4 py-3 ${isDark ? 'bg-gray-800' : 'bg-white'} mx-4 mt-2 rounded-lg shadow-sm`}>
         <TouchableOpacity className="flex-row items-center">
           <Icon name="filter" size={18} />
-          <Text className="ml-2 text-sm text-black">Filtre</Text>
+          <Text className={`ml-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>Filtre</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Icon name="sort" size={20} />
@@ -249,7 +251,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#0066cc" />
-          <Text className="mt-2 text-gray-600">Rezervasyonlar yükleniyor...</Text>
+          <Text className={`mt-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Rezervasyonlar yükleniyor...</Text>
         </View>
       ) : (
         /* Reservations List */
@@ -262,7 +264,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
           scrollEnabled={true}
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center py-20">
-              <Text className="text-gray-500 text-center">Bu kategoride rezervasyon bulunmuyor</Text>
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>Bu kategoride rezervasyon bulunmuyor</Text>
             </View>
           }
         />
@@ -270,28 +272,28 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
 
       <Modal transparent visible={modalVisible} animationType="fade">
         <View className="flex-1 bg-black/50 justify-center items-center">
-          <View className="bg-white rounded-lg mx-8 p-6 w-72">
-            <Text className="text-lg font-semibold text-black mb-4 text-center">Sıralama</Text>
+          <View className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg mx-8 p-6 w-72`}>
+            <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'} mb-4 text-center`}>Sıralama</Text>
             
             <TouchableOpacity
-              className="py-3 border-b border-gray-200"
+              className={`py-3 border-b ${isDark ? 'border-gray-600' : 'border-gray-200'}`}
               onPress={() => handleSort("new")}
             >
-              <Text className="text-base text-black text-center">Yeni Tarihe Göre</Text>
+              <Text className={`text-base ${isDark ? 'text-white' : 'text-black'} text-center`}>Yeni Tarihe Göre</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              className="py-3 border-b border-gray-200"
+              className={`py-3 border-b ${isDark ? 'border-gray-600' : 'border-gray-200'}`}
               onPress={() => handleSort("old")}
             >
-              <Text className="text-base text-black text-center">Eski Tarihe Göre</Text>
+              <Text className={`text-base ${isDark ? 'text-white' : 'text-black'} text-center`}>Eski Tarihe Göre</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              className="py-3 border-b border-gray-200"
+              className={`py-3 border-b ${isDark ? 'border-gray-600' : 'border-gray-200'}`}
               onPress={() => handleSort("price")}
             >
-              <Text className="text-base text-black text-center">Fiyata Göre</Text>
+              <Text className={`text-base ${isDark ? 'text-white' : 'text-black'} text-center`}>Fiyata Göre</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
@@ -304,7 +306,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         </View>
       </Modal>
 
-      <View className="flex-row bg-white border-t border-gray-200 py-2">
+      <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} border-t py-2`}>
         {tabItems.map(({ icon, label, route }, i) => (
           <TouchableOpacity
             key={i}
@@ -312,7 +314,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
             onPress={() => navigation.navigate(route as any)}
           >
             <View className="mb-1">{icon}</View>
-            <Text className="text-xs text-black">{label}</Text>
+            <Text className={`text-xs ${isDark ? 'text-white' : 'text-black'}`}>{label}</Text>
           </TouchableOpacity>
         ))}
       </View>

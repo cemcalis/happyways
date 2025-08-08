@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, View } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../../types";
+import { useTheme } from "../../../../../../contexts/ThemeContext";
 import CarCard from "./CarCard";
 
 type Car = {
@@ -31,6 +32,8 @@ type CarsListProps = {
 };
 
 const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListProps) => {
+  const { isDark } = useTheme();
+  
   const renderItem = ({ item }: { item: Car }) => (
     <CarCard
       car={item}
@@ -47,7 +50,11 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListPr
       keyExtractor={(item) => item.id.toString()}
       numColumns={isGrid ? 2 : 1}
       key={isGrid ? 'grid' : 'list'} // Force re-render when layout changes
-      contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 24, backgroundColor: '#F9FAFB' }}
+      contentContainerStyle={{ 
+        paddingHorizontal: 16, 
+        paddingTop: 24, 
+        backgroundColor: isDark ? '#111827' : '#F9FAFB' 
+      }}
       columnWrapperStyle={isGrid ? { justifyContent: 'space-between' } : undefined}
       showsVerticalScrollIndicator={false}
     />

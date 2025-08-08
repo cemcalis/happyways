@@ -6,6 +6,7 @@ import { RootStackParamList } from '../../../types';
 import BackButton from '../../../Components/BackButton/BackButton';
 import TabBar from '../../../Components/TabBar/TapBar';
 import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import LoadingSpinner from '../../../Components/LoadingSpinner/LoadingSpinner';
 
 type NotificationPageProps = {
@@ -26,6 +27,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { token } = useAuth();
+  const { isDark } = useTheme();
 
   const fetchNotifications = async () => {
     try {
@@ -84,23 +86,29 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
     <TouchableOpacity
       onPress={() => !item.read && markAsRead(item.id)}
       className={`p-4 mb-3 rounded-xl border ${
-        item.read ? 'bg-gray-50 border-gray-200' : 'bg-white border-orange-200'
+        item.read 
+          ? isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
+          : isDark ? 'bg-gray-700 border-orange-400' : 'bg-white border-orange-200'
       }`}
     >
       <View className="flex-row items-start">
         <Text className="text-xl mr-3">{getNotificationIcon(item.type)}</Text>
         <View className="flex-1">
           <Text className={`font-semibold text-base ${
-            item.read ? 'text-gray-600' : 'text-gray-900'
+            item.read 
+              ? isDark ? 'text-gray-400' : 'text-gray-600'
+              : isDark ? 'text-white' : 'text-gray-900'
           }`}>
             {item.title}
           </Text>
           <Text className={`text-sm mt-1 ${
-            item.read ? 'text-gray-500' : 'text-gray-700'
+            item.read 
+              ? isDark ? 'text-gray-500' : 'text-gray-500'
+              : isDark ? 'text-gray-300' : 'text-gray-700'
           }`}>
             {item.message}
           </Text>
-          <Text className="text-xs text-gray-400 mt-2">
+          <Text className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
             {new Date(item.createdAt).toLocaleDateString('tr-TR')}
           </Text>
         </View>
@@ -116,11 +124,11 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
 
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+      <View className={`flex-row items-center justify-between px-4 py-3 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
         <BackButton onPress={() => navigation.goBack()} />
-        <Text className="text-lg font-bold text-gray-900">Bildirimler</Text>
+        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Bildirimler</Text>
         <View className="w-8" />
       </View>
 
@@ -137,7 +145,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
         ListEmptyComponent={
           <View className="items-center justify-center py-20">
             <Text className="text-4xl mb-4"></Text>
-            <Text className="text-gray-500 text-center">
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
               Henüz bildiriminiz bulunmuyor
             </Text>
           </View>

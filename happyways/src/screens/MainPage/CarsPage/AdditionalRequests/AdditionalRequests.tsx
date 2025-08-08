@@ -5,6 +5,7 @@ import BackButton from '../../../../../Components/BackButton/BackButton'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../../../types'
 import { useNavigation } from '@react-navigation/native'
+import { useTheme } from '../../../../../contexts/ThemeContext'
 import TabBar from '../../../../../Components/TabBar/TapBar'
 import ReservationCard from '../../../../../Components/ReservationCard/ReservationCard'
 
@@ -29,6 +30,7 @@ type PriceData = {
 
 const AdditionalRequests = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "AdditionalRequests">>();
+  const { isDark } = useTheme();
 
   const [extraDriver, setExtraDriver] = React.useState(false);
   const [insurance, setInsurance] = React.useState(false);
@@ -115,13 +117,13 @@ const AdditionalRequests = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
 
       <View className="flex-row items-center px-4 py-4">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text className="text-2xl">←</Text>
         </TouchableOpacity>
-        <Text className="text-lg font-semibold text-black ml-4">Araç Detayı</Text>
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'} ml-4`}>Araç Detayı</Text>
       </View>
 
       <View className="flex-1 px-4 py-2">

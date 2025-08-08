@@ -5,6 +5,7 @@ import { RootStackParamList } from "./types";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
@@ -70,9 +71,11 @@ export default function App() {
 
   return (
     <GestureHandlerRootView className="flex-1">
-      <AuthProvider>
-        <AppNavigator initialRoute={initialRoute} />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppNavigator initialRoute={initialRoute} />
+        </AuthProvider>
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }

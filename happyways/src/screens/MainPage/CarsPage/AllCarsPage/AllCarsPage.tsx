@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../../types";
 import { useAuth } from "../../../../../context/AuthContext";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../../utils/errorHandling";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import FilterModal from "../../HomePage/HomePageComponent/FilterModal";
@@ -40,6 +41,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
     gearTypes: [] as string[]
   });
   const { token } = useAuth();
+  const { isDark } = useTheme();
 
   const searchParams = route.params?.searchParams;
 
@@ -184,7 +186,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   useEffect(() => {
     const filterCars = async () => {
       try {
-        // Backend'den filtreleme yap
+
         const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -202,7 +204,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
         if (data.success) {
           setFilteredCars(data.cars);
         } else {
-          // Fallback: eski filtreleme mantığı
+    
           let filtered = cars;
           
           if (searchText.trim() !== "") {
@@ -224,7 +226,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
         }
       } catch (error) {
         console.error("Filtreleme hatası:", error);
-        // Fallback: eski filtreleme mantığı
+      
         let filtered = cars;
         
         if (searchText.trim() !== "") {
@@ -252,7 +254,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   }, [cars, searchText, activeFilters]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       {loading ? (
         <CarsLoadingState />
       ) : (

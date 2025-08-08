@@ -27,17 +27,11 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
     );
   };
 
-  const handleShareCampaign = () => {
-    Alert.alert("Paylaş", "Kampanya paylaşma özelliği yakında eklenecek!");
-  };
-
-  const handleFavoriteCampaign = () => {
-    Alert.alert("Favoriler", "Favorilere ekleme özelliği yakında eklenecek!");
-  };
+ 
 
   return (
     <View className="px-4 pb-6">
-      {/* Main Action Button */}
+    
       <TouchableOpacity 
         className="bg-orange-500 rounded-xl py-4 shadow-md active:opacity-80 mb-4"
         onPress={handleJoinCampaign}
@@ -47,26 +41,9 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
         </Text>
       </TouchableOpacity>
 
-      {/* Secondary Actions */}
-      <View className="flex-row justify-center space-x-4">
-        <TouchableOpacity 
-          className="flex-1 bg-gray-100 rounded-xl py-3 mr-2 active:opacity-80"
-          onPress={handleFavoriteCampaign}
-        >
-          <Text className="text-gray-700 text-center font-semibold">
-            ❤️ Favorilere Ekle
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          className="flex-1 bg-gray-100 rounded-xl py-3 ml-2 active:opacity-80"
-          onPress={handleShareCampaign}
-        >
-          <Text className="text-gray-700 text-center font-semibold">
-            📤 Paylaş
-          </Text>
-        </TouchableOpacity>
-      </View>
+     
+     
+  
     </View>
   );
 };

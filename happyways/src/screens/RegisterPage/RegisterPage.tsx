@@ -11,6 +11,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../../contexts/ThemeContext";
 import { FormValidator, CommonValidationRules, hasError, getError } from "../../../utils/formValidation";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/errorHandling";
 import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
@@ -20,6 +21,7 @@ type RegisterPageProp = {
 };
 
 const RegisterPage = ({ navigation }: RegisterPageProp) => {
+  const { isDark } = useTheme();
   const [agree, setAgree] = useState(false);
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -75,26 +77,29 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <ScrollView contentContainerStyle={{ padding: 24 }}>
         
-        <Text className="text-center text-2xl font-bold mt-6 mb-1 text-gray-800">
+        <Text className={`text-center text-2xl font-bold mt-6 mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>
           Email ile kaydolun
         </Text>
-        <Text className="text-center text-gray-500 mb-6 text-base">
+        <Text className={`text-center mb-6 text-base ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
           Girdiğiniz bilgilerin doğruluğundan emin olun.
         </Text>
 
         
         <View className="flex-row justify-center mb-6">
           <TouchableOpacity
-            className="flex-1 py-3 rounded-l-xl bg-white border border-orange-500"
+            className={`flex-1 py-3 rounded-l-xl border border-orange-500 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
             onPress={() => navigation.navigate("LoginPage" as never)}
           >
             <Text className="text-orange-500 text-center font-bold">Giriş Yap</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-1 py-3 rounded-r-xl bg-orange-500" onPress={handleRegister}>
+          <TouchableOpacity 
+          className="flex-1 py-3 rounded-r-xl bg-orange-500"
+          disabled={true}
+          >
             <Text className="text-white text-center font-bold">Üye OL</Text>
           </TouchableOpacity>
         </View>
@@ -140,13 +145,13 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
         >
           <View
             className={`w-5 h-5 mt-1 mr-2 rounded border ${
-              agree ? "bg-orange-500 border-orange-500" : "border-gray-400"
+              agree ? "bg-orange-500 border-orange-500" : `${isDark ? 'border-gray-500' : 'border-gray-400'}`
             }`}
           />
-          <Text className="text-xs text-gray-500 flex-1 leading-5">
+          <Text className={`text-xs flex-1 leading-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             Hesabınızı oluşturarak{" "}
-            <Text className="text-orange-500 font-semibold">Şartlar</Text> ve{" "}
-            <Text className="text-orange-500 font-semibold">Koşulları</Text> kabul etmiş olursunuz.
+            <Text className={`font-semibold ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>Şartlar</Text> ve{" "}
+            <Text className={`font-semibold ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>Koşulları</Text> kabul etmiş olursunuz.
           </Text>
         </TouchableOpacity>
 
@@ -159,20 +164,20 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
         </TouchableOpacity>
 
         
-        <Text className="text-center mt-6 text-sm text-gray-600">
+        <Text className={`text-center mt-6 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
           Üyeliğiniz var mı?{" "}
           <Text
-            className="text-orange-500 font-semibold"
+            className={`font-semibold ${isDark ? 'text-orange-400' : 'text-orange-500'}`}
             onPress={() => navigation.navigate("LoginPage" as never)}
           >
             Giriş Yap
           </Text>
         </Text>
 
-        <Text className="text-center text-xs text-gray-400 mt-6 leading-4">
+        <Text className={`text-center text-xs mt-6 leading-4 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
           Hizmetlerimizi kullanarak şunları kabul etmiş olursunuz:{" "}
-          <Text className="text-orange-500 font-semibold">Şartlar</Text> ve{" "}
-          <Text className="text-orange-500 font-semibold">Gizlilik Politikası</Text>
+          <Text className={`font-semibold ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>Şartlar</Text> ve{" "}
+          <Text className={`font-semibold ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>Gizlilik Politikası</Text>
         </Text>
       </ScrollView>
     </SafeAreaView>

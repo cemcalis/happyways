@@ -18,9 +18,9 @@ const CampaignHeader: React.FC<CampaignHeaderProps> = ({ campaign }) => {
   return (
     <View className="relative">
       {campaign.image && campaign.image.includes('.svg') ? (
-        <View className="w-full h-64 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 items-center justify-center">
-          <View className="bg-white/20 rounded-full p-6 mb-4">
-            <Text className="text-white text-4xl">🎉</Text>
+        <View className="w-full h-64 bg-orange-500 items-center justify-center">
+          <View className="bg-white rounded-full p-6 mb-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+           
           </View>
           <Text className="text-white text-xl font-bold mb-2">{campaign.title}</Text>
           <View className="bg-red-500 rounded-full px-4 py-2">

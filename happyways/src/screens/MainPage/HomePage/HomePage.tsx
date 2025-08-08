@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
 import TabBar from "../../../../Components/TabBar/TapBar";
 import { useAuth } from "../../../../context/AuthContext";
+import { useTheme } from "../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../utils/errorHandling";
 import LoadingSpinner from "../../../../Components/LoadingSpinner/LoadingSpinner";
 import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
@@ -48,6 +49,8 @@ type Car = {
 };
 
 const HomePage = ({navigation} : HomePageProps) => {
+  const { token } = useAuth();
+  const { isDark } = useTheme();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [filteredCars, setFilteredCars] = useState<Car[]>([]);
@@ -59,7 +62,6 @@ const HomePage = ({navigation} : HomePageProps) => {
     fuelTypes: [] as string[],
     gearTypes: [] as string[]
   });
-  const { token } = useAuth();
 
   const handleFilteredDataChange = useCallback((
     newFilteredCars: Car[], 
@@ -177,7 +179,7 @@ const HomePage = ({navigation} : HomePageProps) => {
         </View>
       </View>
 
-      <Text className="text-black text-[22px] font-extrabold mb-4 leading-7">
+      <Text className={`${isDark ? 'text-white' : 'text-black'} text-[22px] font-extrabold mb-4 leading-7`}>
         İhtiyacınıza Uygun Aracı{"\n"}Hızlıca Bulun!
       </Text>
 
@@ -204,7 +206,7 @@ const HomePage = ({navigation} : HomePageProps) => {
 
   const renderCarItem = ({ item: car, index }: { item: Car; index: number }) => (
     <View
-      className={`bg-white rounded-xl w-[48%] mb-4 shadow-sm border border-gray-200 ${
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl w-[48%] mb-4 shadow-sm border ${
         index % 2 === 0 ? "mr-[4%]" : ""
       }`}
     >
@@ -215,23 +217,23 @@ const HomePage = ({navigation} : HomePageProps) => {
           resizeMode="cover"
         />
 
-        <Text className="text-gray-900 font-semibold text-sm mb-1">
+        <Text className={`${isDark ? 'text-white' : 'text-gray-900'} f,ont-semibold text-sm mb-1`}>
           {car.model} {car.year}
         </Text>
 
         <View className="flex-row flex-wrap items-center mb-3 space-x-2">
           <View className="flex-row items-center space-x-1">
             <View className="w-3 h-3 bg-gray-400 rounded-full" />
-            <Text className="text-gray-500 text-xs">{car.fuel}</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.fuel}</Text>
           </View>
           <View className="flex-row items-center space-x-1">
             <View className="w-3 h-3 bg-gray-400 rounded-full" />
-            <Text className="text-gray-500 text-xs">{car.gear}</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.gear}</Text>
           </View>
           {car.ac && (
             <View className="flex-row items-center space-x-1">
               <View className="w-3 h-3 bg-blue-400 rounded-full" />
-              <Text className="text-gray-500 text-xs">AC</Text>
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>AC</Text>
             </View>
           )}
         </View>
@@ -249,7 +251,7 @@ const HomePage = ({navigation} : HomePageProps) => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <FlatList
         data={filteredCars}
         keyExtractor={(item) => item.id.toString()}
@@ -262,7 +264,7 @@ const HomePage = ({navigation} : HomePageProps) => {
         ListEmptyComponent={() => 
           currentSearchText && filteredCars.length === 0 ? (
             <View className="px-4 py-8 items-center">
-              <Text className="text-gray-500 text-center">
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
                 "{currentSearchText}" için araç bulunamadı
               </Text>
             </View>
