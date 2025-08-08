@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { RootStackParamList } from "../../../../../types";
 import Icon from "../../../../../Components/Icons/Icons";
 
@@ -21,11 +22,12 @@ type FilterModalProps = {
 };
 
 const FilterModal = ({ showFilter, onClose, navigation, filteredCarsCount, onApplyFilters, currentFilters }: FilterModalProps) => {
+  const { t } = useTranslation('home');
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>(currentFilters.fuelTypes);
   const [selectedGearTypes, setSelectedGearTypes] = useState<string[]>(currentFilters.gearTypes);
 
-  const fuelTypes = ["Benzin", "Dizel", "Elektrik"];
-  const gearTypes = ["Manuel", "Otomatik"];
+  const fuelTypes = [t('gasoline'), t('diesel'), t('electric')];
+  const gearTypes = [t('manual'), t('automatic')];
 
   const toggleFuelType = (fuel: string) => {
     setSelectedFuelTypes(prev => 
@@ -61,10 +63,10 @@ const FilterModal = ({ showFilter, onClose, navigation, filteredCarsCount, onApp
   return (
     <View className="absolute left-0 right-0 top-0 bottom-0 z-50 bg-black/50 justify-center items-center">
       <View className="bg-white rounded-xl p-6 mx-4 w-80">
-        <Text className="text-lg font-bold mb-4 text-center">Filtreler</Text>
+        <Text className="text-lg font-bold mb-4 text-center">{t('filters')}</Text>
         
         <View className="mb-4">
-          <Text className="text-sm font-semibold mb-2 text-gray-700">Yakıt Türü</Text>
+          <Text className="text-sm font-semibold mb-2 text-gray-700">{t('fuelType')}</Text>
           <View className="flex-row flex-wrap">
             {fuelTypes.map((fuel) => (
               <TouchableOpacity 
@@ -85,7 +87,7 @@ const FilterModal = ({ showFilter, onClose, navigation, filteredCarsCount, onApp
         </View>
 
         <View className="mb-6">
-          <Text className="text-sm font-semibold mb-2 text-gray-700">Vites Türü</Text>
+          <Text className="text-sm font-semibold mb-2 text-gray-700">{t('gearType')}</Text>
           <View className="flex-row flex-wrap">
             {gearTypes.map((gear) => (
               <TouchableOpacity 
@@ -110,14 +112,14 @@ const FilterModal = ({ showFilter, onClose, navigation, filteredCarsCount, onApp
             className="bg-gray-500 px-4 py-3 rounded-lg flex-1 mr-2"
             onPress={clearFilters}
           >
-            <Text className="text-white text-center font-semibold">Temizle</Text>
+            <Text className="text-white text-center font-semibold">{t('clear')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="bg-orange-500 px-4 py-3 rounded-lg flex-1 ml-2"
             onPress={handleApplyFilter}
           >
             <Text className="text-white text-center font-semibold">
-              Uygula ({filteredCarsCount})
+              {t('apply')} ({filteredCarsCount})
             </Text>
           </TouchableOpacity>
         </View>
@@ -126,7 +128,7 @@ const FilterModal = ({ showFilter, onClose, navigation, filteredCarsCount, onApp
           className="mt-3 py-2"
           onPress={onClose}
         >
-          <Text className="text-gray-500 text-center">Kapat</Text>
+          <Text className="text-gray-500 text-center">{t('close')}</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import CheckBox from 'react-native-check-box';
 import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 interface CreditCardFormProps {
   carInfo: {
@@ -29,12 +30,12 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
   const [smsChecked, setSmsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const { isDark } = useTheme();
+  const { t } = useTranslation('payment');
 
   const handlePayment = async () => {
     setLoading(true);
     
     try {
-      // Önce backend'den form validasyonu al
       const validationResponse = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,7 +65,6 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
         return;
       }
 
-      // Uyarılar varsa kullanıcıya sor
       if (validationData.validation.warnings.length > 0) {
         Alert.alert(
           "Uyarı", 
@@ -77,7 +77,6 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
         return;
       }
 
-      // Validasyon başarılı, ödemeye devam et
       await processPayment();
       
     } catch (err) {

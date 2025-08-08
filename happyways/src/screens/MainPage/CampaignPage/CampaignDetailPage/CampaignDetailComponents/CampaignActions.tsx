@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text, View, Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { RootStackParamList } from "../../../../../../types";
 
 interface CampaignActionsProps {
@@ -9,18 +10,19 @@ interface CampaignActionsProps {
 }
 
 const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignId }) => {
+  const { t } = useTranslation('campaign');
   
   const handleJoinCampaign = () => {
     Alert.alert(
-      "Kampanyaya Katıl",
-      "Bu kampanyaya katılmak için araç kiralama sayfasına yönlendirileceksiniz.",
+      t('joinCampaignTitle'),
+      t('joinCampaignMessage'),
       [
         {
-          text: "İptal",
+          text: t('cancel'),
           style: "cancel"
         },
         {
-          text: "Devam Et",
+          text: t('continue'),
           onPress: () => navigation.navigate("AllCarsPage", {})
         }
       ]
@@ -37,7 +39,7 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
         onPress={handleJoinCampaign}
       >
         <Text className="text-white text-center font-bold text-lg">
-          KAMPANYAYA KATIL
+          {t('joinCampaignButton')}
         </Text>
       </TouchableOpacity>
 

@@ -8,6 +8,8 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import Icon from "../../../../../Components/Icons/Icons";
+import { useTranslation } from "react-i18next";
+import { useTheme } from "../../../../../contexts/ThemeContext";
 
 type Car = {
   id: number;
@@ -29,9 +31,12 @@ type CarSectionProps = {
 };
 
 const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
+  const { t } = useTranslation('home');
+  const { isDark } = useTheme();
+  
   const renderCarItem = ({ item: car, index }: { item: Car; index: number }) => (
     <View
-      className={`bg-white rounded-xl w-[48%] mb-4 shadow-sm border border-gray-200 ${
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl w-[48%] mb-4 shadow-sm border ${
         index % 2 === 0 ? "mr-[4%]" : ""
       }`}
     >
@@ -42,23 +47,23 @@ const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
           resizeMode="cover"
         />
 
-        <Text className="text-gray-900 font-semibold text-sm mb-1">
+        <Text className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold text-sm mb-1`}>
           {car.model} {car.year}
         </Text>
 
         <View className="flex-row flex-wrap items-center mb-3 space-x-2">
           <View className="flex-row items-center space-x-1">
             <Icon name="fuel" size={14} />
-            <Text className="text-gray-500 text-xs">{car.fuel}</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.fuel}</Text>
           </View>
           <View className="flex-row items-center space-x-1">
             <Icon name="gear" size={14} />
-            <Text className="text-gray-500 text-xs">{car.gear}</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.gear}</Text>
           </View>
           {car.ac && (
             <View className="flex-row items-center space-x-1">
               <Icon name="snow" size={14} />
-              <Text className="text-gray-500 text-xs">AC</Text>
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>AC</Text>
             </View>
           )}
         </View>
@@ -68,7 +73,7 @@ const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
           onPress={() => navigation.navigate("CarsDetailPage", { carId: car.id })}
         >
           <Text className="text-white font-bold text-center text-sm">
-            Hemen Kirala
+            {t('rentNow')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -78,11 +83,11 @@ const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
   return (
     <>
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold text-black">
-          {searchText ? `Araçlar: "${searchText}" (${cars.length} sonuç)` : "Araçlar"}
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
+          {searchText ? t('carsWithSearch', { searchText, count: cars.length }) : t('cars')}
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("AllCarsPage", {})}>
-          <Text className="text-sm text-gray-500">Tümünü Göster</Text>
+          <Text className="text-sm text-gray-500">{t('showAll')}</Text>
         </TouchableOpacity>
       </View>
     </>

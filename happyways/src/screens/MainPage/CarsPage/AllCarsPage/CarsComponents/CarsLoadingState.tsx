@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { useTheme } from '../../../../../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const CarsLoadingState = () => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('cars');
   
   return (
     <View style={{ 
@@ -20,7 +22,7 @@ const CarsLoadingState = () => {
         color: isDark ? '#9CA3AF' : '#666',
         textAlign: 'center' 
       }}>
-        Araçlar yükleniyor...
+        {t('loading')}
       </Text>
     </View>
   );

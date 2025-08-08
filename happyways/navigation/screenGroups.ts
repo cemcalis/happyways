@@ -1,4 +1,3 @@
-// Authentication related navigation screens
 export const AuthScreens = {
   InfoPage: "InfoPage",
   LoginPage: "LoginPage", 
@@ -8,7 +7,6 @@ export const AuthScreens = {
   OtpPage: "OtpPage"
 } as const;
 
-// Main app navigation screens
 export const MainScreens = {
   HomePage: "HomePage",
   AllCarsPage: "AllCarsPage",
@@ -19,7 +17,6 @@ export const MainScreens = {
   CarsDetailPage: "CarsDetailPage"
 } as const;
 
-// Profile related navigation screens
 export const ProfileScreens = {
   ContactPage: "ContactPage",
   MePage: "MePage", 
@@ -28,7 +25,7 @@ export const ProfileScreens = {
   NotificationPage: "NotificationPage"
 } as const;
 
-// All screen groups combined
+
 export const ScreenGroups = {
   Auth: AuthScreens,
   Main: MainScreens,

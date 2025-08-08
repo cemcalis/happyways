@@ -1,5 +1,4 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import { ScreenGroups } from "./screenGroups";
@@ -34,18 +33,17 @@ interface AppNavigatorProps {
 
 const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator 
-        initialRouteName={initialRoute}
-        screenOptions={{
-          headerShown: false,
-          animation: 'slide_from_right',
-          animationDuration: 300,
-          gestureEnabled: true,
-          gestureDirection: 'horizontal',
-        }}
-      >
-        {/* ===== AUTH SCREENS ===== */}
+    <Stack.Navigator 
+      initialRouteName={initialRoute}
+      screenOptions={{
+        headerShown: false,
+        animation: 'slide_from_right',
+        animationDuration: 300,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+      }}
+    >
+        
         <Stack.Group>
           <Stack.Screen
             name="InfoPage"
@@ -91,7 +89,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
           />
         </Stack.Group>
 
-        {/* ===== MAIN APP SCREENS ===== */}
+      
         <Stack.Group>
           <Stack.Screen
             name="HomePage"
@@ -137,7 +135,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
           />
         </Stack.Group>
 
-        {/* ===== PROFILE SCREENS ===== */}
+  
         <Stack.Group>
           <Stack.Screen
             name="ContactPage"
@@ -166,7 +164,6 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
           />
         </Stack.Group>
       </Stack.Navigator>
-    </NavigationContainer>
   );
 };
 

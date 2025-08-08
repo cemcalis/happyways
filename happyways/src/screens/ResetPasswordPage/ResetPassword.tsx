@@ -8,6 +8,7 @@ import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
 import { useTheme } from "../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 type ResetPasswordPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ResetPasswordPage">;
 };
@@ -19,16 +20,17 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { isDark } = useTheme();
+  const { t } = useTranslation('auth');
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      return Alert.alert("Uyarı", "Lütfen tüm alanları doldurun");
+      return Alert.alert(t('warning'), t('pleaseComplete'));
     }
     if (newPassword !== confirmPassword) {
-      return Alert.alert("Uyarı", "Şifreler uyuşmuyor");
+      return Alert.alert(t('warning'), t('passwordsNotMatch'));
     }
     if (newPassword.length < 6) {
-      return Alert.alert("Uyarı", "Şifre en az 6 karakter olmalı");
+      return Alert.alert(t('warning'), t('passwordTooShort'));
     }
 
     try {
@@ -41,31 +43,31 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Başarılı", "Şifreniz başarıyla güncellendi");
+        Alert.alert(t('loginSuccess'), t('passwordUpdated'));
         navigation.navigate("LoginPage" as never);
       } else {
-        Alert.alert("Hata", data.message || "Şifre güncellenemedi");
+        Alert.alert(t('error'), data.message || t('passwordUpdateFailed'));
       }
     } catch (error) {
       console.error("reset error", error);
-      Alert.alert("Sunucu hatası", "İstek gönderilemedi");
+      Alert.alert(t('serverError'), t('requestFailed'));
     }
   };
 
   return (
     <SafeAreaView className={`flex-1 p-6 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <BackButton onPress={() => navigation.goBack()} />
-      <Text className={`text-xl font-bold text-center mb-4 ${isDark ? 'text-white' : 'text-black'}`}>Yeni Şifre Belirle</Text>
+      <Text className={`text-xl font-bold text-center mb-4 ${isDark ? 'text-white' : 'text-black'}`}>{t('resetPasswordTitle')}</Text>
       <ReusableTextInput
-        label="Yeni Şifre"
-        placeholder="Yeni şifrenizi girin"
+        label={t('newPasswordLabel')}
+        placeholder={t('enterNewPassword')}
         secureTextEntry
         value={newPassword}
         onChangeText={setNewPassword}
       />
       <ReusableTextInput
-        label="Şifreyi Onayla"
-        placeholder="Şifreyi tekrar girin"
+        label={t('confirmPasswordLabel')}
+        placeholder={t('repeatNewPassword')}
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
@@ -74,7 +76,7 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
         className="bg-orange-500 py-3 rounded-lg items-center"
         onPress={handleResetPassword}
       >
-        <Text className="text-white font-bold">Şifreyi Güncelle</Text>
+        <Text className="text-white font-bold">{t('updatePassword')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

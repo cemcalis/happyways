@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 type Campaign = {
   id: number;
@@ -22,6 +23,7 @@ const CampaignPage = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const { isDark } = useTheme();
+  const { t } = useTranslation('campaign');
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -43,6 +45,9 @@ const CampaignPage = () => {
     return (
       <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
         <ActivityIndicator size="large" color="orange" />
+        <Text className={`mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          {t('loading')}
+        </Text>
       </View>
     );
   }
@@ -51,7 +56,7 @@ const CampaignPage = () => {
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
 
       <View className={`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>Kampanyalar</Text>
+        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
       </View>
 
 

@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import LeftArrowSvg from "../../../assets/HomePage/leftarrow.svg";
+import { useTranslation } from "react-i18next";
 
 type InfoPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "InfoPage">;
@@ -14,6 +15,7 @@ type InfoPageProp = {
 const InfoPage = ({ navigation }: InfoPageProp) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     
@@ -74,12 +76,13 @@ const InfoPage = ({ navigation }: InfoPageProp) => {
           }}
         >
           <Text className="text-white text-4xl font-bold leading-tight mb-4">
-            Bugün <Text className="text-orange-500">Mükemmel</Text>
-            {"\n"}Arabanızı Bulun!
+            {t('infoPage.title')}
           </Text>
-
           <Text className="text-white/80 text-base leading-relaxed mb-8">
-            Her zaman istediğiniz arabayla yolculuğunuza{"\n"}başlayın - en iyi fırsatları keşfedin.
+            {t('infoPage.description')}
+          </Text>
+          <Text className="text-white/80 text-base leading-relaxed mb-8">
+            {t('infoPage.callToAction')}
           </Text>
 
    <TouchableOpacity

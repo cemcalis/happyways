@@ -12,11 +12,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
 import TabBar from "../../../../Components/TabBar/TapBar";
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "../../../../contexts/AuthContext";
 import { useTheme } from "../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../utils/errorHandling";
 import LoadingSpinner from "../../../../Components/LoadingSpinner/LoadingSpinner";
 import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
+import { useTranslation } from "react-i18next";
 
 import { SearchFilter, FilterModal, CampaignSection, CarSection } from "./HomePageComponent";
 
@@ -51,6 +52,8 @@ type Car = {
 const HomePage = ({navigation} : HomePageProps) => {
   const { token } = useAuth();
   const { isDark } = useTheme();
+  const { t } = useTranslation('home');
+  const { t: tAuth } = useTranslation('auth');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [filteredCars, setFilteredCars] = useState<Car[]>([]);
@@ -124,7 +127,7 @@ const HomePage = ({navigation} : HomePageProps) => {
   useEffect(() => {
     const fetchHomeData = async () => {
       if (!token) {
-        Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
+        Alert.alert(tAuth('error'), t('sessionExpired'));
         return;
       }
 
@@ -153,7 +156,7 @@ const HomePage = ({navigation} : HomePageProps) => {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner text="Ana sayfa yükleniyo" />;
+    return <LoadingSpinner text={t('loadingHomePage')} />;
   }
 
   const renderHeader = () => (
@@ -180,7 +183,7 @@ const HomePage = ({navigation} : HomePageProps) => {
       </View>
 
       <Text className={`${isDark ? 'text-white' : 'text-black'} text-[22px] font-extrabold mb-4 leading-7`}>
-        İhtiyacınıza Uygun Aracı{"\n"}Hızlıca Bulun!
+        {t('find Suitable Car')}
       </Text>
 
       <SearchFilter
@@ -243,7 +246,7 @@ const HomePage = ({navigation} : HomePageProps) => {
           onPress={() => navigation.navigate("CarsDetailPage", { carId: car.id })}
         >
           <Text className="text-white font-bold text-center text-sm">
-            Hemen Kirala
+            {t('rent Now')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -265,7 +268,7 @@ const HomePage = ({navigation} : HomePageProps) => {
           currentSearchText && filteredCars.length === 0 ? (
             <View className="px-4 py-8 items-center">
               <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
-                "{currentSearchText}" için araç bulunamadı
+                "{currentSearchText}" {t('no Car Found')}
               </Text>
             </View>
           ) : null

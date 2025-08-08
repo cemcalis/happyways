@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../../types";
 import { useTheme } from "../../../../../../contexts/ThemeContext";
 import Icon from "../../../../../../Components/Icons/Icons";
+import { useTranslation } from "react-i18next";
 
 type Car = {
   id: number;
@@ -33,6 +34,7 @@ type CarCardProps = {
 
 const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('cars');
   
   return (
     <View
@@ -76,7 +78,7 @@ const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
           })}
         >
           <Text className="text-white font-bold text-center text-sm">
-            Hemen Kirala
+            {t('bookNow')}
           </Text>
         </TouchableOpacity>
       </View>

@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../../../types";
 import { useTheme } from "../../../../contexts/ThemeContext";
 import TabBar from "../../../../Components/TabBar/TapBar";
+import { useTranslation } from "react-i18next";
 import {
   ReservationHeader,
   ReservationForm,
@@ -29,6 +30,7 @@ type ReservationPageProps = {
 
 const ReservationPage = ({ navigation }: ReservationPageProps) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('reservation');
   const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
   const [dropoffLocation, setDropoffLocation] = useState<LocationType | null>(null);
   const [usePickupAsDropoff, setUsePickupAsDropoff] = useState(true);

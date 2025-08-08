@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { useTheme } from "../../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 import SortSvg from "../../../../../../assets/HomePage/sort.svg";
 
 interface CampaignContentProps {
@@ -18,6 +19,7 @@ interface CampaignContentProps {
 
 const CampaignContent: React.FC<CampaignContentProps> = ({ campaign }) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('campaign');
 
   return (
     <View className="px-4 py-6">
@@ -44,7 +46,7 @@ const CampaignContent: React.FC<CampaignContentProps> = ({ campaign }) => {
         <View className="flex-row items-center">
           <View className="w-3 h-3 bg-orange-500 rounded-full mr-3" />
           <View className="flex-1">
-            <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>İşlem Tarihi</Text>
+            <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('transactionDate')}</Text>
             <Text className={`font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{campaign.transaction_date}</Text>
           </View>
         </View>
@@ -52,7 +54,7 @@ const CampaignContent: React.FC<CampaignContentProps> = ({ campaign }) => {
         <View className="flex-row items-center">
           <View className="w-3 h-3 bg-green-500 rounded-full mr-3" />
           <View className="flex-1">
-            <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Kiralama Tarihi</Text>
+            <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('rentalDate')}</Text>
             <Text className={`font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{campaign.rent_date}</Text>
           </View>
         </View>
@@ -61,31 +63,31 @@ const CampaignContent: React.FC<CampaignContentProps> = ({ campaign }) => {
    
       <View className={`rounded-xl p-4 mb-6 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
         <Text className={`text-lg font-semibold mb-3 ${isDark ? 'text-white' : 'text-black'}`}>
-          Kampanya Avantajları
+          {t('campaignAdvantages')}
         </Text>
         <View className="space-y-2">
           <View className="flex-row items-center">
             <SortSvg width={16} height={16} fill="#10b981" style={{marginRight: 8}} />
-            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Ücretsiz iptal hakkı</Text>
+            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{t('freeCancellation')}</Text>
           </View>
           <View className="flex-row items-center">
             <SortSvg width={16} height={16} fill="#10b981" style={{marginRight: 8}} />
-            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Ekstra sürücü ücretsiz</Text>
+            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{t('extraDriverFree')}</Text>
           </View>
           <View className="flex-row items-center">
             <SortSvg width={16} height={16} fill="#10b981" style={{marginRight: 8}} />
-            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Sınırsız kilometre</Text>
+            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{t('unlimitedKilometer')}</Text>
           </View>
           <View className="flex-row items-center">
             <SortSvg width={16} height={16} fill="#10b981" style={{marginRight: 8}} />
-            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Anında onay garantisi</Text>
+            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{t('instantApproval')}</Text>
           </View>
         </View>
       </View>
 
     
       <Text className={`text-xs text-center mt-4 px-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-        Kampanya koşulları ve detayları için müşteri hizmetleriyle iletişime geçebilirsiniz.
+        {t('termsConditions')}
       </Text>
     </View>
   );

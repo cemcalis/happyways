@@ -9,6 +9,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 type Campaign = {
   id: number;
@@ -29,6 +30,7 @@ type CampaignSectionProps = {
 
 const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionProps) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('home');
   
   const renderCampaignItem = ({ item }: { item: Campaign }) => (
     <TouchableOpacity
@@ -43,7 +45,7 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
         />
         <View className="absolute top-2 left-2 bg-orange-500 rounded-md px-2 py-1">
           <Text className="text-white text-[11px] font-bold">
-            KAMPANYA
+            {t('campaignTag')}
           </Text>
         </View>
       </View>
@@ -65,10 +67,10 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
     <>
       <View className="flex-row justify-between items-center mb-3">
         <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
-          {searchText ? `Kampanyalar: "${searchText}" (${campaigns.length} sonuç)` : "Kampanyalar"}
+          {searchText ? t('campaignsWithSearch', { searchText, count: campaigns.length }) : t('campaigns')}
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("CampaignPage")}>
-          <Text className="text-sm text-gray-500">Tümünü Göster</Text>
+          <Text className="text-sm text-gray-500">{t('showAll')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -83,7 +85,7 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
           searchText && campaigns.length === 0 ? (
             <View className="w-72 items-center justify-center py-8">
               <Text className="text-gray-500 text-center">
-                "{searchText}" için kampanya bulunamadı
+                "{searchText}" {t('noCampaignFound')}
               </Text>
             </View>
           ) : null

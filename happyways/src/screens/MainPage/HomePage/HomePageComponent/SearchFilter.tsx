@@ -6,6 +6,7 @@ import {
 import Icon from "../../../../../Components/Icons/Icons";
 import ReusableTextInput from "../../../../../Components/ReusableTextInput/ReusableTextInput";
 import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 type Campaign = {
   id: number;
@@ -41,6 +42,7 @@ type SearchFilterProps = {
 const SearchFilter = ({ campaigns, cars, onFilteredDataChange, onFilterPress }: SearchFilterProps) => {
   const [searchText, setSearchText] = useState("");
   const { isDark } = useTheme();
+  const { t } = useTranslation('home');
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -72,7 +74,7 @@ const SearchFilter = ({ campaigns, cars, onFilteredDataChange, onFilterPress }: 
     <View className="flex-row items-center mb-6">
       <View className="flex-1">
         <ReusableTextInput
-          placeholder="Araç veya kampanya arayın..."
+          placeholder={t('searchCarOrCampaign')}
           value={searchText}
           onChangeText={setSearchText}
           icon={<Icon name="search" size={18} />}

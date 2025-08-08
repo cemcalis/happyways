@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../../../../types";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import BackButton from "../../../../../Components/BackButton/BackButton";
+import { useTranslation } from "react-i18next";
 
 
 import { 
@@ -35,6 +36,7 @@ const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
   const route = useRoute<RouteProp<RootStackParamList, "CampaignDetailPage">>();
   const { campaignId } = route.params;
   const { isDark } = useTheme();
+  const { t } = useTranslation('campaign');
 
   const [campaign, setCampaign] = useState<CampaignDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,7 +68,7 @@ const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
     
         <View className={`flex-row items-center justify-between px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
           <BackButton onPress={() => navigation.goBack()} />
-          <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>Kampanya Detayı</Text>
+          <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaignDetails')}</Text>
           <View className="w-8" />
         </View>
 

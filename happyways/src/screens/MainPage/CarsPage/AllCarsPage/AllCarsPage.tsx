@@ -4,12 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../../types";
-import { useAuth } from "../../../../../context/AuthContext";
+import { useAuth } from "../../../../../contexts/AuthContext";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../../utils/errorHandling";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import FilterModal from "../../HomePage/HomePageComponent/FilterModal";
 import { CarsHeader, CarsLoadingState, CarsFilter, CarsList } from "./CarsComponents";
+import { useTranslation } from "react-i18next";
 
 type AllCarsPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "AllCarsPage">;
@@ -42,6 +43,8 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   });
   const { token } = useAuth();
   const { isDark } = useTheme();
+  const { t } = useTranslation('cars');
+  const { t: tAuth } = useTranslation('auth');
 
   const searchParams = route.params?.searchParams;
 

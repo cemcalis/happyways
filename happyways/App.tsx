@@ -1,11 +1,14 @@
 import "./global.css";
+import "./i18n";
 import { Text, View, Image } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
 import { RootStackParamList } from "./types";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
@@ -70,12 +73,16 @@ export default function App() {
   }
 
   return (
-    <GestureHandlerRootView className="flex-1">
-      <ThemeProvider>
-        <AuthProvider>
-          <AppNavigator initialRoute={initialRoute} />
-        </AuthProvider>
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <NavigationContainer>
+      <GestureHandlerRootView className="flex-1">
+        <LanguageProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <AppNavigator initialRoute={initialRoute} />
+            </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
+      </GestureHandlerRootView>
+    </NavigationContainer>
   );
 }

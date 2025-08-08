@@ -5,9 +5,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types';
 import BackButton from '../../../Components/BackButton/BackButton';
 import TabBar from '../../../Components/TabBar/TapBar';
-import { useAuth } from '../../../context/AuthContext';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import LoadingSpinner from '../../../Components/LoadingSpinner/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
+
 
 type NotificationPageProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "NotificationPage">;
@@ -28,6 +30,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const { token } = useAuth();
   const { isDark } = useTheme();
+  const { t } = useTranslation('notifications');
 
   const fetchNotifications = async () => {
     try {
@@ -70,6 +73,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
       );
     } catch (error) {
       console.error("Bildirim okundu olarak işaretlenemedi:", error);
+      console.error(t('notifications:error'), error);
     }
   };
 
@@ -120,7 +124,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
   );
 
   if (loading) {
-    return <LoadingSpinner text="Bildirimler yükleniyor..." />;
+    return <LoadingSpinner text={t('loading')} />;
   }
 
   return (
@@ -128,7 +132,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
 
       <View className={`flex-row items-center justify-between px-4 py-3 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
         <BackButton onPress={() => navigation.goBack()} />
-        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Bildirimler</Text>
+        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{t('notifications')}</Text>
         <View className="w-8" />
       </View>
 
@@ -146,7 +150,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
           <View className="items-center justify-center py-20">
             <Text className="text-4xl mb-4"></Text>
             <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
-              Henüz bildiriminiz bulunmuyor
+              {t('noNotifications')}
             </Text>
           </View>
         }

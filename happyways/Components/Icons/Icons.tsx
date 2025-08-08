@@ -1,7 +1,7 @@
 import React from 'react';
 import { SvgProps } from 'react-native-svg';
 
-// HomePage Icons
+
 import HomeSvg from '../../assets/HomePage/home.svg';
 import CarSvg from '../../assets/HomePage/car.svg';
 import SearchSvg from '../../assets/HomePage/search.svg';
@@ -21,12 +21,11 @@ import FrontCarSvg from '../../assets/HomePage/frontcar.svg';
 import LeftArrowSvg from '../../assets/HomePage/leftarrow.svg';
 import BlackSearchSvg from '../../assets/HomePage/blacksearch.svg';
 
-// Reservation Icons
 import DoublelocationSvg from '../../assets/Reservation/doublelocation.svg';
 import ClockSvg from '../../assets/Reservation/clock.svg';
 import DateSvg from '../../assets/Reservation/date.svg';
 
-// Account Icons
+
 import EarthSvg from '../../assets/Account/earth.svg';
 import MoneySvg from '../../assets/Account/money.svg';
 import ThemaSvg from '../../assets/Account/thema.svg';
@@ -43,7 +42,7 @@ import BackButtonSvg from '../../assets/BackButtons/backButtons.svg';
 
 import ForwardButtonSvg from '../../assets/ForwardButton/ForwardButton.svg';
 
-// ReservationCard Icons
+
 import PathSvg from '../../assets/ReservationCard/path.svg';
 
 export type IconName = 
@@ -124,10 +123,10 @@ const iconMap = {
   facebook: FacebookSvg,
   youtube: YoutubeSvg,
   arrow: ArrowSvg,
-  // Button Icons
+
   back: BackButtonSvg,
   forward: ForwardButtonSvg,
-  // ReservationCard Icons
+ 
   path: PathSvg,
 };
 

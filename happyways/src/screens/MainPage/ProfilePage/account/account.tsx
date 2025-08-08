@@ -5,6 +5,9 @@ import { RootStackParamList } from '../../../../../types';
 import Icon from '../../../../../Components/Icons/Icons';
 import ThemeSelector from '../../../../../Components/ThemeSelector/ThemeSelector';
 import { useTheme } from '../../../../../contexts/ThemeContext';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../../../../../Components/LanguageSelector/LanguageSelector';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
@@ -12,6 +15,8 @@ type ProfilePageProp = {
 
 const AccountPage = ({ navigation }: ProfilePageProp) => {
   const { theme, isDark } = useTheme();
+  const { currentLanguage, changeLanguage } = useLanguage();
+  const { t } = useTranslation(['common', 'profile']);
   
  
   
@@ -19,14 +24,14 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
  
-        <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>Hesabım</Text>
+        <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myAccount')}</Text>
 
        
         
         <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MePage")}
         >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>Üyelik Bilgilerim</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:personalInfo')}</Text>
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
@@ -34,19 +39,13 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MineReservationPage")}
         >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>Rezervasyonlarım</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myReservations')}</Text>
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>       
         <View className="px-4 mb-[10px]">
-          <Text className={`${isDark ? 'text-orange-400' : 'text-[#FE5502]'} font-semibold mb-3`}>Ayarlar</Text>
+          <Text className={`${isDark ? 'text-orange-400' : 'text-[#FE5502]'} font-semibold mb-3`}>{t('common:settings')}</Text>
 
-          <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-            <View className="flex-row items-center space-x-3">
-              <Icon name="earth" size={20} />
-              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Dil</Text>
-            </View>
-            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Türkçe</Text>
-          </TouchableOpacity>
+          <LanguageSelector />
 
           <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <View className="flex-row items-center space-x-3">
@@ -61,14 +60,14 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
 
        
         <TouchableOpacity className="mx-6 bg-[#FF0000] rounded-lg py-3 shadow-lg mb-[70px]">
-          <Text className="text-white text-center text-base font-semibold">Çıkış</Text>
+          <Text className="text-white text-center text-base font-semibold">{t('common:logout')}</Text>
         </TouchableOpacity>
 
        
         <TouchableOpacity className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[20px]`}
         onPress={() => navigation.navigate("ContactPage")}
         >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>HappyWays İletişim</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:contactUs')}</Text>
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
@@ -82,7 +81,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
             <Icon name="youtube" size={22} />
             <Icon name="facebook" size={22} />
           </View>
-          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>Yazılım Versiyon</Text>
+          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>{t('profile:version')}</Text>
           <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
         </View>
       </ScrollView>
