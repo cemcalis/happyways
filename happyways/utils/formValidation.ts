@@ -1,5 +1,3 @@
-// Form validation utilities
-
 interface ValidationRule {
   required?: boolean;
   minLength?: number;
@@ -32,36 +30,30 @@ export class FormValidator {
       const value = data[field] || '';
 
       for (const rule of fieldRules) {
-        // Required validation
+   
         if (rule.required && !value.trim()) {
           errors[field] = rule.message;
           break;
         }
 
-        // Skip other validations if field is empty and not required
         if (!value.trim() && !rule.required) {
           continue;
         }
 
-        // Min length validation
         if (rule.minLength && value.length < rule.minLength) {
           errors[field] = rule.message;
           break;
         }
 
-        // Max length validation
         if (rule.maxLength && value.length > rule.maxLength) {
           errors[field] = rule.message;
           break;
         }
 
-        // Pattern validation
         if (rule.pattern && !rule.pattern.test(value)) {
           errors[field] = rule.message;
           break;
         }
-
-        // Custom validation
         if (rule.custom && !rule.custom(value)) {
           errors[field] = rule.message;
           break;
@@ -78,7 +70,6 @@ export class FormValidator {
   }
 }
 
-// Common validation patterns
 export const ValidationPatterns = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   phone: /^(\+90|0)?[5][0-9]{9}$/,
@@ -89,7 +80,6 @@ export const ValidationPatterns = {
   alphanumeric: /^[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ\s]+$/
 };
 
-// Pre-defined validation rules for common use cases
 export const CommonValidationRules = {
   email: [
     { required: true, message: 'E-posta adresi gerekli' },
@@ -122,18 +112,15 @@ export const CommonValidationRules = {
   ]
 };
 
-// Utility function to show validation errors
 export const getFirstError = (errors: ValidationErrors): string | null => {
   const keys = Object.keys(errors);
   return keys.length > 0 ? errors[keys[0]] : null;
 };
 
-// Utility function to check if field has error
 export const hasError = (errors: ValidationErrors, field: string): boolean => {
   return !!errors[field];
 };
 
-// Utility function to get error message for field
 export const getError = (errors: ValidationErrors, field: string): string => {
   return errors[field] || '';
 };

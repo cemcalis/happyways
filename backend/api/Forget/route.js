@@ -1,4 +1,3 @@
-
 import express from "express";
 import nodemailer from "nodemailer";
 import { saveOtpForEmail } from "../../utils/otpStore.js";

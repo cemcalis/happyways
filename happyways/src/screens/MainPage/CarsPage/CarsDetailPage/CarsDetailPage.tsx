@@ -4,7 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../../types";
-
+import TabBar from "../../../../../Components/TabBar/TapBar";
+import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 type CarsDetailPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "CarsDetailPage">;
 };
@@ -21,6 +23,8 @@ type CarDetail = {
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
   const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime } = route.params;
+  const { isDark } = useTheme();
+  const { t } = useTranslation('cars');
 
   const [car, setCar] = useState<CarDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,63 +47,63 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
         <ActivityIndicator size="large" color="#f97316" />
+        <Text className={`mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          {t('carDetailsLoading')}
+        </Text>
       </View>
     );
   }
 
   if (!car) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
-        <Text className="text-gray-500 text-lg">Araç bulunamadı</Text>
+      <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+        <Text className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{t('carNotFound')}</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView>
-        {/* Araç Fotoğrafı */}
+
         <Image
           source={{ uri: car.image }}
           className="w-full h-60 rounded-b-2xl"
           resizeMode="cover"
         />
 
-        {/* Araç Bilgileri */}
         <View className="px-5 py-4">
-          <Text className="text-2xl font-bold text-gray-900">{car.model}</Text>
+          <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.model}</Text>
           <Text className="text-gray-500 text-base mb-4">{car.year}</Text>
 
-          {/* Kullanım Koşulları */}
-          <Text className="text-lg font-semibold mb-2 text-gray-800">Kiralama Koşulları</Text>
+          <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('termsAndConditions')}</Text>
           <Text className="text-gray-600 mb-6 leading-5">{car.kosullar}</Text>
 
-          {/* Alış - Bırakış Bilgileri */}
-          <Text className="text-lg font-semibold mb-2 text-gray-800">Alış ve Bırakış Yeri</Text>
-          <Text className="text-gray-600">Ercan ➝ Lefkoşa</Text>
+          <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('pickupLocation')} - {t('returnLocation')}</Text>
+          <Text className="text-gray-600">Ercan - Lefkoşa</Text>
           <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
 
-          {/* Hemen Kirala Butonu */}
           <TouchableOpacity 
             className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
-            onPress={() => navigation.navigate("PaymentPage", {
+            onPress={() => navigation.navigate("AdditionalRequests", {
               carId: car.id,
               carModel: car.model,
               carPrice: car.price,
-              pickupDate: pickupDate,
-              dropDate: dropoffDate,
-              pickupTime: pickupTime,
-              dropTime: dropoffTime,
-              pickup: pickupLocation,
-              drop: dropoffLocation,
+              pickupDate: pickupDate || "",
+              dropDate: dropoffDate || "",
+              pickupTime: pickupTime || "",
+              dropTime: dropoffTime || "",
+              pickup: pickupLocation || "",
+              drop: dropoffLocation || "",
             })}
           >
-            <Text className="text-white text-center font-bold text-lg">🚗 Hemen Kirala</Text>
+            <Text className="text-white text-center font-bold text-lg">{t('rentThisCar')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <TabBar navigation={navigation} activeRoute="AllCarsPage"/>
     </SafeAreaView>
   );
 };

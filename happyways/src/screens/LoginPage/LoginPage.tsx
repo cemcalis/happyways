@@ -1,3 +1,4 @@
+import BackButton from "../../../Components/BackButton/BackButton";
 import React, { useState } from "react";
 import {
   Text,
@@ -11,10 +12,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import  ReusableTextInput  from "../../../Components/ReusableTextInput/ReusableTextInput";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 import { FormValidator, CommonValidationRules, hasError, getError } from "../../../utils/formValidation";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/errorHandling";
 import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
+import { useTheme } from "../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 type LoginPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "LoginPage">;
 };
@@ -24,82 +27,76 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const {login} = useAuth();
-
-  // Form validation rules
+  const { login } = useAuth();
+  const { isDark } = useTheme();
+  const { t } = useTranslation('auth');
+  
   const validator = new FormValidator({
     email: CommonValidationRules.email,
     password: [
-      { required: true, message: 'Şifre gerekli' },
-      { minLength: 6, message: 'Şifre en az 6 karakter olmalı' }
+      { required: true, message: t('passwordRequired') },
+      { minLength: 6, message: t('passwordTooShort') }
     ]
   });
-  
+
   const handleLogin = async () => {
     const formData = { email, password };
     const validationErrors = validator.validate(formData);
-    
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     setErrors({});
     setLoading(true);
-
     try {
       const data = await apiRequest("http://10.0.2.2:3000/api/login", {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
-
       if (data.accessToken && data.refreshToken) {
-        // Yeni token sistemi ile login
         await login(data.accessToken, data.refreshToken);
         await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        
-        Alert.alert("Başarılı", "Giriş yapıldı.", [
-          { text: "Tamam", onPress: () => navigation.navigate("HomePage") }
-        ]);
-      } else {
-        Alert.alert("Hata", "Giriş bilgileri alınamadı");
+        Alert.alert(t('loginSuccess'), t('loginSuccessMessage'));
+        navigation.navigate("HomePage");
       }
-    } catch (error: any) {
-      const apiError = handleApiError(error);
-      showErrorAlert(apiError);
+    } catch (error) {
+      showErrorAlert(handleApiError(error));
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <LoadingSpinner text="Giriş yapılıyor..." />;
+    return <LoadingSpinner text={t('loggingIn')} />;
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gradient-to-b from-blue-50 to-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gradient-to-b from-blue-50 to-white'}`}>
       <ScrollView className="flex-1 px-6">
         
         <View className="items-center mt-12 mb-8">
           <View className="w-20 h-20 bg-orange-500 rounded-full items-center justify-center mb-4 shadow-lg">
             <Text className="text-white text-3xl font-bold">HW</Text>
           </View>
-          <Text className="text-3xl font-bold text-gray-800 mb-2">Hoş Geldiniz</Text>
-          <Text className="text-gray-500 text-center text-base">
-            HappyWays hesabınıza giriş yapın
+          <Text className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-2`}>{t('welcome')}</Text>
+          <Text className={`text-center text-base ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            {t('loginDescription')}
           </Text>
         </View>
 
         
-        <View className="flex-row bg-gray-100 rounded-xl p-1 mb-8 mx-4">
-          <TouchableOpacity className="flex-1 bg-orange-500 py-3 rounded-lg shadow-sm">
-            <Text className="text-white font-bold text-center text-base">Giriş</Text>
+        <View className="flex-row justify-center mb-6">
+          <TouchableOpacity 
+            className="flex-1 py-3 rounded-l-xl bg-orange-500"
+            disabled={true}
+          >
+            <Text className="text-white text-center font-bold">{t('loginButton')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="flex-1 py-3 rounded-lg"
+            className={`flex-1 py-3 rounded-r-xl border border-orange-500 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
             onPress={() => navigation.navigate("RegisterPage" as never)}
           >
-            <Text className="text-orange-500 font-bold text-center text-base">Üye Ol</Text>
+            <Text className="text-orange-500 text-center font-bold">{t('memberRegister')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -108,8 +105,8 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
         
           <View>
             <ReusableTextInput
-              label="Email Adresiniz"
-              placeholder="ornek@email.com"
+              label={t('emailLabel')}
+              placeholder={t('emailPlaceholder')}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -126,8 +123,8 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
             />
 
             <ReusableTextInput
-              label="Şifreniz"
-              placeholder="••••••••"
+              label={t('passwordLabel')}
+              placeholder={t('passwordPlaceholder')}
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
@@ -148,8 +145,8 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
             className="self-end"
             onPress={() => navigation.navigate("ForgetPasswordPage", { email })}
           >
-            <Text className="text-orange-500 font-semibold text-base">
-              Şifrenizi mi unuttunuz?
+            <Text className={`font-semibold text-base ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>
+              {t('forgotPasswordText')}
             </Text>
           </TouchableOpacity>
 
@@ -159,19 +156,19 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
             onPress={handleLogin}
           >
             <Text className="text-white font-bold text-center text-lg">
-              Giriş Yap
+              {t('loginButton')}
             </Text>
           </TouchableOpacity>
 
         
           <View className="items-center mt-8 mb-6">
             <View className="flex-row">
-              <Text className="text-gray-600 text-base">
-                Üyeliğiniz yok mu?{" "}
+              <Text className={`text-base ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                {t('noAccount')}{" "}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate("RegisterPage" as never)}>
-                <Text className="text-orange-500 font-bold text-base">
-                  Şimdi Kaydolun
+                <Text className={`font-bold text-base ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>
+                  {t('registerNow')}
                 </Text>
               </TouchableOpacity>
             </View>

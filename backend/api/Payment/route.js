@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// Ödeme işlemi başlatma
 router.post("/", async (req, res) => {
   try {
     const { 
@@ -17,7 +16,6 @@ router.post("/", async (req, res) => {
       amount
     } = req.body;
 
-    // Token kontrolü
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ message: "Token gerekli" });
@@ -26,14 +24,12 @@ router.post("/", async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user_id = decoded.id;
 
-    // Gerekli alanların kontrolü
     if (!reservation_id || !payment_method || !amount) {
       return res.status(400).json({ message: "Gerekli ödeme bilgileri eksik" });
     }
 
     const db = getDB();
 
-    // Rezervasyon var mı ve kullanıcıya ait mi kontrol et
     const reservation = await db.get(
       "SELECT * FROM reservations WHERE id = ? AND user_id = ?", 
       [reservation_id, user_id]
@@ -43,16 +39,13 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "Rezervasyon bulunamadı" });
     }
 
-    // Simülasyon: Gerçek ödeme gateway entegrasyonu burada olacak
-    // Şimdilik ödemeyi başarılı kabul ediyoruz
-    const payment_success = Math.random() > 0.1; // %90 başarı oranı
+    const payment_success = Math.random() > 0.1; 
 
     if (payment_success) {
-      // Ödeme ID'si oluştur
+
       const payment_id = `PAY_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const currentTimestamp = new Date().toISOString();
 
-      // Rezervasyon durumunu ve ödeme bilgilerini güncelle
       await db.run(
         `UPDATE reservations 
          SET status = 'confirmed', 
@@ -63,7 +56,6 @@ router.post("/", async (req, res) => {
         [payment_id, currentTimestamp, reservation_id]
       );
 
-      // Güncellenmiş rezervasyon bilgilerini al
       const updatedReservation = await db.get(`
         SELECT 
           r.*,
@@ -109,10 +101,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Ödeme geçmişi
 router.get("/history", async (req, res) => {
   try {
-    // Token kontrolü
+
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ message: "Token gerekli" });
@@ -123,7 +114,6 @@ router.get("/history", async (req, res) => {
 
     const db = getDB();
 
-    // Kullanıcının onaylanmış rezervasyonlarını getir (ödeme yapılanlar)
     const payments = await db.all(`
       SELECT 
         r.*,
@@ -136,7 +126,6 @@ router.get("/history", async (req, res) => {
       ORDER BY r.created_at DESC
     `, [user_id]);
 
-    // Resim yollarını düzelt
     const updatedPayments = payments.map(payment => ({
       ...payment,
       image: `http://10.0.2.2:3000/${payment.image}`,
@@ -157,12 +146,10 @@ router.get("/history", async (req, res) => {
   }
 });
 
-// Ödeme durumu kontrolü
 router.get("/status/:reservation_id", async (req, res) => {
   try {
     const { reservation_id } = req.params;
-    
-    // Token kontrolü
+
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ message: "Token gerekli" });

@@ -2,97 +2,87 @@ import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../types';
-
-import EarthSvg from "../../../../../assets/account/earth.svg";
-import MoneySvg from "../../../../../assets/account/money.svg";
-import ThemaSvg from "../../../../../assets/account/thema.svg";
-import LinkedinSvg from "../../../../../assets/account/linkedin.svg";
-import IgSvg from "../../../../../assets/account/ig.svg";
-import XSvg from "../../../../../assets/account/x.svg";
-import YoutubeSvg from "../../../../../assets/account/youtube.svg";
-import FacebookSvg from "../../../../../assets/account/facebook.svg";
+import Icon from '../../../../../Components/Icons/Icons';
+import ThemeSelector from '../../../../../Components/ThemeSelector/ThemeSelector';
+import { useTheme } from '../../../../../contexts/ThemeContext';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../../../../../Components/LanguageSelector/LanguageSelector';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
 };
 
 const AccountPage = ({ navigation }: ProfilePageProp) => {
+  const { theme, isDark } = useTheme();
+  const { currentLanguage, changeLanguage } = useLanguage();
+  const { t } = useTranslation(['common', 'profile']);
+  
+ 
+  
   return (
-    <View className="flex-1 bg-white">
-      <ScrollView className="flex-1 bg-white">
-        {/* Başlık */}
-        <Text className="text-center text-lg font-semibold my-3 text-[#000000]">Hesabım</Text>
+    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <ScrollView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+ 
+        <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myAccount')}</Text>
 
        
-        <TouchableOpacity className="px-4 py-4 border-b border-gray-200 flex-row justify-between mb-[16px]"
+        
+        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MePage")}
         >
-          <Text className="text-base text-[#000000]">Üyelik Bilgilerim</Text>
-          <Text className="text-gray-400">{'>'}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:personalInfo')}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
         
-        <TouchableOpacity className="px-4 py-4 border-b border-gray-200 flex-row justify-between mb-[16px]"
+        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
          onPress={() => navigation.navigate("MineReservationPage")}
         >
-          <Text className="text-base text-[#000000]">Rezervasyonlarım</Text>
-          <Text className="text-gray-400">{'>'}</Text>
-        </TouchableOpacity>
-
-       
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myReservations')}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
+        </TouchableOpacity>       
         <View className="px-4 mb-[10px]">
-          <Text className="text-[#FE5502] font-semibold mb-3">Ayarlar</Text>
+          <Text className={`${isDark ? 'text-orange-400' : 'text-[#FE5502]'} font-semibold mb-3`}>{t('common:settings')}</Text>
 
-          <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
+          <LanguageSelector />
+
+          <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <View className="flex-row items-center space-x-3">
-              <EarthSvg width={20} height={20} />
-              <Text className="text-[#000000]">Dil</Text>
+              <Icon name="money" size={20} />
+              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Para Birimi</Text>
             </View>
-            <Text className="text-[#565656]">Türkçe</Text>
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>₺ TRY</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
-            <View className="flex-row items-center space-x-3">
-              <MoneySvg width={20} height={20} />
-              <Text className="text-[#000000]">Para Birimi</Text>
-            </View>
-            <Text className="text-[#565656]">₺ TRY</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity className="flex-row items-center justify-between py-3">
-            <View className="flex-row items-center space-x-3">
-              <ThemaSvg width={20} height={20} />
-              <Text className="text-[#000000]">Tema</Text>
-            </View>
-            <Text className="text-[#565656]">Açık</Text>
-          </TouchableOpacity>
+          <ThemeSelector />
         </View>
 
        
         <TouchableOpacity className="mx-6 bg-[#FF0000] rounded-lg py-3 shadow-lg mb-[70px]">
-          <Text className="text-white text-center text-base font-semibold">Çıkış</Text>
+          <Text className="text-white text-center text-base font-semibold">{t('common:logout')}</Text>
         </TouchableOpacity>
 
        
-        <TouchableOpacity className="p-4 border-t border-gray-200 flex-row justify-between mb-[20px]"
+        <TouchableOpacity className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[20px]`}
         onPress={() => navigation.navigate("ContactPage")}
         >
-          <Text className="text-base text-[#000000]">HappyWays İletişim</Text>
-          <Text className="text-gray-400">{'>'}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:contactUs')}</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
        
         <View className="p-4 items-center">
-          <Text className="text-[#565656] mb-3">Sosyal Medya Hesaplarımız</Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>Sosyal Medya Hesaplarımız</Text>
           <View className="flex-row space-x-6">
-            <LinkedinSvg width={22} height={22} />
-            <IgSvg width={22} height={22} />
-            <XSvg width={22} height={22} />
-            <YoutubeSvg width={22} height={22} />
-            <FacebookSvg width={22} height={22} />
+            <Icon name="linkedin" size={22} />
+            <Icon name="instagram" size={22} />
+            <Icon name="x" size={22} />
+            <Icon name="youtube" size={22} />
+            <Icon name="facebook" size={22} />
           </View>
-          <Text className="text-gray-400 mt-3">Yazılım Versiyon</Text>
-          <Text className="text-gray-400">01.01</Text>
+          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>{t('profile:version')}</Text>
+          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
         </View>
       </ScrollView>
     </View>

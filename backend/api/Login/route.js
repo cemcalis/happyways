@@ -1,4 +1,3 @@
-// backend/api/Login/route.js
 import express from "express";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "../../database/db.js";
@@ -27,17 +26,15 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Şifre hatalı." });
     }
 
-    // Access token (kısa süreli)
     const accessToken = jwt.sign(
       {
         id: user.id,
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" } // 15 dakika
+      { expiresIn: "15m" } 
     );
 
-    // Refresh token (uzun süreli)
     const refreshToken = generateRefreshToken(user.id);
 
     return res.status(200).json({

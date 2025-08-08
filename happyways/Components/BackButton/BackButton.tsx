@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import BackButtons from "../../assets/BackButtons/backButtons.svg"; 
+import Icon from "../Icons/Icons";
 
 type Props = {
   onPress: () => void;
@@ -12,7 +12,7 @@ const BackButton = ({ onPress }: Props) => {
       onPress={onPress}
       style={{ position: "absolute", top: 20, left: 20, padding: 10 }}
     >
-      <BackButtons width={24} height={24} />
+      <Icon name="back" size={24} />
     </TouchableOpacity>
   );
 };

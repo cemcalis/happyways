@@ -8,6 +8,18 @@ export type RootStackParamList = {
   ForgetPasswordPage: { email: string };
   ProfilePage: undefined;
   CampaignPage: undefined;
+  NotificationPage: undefined;
+  AdditionalRequests: {
+    carId: number;
+    carModel: string;
+    carPrice: string;
+    pickupDate: string;
+    dropDate: string;
+    pickupTime: string;
+    dropTime: string;
+    pickup: string;
+    drop: string;
+  };
   AllCarsPage: { 
     searchParams?: {
       pickup: string;
@@ -29,7 +41,17 @@ export type RootStackParamList = {
     pickup?: string;
     drop?: string;
   };
-  ReservationPage: undefined;
+  ReservationPage: {
+    carId: number;
+    carModel: string;
+    carPrice: string;
+    pickupDate: string;
+    dropDate: string;
+    pickupTime: string;
+    dropTime: string;
+    pickup: string;
+    drop: string;
+  };
   CarsDetailPage: { 
     carId: number;
     pickupLocation?: string;

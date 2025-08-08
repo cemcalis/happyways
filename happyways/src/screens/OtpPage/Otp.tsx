@@ -14,16 +14,18 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
+import BackButton from "../../../Components/BackButton/BackButton";
+import { useTheme } from "../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 const Otp = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+    
   const route = useRoute();
   const { email } = route.params as { email: string };
-
   const [otp, setOtp] = useState(["", "", "", ""]);
-
-  const handleOtpChange = (value: string, index: number) => {
+  const { isDark } = useTheme();
+  const { t } = useTranslation('auth');  const handleOtpChange = (value: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -33,12 +35,12 @@ const Otp = () => {
     const otpCode = otp.join("");
 
     if (!otpCode) {
-      Alert.alert("Uyarı", "Lütfen kodu girin.");
+      Alert.alert(t('warning'), t('pleaseEnterCode'));
       return;
     }
 
     if (otpCode.length !== 4 || !/^\d{4}$/.test(otpCode)) {
-      Alert.alert("Uyarı", "Kod 4 haneli sayılardan oluşmalıdır.");
+      Alert.alert(t('warning'), t('codeFormatError'));
       return;
     }
 
@@ -52,14 +54,14 @@ const Otp = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Başarılı", "Kod doğrulandı!");
+        Alert.alert(t('loginSuccess'), t('codeVerified'));
         navigation.navigate("ResetPasswordPage", { email });
       } else {
-        Alert.alert("Hata", data.message || "Kod doğrulanamadı.");
+        Alert.alert(t('error'), data.message || t('codeVerificationFailed'));
       }
     } catch (err) {
       console.error("OTP doğrulama hatası:", err);
-      Alert.alert("Hata", "Sunucuya bağlanılamadı.");
+      Alert.alert(t('error'), t('connectionError'));
     }
   };
 
@@ -70,24 +72,25 @@ const Otp = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      Alert.alert("Gönderildi", "Kod tekrar gönderildi.");
+      Alert.alert(t('resendSuccess'), t('codeSentAgain'));
     } catch {
-      Alert.alert("Hata", "Kod yeniden gönderilemedi.");
+      Alert.alert(t('error'), t('codeResendFailed'));
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-6">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'} px-6`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1 justify-center"
       >
 <BackButtons onPress={() => navigation.goBack()} />
-        <Text className="text-center text-2xl font-bold mb-3">Doğrulama</Text>
-        <Text className="text-center text-gray-600 text-sm mb-1">
-          Email'inize bir kod gönderdik
+        <Text className={`text-center text-2xl font-bold mb-3 ${isDark ? 'text-white' : 'text-black'}`}>{t('otpTitle')}</Text>
+        <Text className={`text-center text-sm mb-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+          {t('otpDescription')}
         </Text>
         <Text className="text-center text-orange-500 font-semibold mb-6">
+        <BackButton onPress={() => navigation.goBack()} />
           {email}
         </Text>
 
@@ -100,15 +103,20 @@ const Otp = () => {
               onChangeText={(value) => handleOtpChange(value, index)}
               keyboardType="number-pad"
               maxLength={1}
-              className="w-12 h-12 border border-gray-300 rounded-xl text-center text-lg"
+              className={`w-12 h-12 border rounded-xl text-center text-lg ${
+                isDark 
+                  ? 'border-gray-600 bg-gray-800 text-white' 
+                  : 'border-gray-300 bg-white text-black'
+              }`}
+              placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
             />
           ))}
         </View>
 
         <TouchableOpacity onPress={resendOtp} className="mb-6">
-          <Text className="text-center text-sm text-gray-600">
-            Kodu almadınız mı?{' '}
-            <Text className="text-orange-500 font-semibold">Tekrar Gönder</Text>
+          <Text className={`text-center text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            {t('didntReceiveCode')}{' '}
+            <Text className="text-orange-500 font-semibold">{t('resendCodeText')}</Text>
           </Text>
         </TouchableOpacity>
 
@@ -117,7 +125,7 @@ const Otp = () => {
           className="bg-orange-500 py-3 rounded-xl shadow-md mx-10"
         >
           <Text className="text-white font-semibold text-center text-base">
-            Devam Et
+            {t('continue')}
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>

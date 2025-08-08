@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
     const db = getDB();
     const campaigns = await db.all("SELECT * FROM campaigns");
 
-    // Resim yolu düzeltme
     const updatedCampaigns = campaigns.map(c => ({
       ...c,
       image: c.image

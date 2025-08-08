@@ -11,12 +11,11 @@ router.get("/", authenticateToken, async (req, res) => {
     const campaigns = await db.all("SELECT * FROM campaigns");
     const cars = await db.all("SELECT * FROM cars");
 
-    // Kampanya resim yollarını düzelt  
  const updatedCampaigns = campaigns.map(campaign => ({
       ...campaign,
       image: campaign.image ? `http://10.0.2.2:3000/assets/campaign/${campaign.image}` : null
     }));
-    // Araç resim yollarını düzelt
+
     const updatedCars = cars.map(car => ({
       ...car,
       image: car.image ? `http://10.0.2.2:3000/assets/cars/${car.image}` : null

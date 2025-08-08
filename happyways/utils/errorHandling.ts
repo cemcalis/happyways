@@ -30,7 +30,7 @@ export const handleApiError = (error: any): ApiError => {
   }
 
   if (error.response) {
-    // Server responded with error
+
     const status = error.response.status;
     const message = error.response.data?.message || 'Bir hata oluştu';
 
@@ -49,7 +49,7 @@ export const handleApiError = (error: any): ApiError => {
   }
 
   if (error.request) {
-    // Network error
+
     return {
       message: 'Sunucuya bağlanılamadı, lütfen internet bağlantınızı kontrol edin',
       code: 'NETWORK_ERROR'
@@ -103,7 +103,6 @@ export const apiRequest = async (url: string, options: RequestInit = {}): Promis
       throw error;
     }
     
-    // Network/timeout errors
     throw new NetworkError(
       error.message || 'Bağlantı hatası oluştu',
       undefined,

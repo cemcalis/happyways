@@ -3,7 +3,6 @@ import { getDB } from "../../../../database/db.js";
 
 const router = express.Router();
 
-// Tek araç detayı endpointi
 router.get("/:id", async (req, res) => {
   try {
     const db = getDB();

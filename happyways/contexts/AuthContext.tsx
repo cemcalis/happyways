@@ -25,10 +25,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Token geçerliliğini kontrol et
+
   const isTokenValid = (token: string): boolean => {
     try {
-      // JWT decode için basit parsing
+   
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Token'dan kullanıcı bilgilerini al
   const getUserFromToken = () => {
     if (!token) return null;
     try {
@@ -61,7 +60,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Token'ları yenile
   const refreshTokens = async (): Promise<boolean> => {
     try {
       const refreshToken = await getRefreshToken();
@@ -90,7 +88,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Otomatik token yenileme
   useEffect(() => {
     const checkAndRefreshToken = async () => {
       const storedToken = await getToken();
@@ -99,10 +96,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (isTokenValid(storedToken)) {
           setToken(storedToken);
         } else {
-          // Token süresi dolmuş, yenilemeyi dene
+     
           const refreshed = await refreshTokens();
           if (!refreshed) {
-            // Refresh başarısız, logout yap
+     
             await logout();
           }
         }
@@ -114,7 +111,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     checkAndRefreshToken();
   }, []);
 
-  // Periyodik token kontrolü
   useEffect(() => {
     if (!token) return;
 
@@ -125,7 +121,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           await logout();
         }
       }
-    }, 5 * 60 * 1000); // 5 dakikada bir kontrol
+    }, 5 * 60 * 1000); 
 
     return () => clearInterval(interval);
   }, [token]);

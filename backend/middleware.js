@@ -13,7 +13,7 @@ const authenticateToken = (req, res, next) => {
     });
   }
 
-  const token = authHeader.split(" ")[1]; // "Bearer abc123" → "abc123"
+  const token = authHeader.split(" ")[1]; 
 
   if (!token) {
     return res.status(401).json({ 
@@ -30,8 +30,8 @@ const authenticateToken = (req, res, next) => {
       });
     }
 
-    req.user = decoded; // middleware sonrası route'larda kullanıcı bilgisine erişebilirsin
-    next(); // Devam et
+    req.user = decoded; 
+    next(); 
   });
 };
 

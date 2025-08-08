@@ -1,30 +1,25 @@
-import React, { useEffect, useState } from "react";
+import LocationSelect from "../../../../Components/LocationSelect/LocationSelect";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   Image,
-  TextInput,
   TouchableOpacity,
-  ScrollView,
-  Alert,
   FlatList,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types";
 import TabBar from "../../../../Components/TabBar/TapBar";
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "../../../../contexts/AuthContext";
+import { useTheme } from "../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../utils/errorHandling";
 import LoadingSpinner from "../../../../Components/LoadingSpinner/LoadingSpinner";
+import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
+import { useTranslation } from "react-i18next";
 
-import LocationSvg from "../../../../assets/HomePage/location.svg";
-import SearchSvg from "../../../../assets/HomePage/search.svg";
-import FilterSvg from "../../../../assets/HomePage/filter.svg";
-import FuelSvg from "../../../../assets/HomePage/fuel.svg";
-import GearSvg from "../../../../assets/HomePage/gear.svg";
-import SnowSvg from "../../../../assets/HomePage/snow.svg";
-import LeftArrowSvg from "../../../../assets/HomePage/leftarrow.svg";
-import NotificationSvg from "../../../../assets/HomePage/notification.svg";
+import { SearchFilter, FilterModal, CampaignSection, CarSection } from "./HomePageComponent";
 
 type HomePageProps={
 navigation: NativeStackNavigationProp <RootStackParamList, "HomePage">;}
@@ -55,15 +50,84 @@ type Car = {
 };
 
 const HomePage = ({navigation} : HomePageProps) => {
+  const { token } = useAuth();
+  const { isDark } = useTheme();
+  const { t } = useTranslation('home');
+  const { t: tAuth } = useTranslation('auth');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
+  const [filteredCars, setFilteredCars] = useState<Car[]>([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState<Campaign[]>([]);
+  const [currentSearchText, setCurrentSearchText] = useState("");
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilters, setActiveFilters] = useState({
+    fuelTypes: [] as string[],
+    gearTypes: [] as string[]
+  });
+
+  const handleFilteredDataChange = useCallback((
+    newFilteredCars: Car[], 
+    newFilteredCampaigns: Campaign[], 
+    searchText: string
+  ) => {
+    
+    let finalCars = newFilteredCars;
+    
+    if (activeFilters.fuelTypes.length > 0) {
+      finalCars = finalCars.filter(car => 
+        activeFilters.fuelTypes.includes(car.fuel)
+      );
+    }
+    
+    if (activeFilters.gearTypes.length > 0) {
+      finalCars = finalCars.filter(car => 
+        activeFilters.gearTypes.includes(car.gear)
+      );
+    }
+    
+    setFilteredCars(finalCars);
+    setFilteredCampaigns(newFilteredCampaigns);
+    setCurrentSearchText(searchText);
+  }, [activeFilters]);
+
+  const handleApplyFilters = useCallback((fuelTypes: string[], gearTypes: string[]) => {
+    setActiveFilters({ fuelTypes, gearTypes });
+    
+    let filtered = cars;
+    
+    if (currentSearchText.trim() !== "") {
+      filtered = cars.filter((car) => 
+        car.model.toLowerCase().includes(currentSearchText.toLowerCase()) ||
+        car.year.toString().includes(currentSearchText) ||
+        car.fuel.toLowerCase().includes(currentSearchText.toLowerCase()) ||
+        car.gear.toLowerCase().includes(currentSearchText.toLowerCase())
+      );
+    }
+    
+    if (fuelTypes.length > 0) {
+      filtered = filtered.filter(car => fuelTypes.includes(car.fuel));
+    }
+    
+    if (gearTypes.length > 0) {
+      filtered = filtered.filter(car => gearTypes.includes(car.gear));
+    }
+    
+    setFilteredCars(filtered);
+  }, [cars, currentSearchText]);
+
+  const handleFilterPress = useCallback(() => {
+    setShowFilter(true);
+  }, []);
+
+  const handleFilterClose = useCallback(() => {
+    setShowFilter(false);
+  }, []);
 
   useEffect(() => {
     const fetchHomeData = async () => {
       if (!token) {
-        Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
+        Alert.alert(tAuth('error'), t('sessionExpired'));
         return;
       }
 
@@ -77,6 +141,8 @@ const HomePage = ({navigation} : HomePageProps) => {
 
         setCampaigns(data.campaigns || []);
         setCars(data.cars || []);
+        setFilteredCars(data.cars || []);
+        setFilteredCampaigns(data.campaigns || []);
       } catch (error: any) {
         console.error("Home data fetch error:", error);
         const apiError = handleApiError(error);
@@ -90,109 +156,60 @@ const HomePage = ({navigation} : HomePageProps) => {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner text="Ana sayfa yükleniyor..." />;
+    return <LoadingSpinner text={t('loadingHomePage')} />;
   }
 
   const renderHeader = () => (
     <View className="px-4">
-      {/* Header with location and profile */}
+   
       <View className="flex-row justify-between items-center pt-4 pb-2">
-        <View className="flex-row items-center">
-          <LocationSvg width={16} height={16} />
-          <Text className="text-black text-sm ml-1">Ercan Havaalanı, KKTC</Text>
-          <TouchableOpacity className="ml-1">
-            <LeftArrowSvg width={12} height={12} style={{transform: [{rotate: '90deg'}]}} fill="#9CA3AF" />
+        <LocationSelect />
+        <View className="flex-row items-center bg-orange-500 rounded-full px-4 py-2">
+          <TouchableOpacity 
+            className="mr-3"
+            onPress={() => navigation.navigate("NotificationPage")}
+          >
+            <NotificationsSvg width={20} height={20} fill="#FFFFFF" />
           </TouchableOpacity>
-        </View>
-        <View className="flex-row items-center">
-          <TouchableOpacity className="mr-2">
-            <NotificationSvg width={24} height={24} fill="#f97316" />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("MePage")}
+          >
+            <Image
+              source={{ uri: "https://i.pravatar.cc/150?img=4" }}
+              className="w-7 h-7 rounded-full border-2 border-white"
+            />
           </TouchableOpacity>
-          <Image
-            source={{ uri: "https://i.pravatar.cc/150?img=4" }}
-            className="w-9 h-9 rounded-full"
-          />
         </View>
       </View>
 
-      {/* Title */}
-      <Text className="text-black text-[22px] font-extrabold mb-4 leading-7">
-        İhtiyacınıza Uygun Aracı{"\n"}Hızlıca Bulun!
+      <Text className={`${isDark ? 'text-white' : 'text-black'} text-[22px] font-extrabold mb-4 leading-7`}>
+        {t('find Suitable Car')}
       </Text>
 
-      {/* Search Bar */}
-      <View className="flex-row items-center bg-white border border-gray-300 rounded-xl px-4 py-3 mb-6 shadow-sm">
-        <SearchSvg width={18} height={18} />
-        <TextInput
-          className="flex-1 text-gray-800 ml-3"
-          placeholder="Hangi aracı istiyorsunuz?"
-          placeholderTextColor="#9CA3AF"
-        />
-        <TouchableOpacity className="ml-3 bg-orange-500 rounded-lg p-2">
-          <FilterSvg width={16} height={16} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Campaigns Section */}
-      <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold text-black">Kampanyalar</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("CampaignPage")}>
-          <Text className="text-sm text-gray-500">Tümünü Göster</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Campaigns Horizontal FlatList */}
-      <FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={campaigns}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            className="bg-white rounded-xl mr-4 w-72 shadow-sm border border-gray-200"
-            onPress={() => navigation.navigate("CampaignDetailPage", { campaignId: item.id })}
-          >
-            <View className="relative">
-              <Image
-                source={{ uri: item.image }}
-                className="w-full h-40 rounded-t-xl"
-                resizeMode="cover"
-              />
-              <View className="absolute top-2 left-2 bg-orange-500 rounded-md px-2 py-1">
-                <Text className="text-white text-[11px] font-bold">
-                  KAMPANYA
-                </Text>
-              </View>
-            </View>
-            <View className="p-4">
-              <Text className="text-black font-semibold text-base mb-1">
-                {item.title}
-              </Text>
-              <Text className="text-[13px] text-gray-600 mb-2">
-                {item.description}
-              </Text>
-              <Text className="text-[12px] text-orange-600 font-semibold">
-                {item.subtitle1}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        className="mb-6"
+      <SearchFilter
+        campaigns={campaigns}
+        cars={cars}
+        onFilteredDataChange={handleFilteredDataChange}
+        onFilterPress={handleFilterPress}
       />
 
-      {/* Cars Section Header */}
-      <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold text-black">Araçlar</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("AllCarsPage", {})}>
-          <Text className="text-sm text-gray-500">Tümünü Göster</Text>
-        </TouchableOpacity>
-      </View>
+      <CampaignSection
+        campaigns={filteredCampaigns}
+        searchText={currentSearchText}
+        navigation={navigation}
+      />
+
+      <CarSection
+        cars={filteredCars}
+        searchText={currentSearchText}
+        navigation={navigation}
+      />
     </View>
   );
 
   const renderCarItem = ({ item: car, index }: { item: Car; index: number }) => (
     <View
-      className={`bg-white rounded-xl w-[48%] mb-4 shadow-sm border border-gray-200 ${
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl w-[48%] mb-4 shadow-sm border ${
         index % 2 === 0 ? "mr-[4%]" : ""
       }`}
     >
@@ -203,23 +220,23 @@ const HomePage = ({navigation} : HomePageProps) => {
           resizeMode="cover"
         />
 
-        <Text className="text-gray-900 font-semibold text-sm mb-1">
+        <Text className={`${isDark ? 'text-white' : 'text-gray-900'} f,ont-semibold text-sm mb-1`}>
           {car.model} {car.year}
         </Text>
 
         <View className="flex-row flex-wrap items-center mb-3 space-x-2">
           <View className="flex-row items-center space-x-1">
-            <FuelSvg width={14} height={14} />
-            <Text className="text-gray-500 text-xs">{car.fuel}</Text>
+            <View className="w-3 h-3 bg-gray-400 rounded-full" />
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.fuel}</Text>
           </View>
           <View className="flex-row items-center space-x-1">
-            <GearSvg width={14} height={14} />
-            <Text className="text-gray-500 text-xs">{car.gear}</Text>
+            <View className="w-3 h-3 bg-gray-400 rounded-full" />
+            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.gear}</Text>
           </View>
           {car.ac && (
             <View className="flex-row items-center space-x-1">
-              <SnowSvg width={14} height={14} />
-              <Text className="text-gray-500 text-xs">AC</Text>
+              <View className="w-3 h-3 bg-blue-400 rounded-full" />
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>AC</Text>
             </View>
           )}
         </View>
@@ -229,7 +246,7 @@ const HomePage = ({navigation} : HomePageProps) => {
           onPress={() => navigation.navigate("CarsDetailPage", { carId: car.id })}
         >
           <Text className="text-white font-bold text-center text-sm">
-            Hemen Kirala
+            {t('rent Now')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -237,9 +254,9 @@ const HomePage = ({navigation} : HomePageProps) => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <FlatList
-        data={cars}
+        data={filteredCars}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCarItem}
         numColumns={2}
@@ -247,6 +264,24 @@ const HomePage = ({navigation} : HomePageProps) => {
         contentContainerStyle={{ paddingBottom: 100 }}
         columnWrapperStyle={{ paddingHorizontal: 16 }}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => 
+          currentSearchText && filteredCars.length === 0 ? (
+            <View className="px-4 py-8 items-center">
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
+                "{currentSearchText}" {t('no Car Found')}
+              </Text>
+            </View>
+          ) : null
+        }
+      />
+
+      <FilterModal
+        showFilter={showFilter}
+        onClose={handleFilterClose}
+        navigation={navigation}
+        filteredCarsCount={filteredCars.length}
+        onApplyFilters={handleApplyFilters}
+        currentFilters={activeFilters}
       />
 
       <TabBar navigation={navigation} activeRoute="HomePage" />

@@ -11,7 +11,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
 import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTextInput";
-import BackButtons from "../../../assets/BackButtons/backButtons.svg";
+import BackButton from "../../../Components/BackButton/BackButton";
+import { useTheme } from "../../../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 type ForgetPasswordPageProp = {
   navigation: NativeStackNavigationProp<
@@ -22,10 +24,12 @@ type ForgetPasswordPageProp = {
 
 const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
   const [email, setEmail] = useState("");
+  const { isDark } = useTheme();
+  const { t } = useTranslation('auth');
 
   const handleSubmit = async () => {
     if (!email.trim()) {
-      Alert.alert("Hata", "E-posta adresi boş olamaz.");
+      Alert.alert(t('error'), t('emailCannotBeEmpty'));
       return;
     }
 
@@ -40,33 +44,32 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
       console.log("API yanıtı:", data);
 
       if (response.ok) {
-        Alert.alert("Başarılı", data.message || "Kod gönderildi.");
+        Alert.alert(t('loginSuccess'), data.message || t('codeSent'));
         navigation.navigate("OtpPage", { email });
       } else {
-        Alert.alert("Hata", data.message || "İşlem başarısız.");
+        Alert.alert(t('error'), data.message || t('operationFailed'));
       }
     } catch (error) {
       console.error("Kodu gönderme hatası:", error);
-      Alert.alert("Hata", "Sunucuya bağlanılamadı.");
+      Alert.alert(t('error'), t('connectionError'));
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <ScrollView className="flex-1">
-       
-<BackButtons onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => navigation.goBack()} />
 
   
         <View className="px-6">
-          <Text className="text-gray-900 text-2xl font-bold mb-8">
-            Şifremi Unuttum!
+          <Text className={`text-2xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {t('forgotPasswordTitle')}
           </Text>
 
           
          <ReusableTextInput
-  label="Email"
-  placeholder="ayse.zorlu@neareacttechnology.com"
+  label={t('email')}
+  placeholder={t('emailPlaceholder')}
   placeholderTextColor="#9CA3AF"
   value={email}
   onChangeText={setEmail}
@@ -79,7 +82,7 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
             onPress={handleSubmit}
           >
             <Text className="text-white font-bold text-center text-lg">
-              Gönder
+              {t('send')}
             </Text>
           </TouchableOpacity>
         </View>
