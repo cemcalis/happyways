@@ -38,7 +38,7 @@ const seed = async () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       model TEXT,
       year INTEGER,
-      price TEXT,
+      price REAL,
       image TEXT,
       gear TEXT,
       fuel TEXT,
@@ -103,9 +103,9 @@ const seed = async () => {
  
   await db.exec(`
     INSERT INTO cars (model, year, price, image, gear, fuel, seats, ac, kosullar) VALUES
-      ('Mercedes C220', 2024, '5.000 ₺', 'mercedes.png', 'Otomatik', 'Dizel', 5, 1, 
+      ('Mercedes C220', 2024, 5000, 'mercedes.png', 'Otomatik', 'Dizel', 5, 1, 
        '• Minimum yaş: 21\n• Ehliyet süresi: En az 2 yıl\n• Kredi kartı gerekli\n• Depozito: 2.000 TL\n• Günlük km limiti: 300 km'),
-      ('BMW 3 Serisi', 2020, '4.500 ₺', 'bmw.png', 'Otomatik', 'Benzin', 5, 1,
+      ('BMW 3 Serisi', 2020, 4500, 'bmw.png', 'Otomatik', 'Benzin', 5, 1,
        '• Minimum yaş: 23\n• Ehliyet süresi: En az 3 yıl\n• Kredi kartı gerekli\n• Depozito: 1.800 TL\n• Günlük km limiti: 250 km');
   `);
 

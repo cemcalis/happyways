@@ -77,9 +77,10 @@ const CampaignSection = ({ campaigns, searchText, navigation }: CampaignSectionP
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={campaigns}
+        data={campaigns.slice(0, 5)} // HomePage'de ilk 5 kampanya
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCampaignItem}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
         className="mb-6"
         ListEmptyComponent={() => 
           searchText && campaigns.length === 0 ? (

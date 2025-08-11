@@ -52,7 +52,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
     setActiveFilters({ fuelTypes, gearTypes });
     
     try {
-      // Backend'den filtreleme yap
+   
       const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,7 +70,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
       if (data.success) {
         setFilteredCars(data.cars);
       } else {
-        // Fallback: eski filtreleme mantığı
+     
         let filtered = cars;
         
         if (searchText.trim() !== "") {
@@ -147,7 +147,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
         console.log("API Request URL:", url);
 
-        // Basit fetch denemesi - token kaldırıldı
+        
         const response = await fetch(url, {
           method: "GET",
           headers: {

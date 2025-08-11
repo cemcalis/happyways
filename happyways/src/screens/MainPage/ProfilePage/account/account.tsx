@@ -59,7 +59,19 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         </View>
 
        
-        <TouchableOpacity className="mx-6 bg-[#FF0000] rounded-lg py-3 shadow-lg mb-[70px]">
+        <TouchableOpacity 
+          className="mx-6 bg-[#FF0000] rounded-lg py-3 mb-[70px]"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+          }}
+        >
           <Text className="text-white text-center text-base font-semibold">{t('common:logout')}</Text>
         </TouchableOpacity>
 

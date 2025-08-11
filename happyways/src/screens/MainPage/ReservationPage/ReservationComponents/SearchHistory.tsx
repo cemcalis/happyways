@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 
 interface SearchHistoryItem {
@@ -24,7 +24,10 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
   }
 
   return (
-    <View className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl shadow-lg border p-4 mb-4`}>
+    <View 
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border p-4 mb-4`}
+      style={styles.shadowContainer}
+    >
       <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-4`}>
         Son Aramalar
       </Text>
@@ -56,5 +59,18 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+});
 
 export default SearchHistory;

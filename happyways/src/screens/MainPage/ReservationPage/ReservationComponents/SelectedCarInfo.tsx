@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 
 interface CarInfo {
@@ -23,7 +23,10 @@ const SelectedCarInfo: React.FC<SelectedCarInfoProps> = ({ carInfo }) => {
   }
 
   return (
-    <View className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl shadow-lg border p-4 mb-4`}>
+    <View 
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border p-4 mb-4`}
+      style={styles.shadowContainer}
+    >
       <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-4`}>
         Seçilen Araç
       </Text>
@@ -50,5 +53,18 @@ const SelectedCarInfo: React.FC<SelectedCarInfoProps> = ({ carInfo }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+});
 
 export default SelectedCarInfo;

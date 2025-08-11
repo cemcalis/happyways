@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -22,7 +22,7 @@ type CarDetail = {
 
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
-  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime } = route.params;
+  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime, source } = route.params;
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
 
@@ -86,18 +86,39 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
           <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
 
           <TouchableOpacity 
-            className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
-            onPress={() => navigation.navigate("AdditionalRequests", {
-              carId: car.id,
-              carModel: car.model,
-              carPrice: car.price,
-              pickupDate: pickupDate || "",
-              dropDate: dropoffDate || "",
-              pickupTime: pickupTime || "",
-              dropTime: dropoffTime || "",
-              pickup: pickupLocation || "",
-              drop: dropoffLocation || "",
-            })}
+            className="bg-orange-500 py-4 rounded-lg mt-3 active:opacity-80"
+            style={styles.shadowButton}
+            onPress={() => {
+            
+              if (source === "HomePage") {
+                navigation.navigate("ReservationPage", {
+                  carId: car.id,
+                  carModel: car.model,
+                  carPrice: car.price,
+                  pickupDate: pickupDate || "",
+                  dropDate: dropoffDate || "",
+                  pickupTime: pickupTime || "",
+                  dropTime: dropoffTime || "",
+                  pickup: pickupLocation || "",
+                  drop: dropoffLocation || "",
+                  source: "HomePage"
+                });
+              } else {
+                
+                navigation.navigate("AdditionalRequests", {
+                  carId: car.id,
+                  carModel: car.model,
+                  carPrice: car.price,
+                  pickupDate: pickupDate || "",
+                  dropDate: dropoffDate || "",
+                  pickupTime: pickupTime || "",
+                  dropTime: dropoffTime || "",
+                  pickup: pickupLocation || "",
+                  drop: dropoffLocation || "",
+                  source: source || "unknown"
+                });
+              }
+            }}
           >
             <Text className="text-white text-center font-bold text-lg">{t('rentThisCar')}</Text>
           </TouchableOpacity>
@@ -108,4 +129,21 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   );
 };
 
+const styles = StyleSheet.create({
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});
+
 export default CarsDetailPage;
+
+
+
+

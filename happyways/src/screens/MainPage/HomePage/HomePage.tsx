@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -207,73 +208,15 @@ const HomePage = ({navigation} : HomePageProps) => {
     </View>
   );
 
-  const renderCarItem = ({ item: car, index }: { item: Car; index: number }) => (
-    <View
-      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl w-[48%] mb-4 shadow-sm border ${
-        index % 2 === 0 ? "mr-[4%]" : ""
-      }`}
-    >
-      <View className="p-3">
-        <Image
-          source={{ uri: car.image }}
-          className="w-full h-24 rounded-lg mb-2"
-          resizeMode="cover"
-        />
-
-        <Text className={`${isDark ? 'text-white' : 'text-gray-900'} f,ont-semibold text-sm mb-1`}>
-          {car.model} {car.year}
-        </Text>
-
-        <View className="flex-row flex-wrap items-center mb-3 space-x-2">
-          <View className="flex-row items-center space-x-1">
-            <View className="w-3 h-3 bg-gray-400 rounded-full" />
-            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.fuel}</Text>
-          </View>
-          <View className="flex-row items-center space-x-1">
-            <View className="w-3 h-3 bg-gray-400 rounded-full" />
-            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>{car.gear}</Text>
-          </View>
-          {car.ac && (
-            <View className="flex-row items-center space-x-1">
-              <View className="w-3 h-3 bg-blue-400 rounded-full" />
-              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>AC</Text>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity 
-          className="bg-orange-500 py-2 rounded-lg"
-          onPress={() => navigation.navigate("CarsDetailPage", { carId: car.id })}
-        >
-          <Text className="text-white font-bold text-center text-sm">
-            {t('rent Now')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-      <FlatList
-        data={filteredCars}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderCarItem}
-        numColumns={2}
-        ListHeaderComponent={renderHeader}
-        contentContainerStyle={{ paddingBottom: 100 }}
-        columnWrapperStyle={{ paddingHorizontal: 16 }}
+      <ScrollView 
+        className="flex-1"
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => 
-          currentSearchText && filteredCars.length === 0 ? (
-            <View className="px-4 py-8 items-center">
-              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
-                "{currentSearchText}" {t('no Car Found')}
-              </Text>
-            </View>
-          ) : null
-        }
-      />
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
+        {renderHeader()}
+      </ScrollView>
 
       <FilterModal
         showFilter={showFilter}

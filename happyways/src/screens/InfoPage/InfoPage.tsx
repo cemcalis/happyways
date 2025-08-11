@@ -88,7 +88,17 @@ const InfoPage = ({ navigation }: InfoPageProp) => {
    <TouchableOpacity
   onPress={handleNavigateToLogin}
   activeOpacity={0.8}
-  className="w-14 h-14 rounded-full bg-orange-500 items-center justify-center self-end shadow-md active:bg-orange-600 active:scale-95"
+  className="w-14 h-14 rounded-full bg-orange-500 items-center justify-center self-end active:bg-orange-600 active:scale-95"
+  style={{
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }}
 >
   <LeftArrowSvg 
     width={24} 

@@ -157,7 +157,19 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
   };
 
   const renderItem = ({ item }: { item: Reservation }) => (
-    <View className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg mx-4 my-2 shadow-md`}>
+    <View 
+      className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg mx-4 my-2`}
+      style={{
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 3,
+      }}
+    >
      
       <View className={`p-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
         <View className="flex-row justify-between items-center mb-2">

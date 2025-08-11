@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, Alert } from "react-native";
+import { ScrollView, Alert, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../../../types";
 import { useTheme } from "../../../../contexts/ThemeContext";
@@ -11,6 +12,7 @@ import {
   ReservationHeader,
   ReservationForm,
   SearchHistory,
+  SelectedCarInfo,
 } from "./ReservationComponents";
 
 type LocationType = {
@@ -26,11 +28,16 @@ type LocationType = {
 
 type ReservationPageProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ReservationPage">;
+  route: RouteProp<RootStackParamList, "ReservationPage">;
 };
 
-const ReservationPage = ({ navigation }: ReservationPageProps) => {
+const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('reservation');
+  
+  // Route parametrelerini al
+  const { carId, carModel, carPrice, source, pickupDate, dropDate, pickupTime, dropTime, pickup, drop } = route.params || {};
+  
   const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
   const [dropoffLocation, setDropoffLocation] = useState<LocationType | null>(null);
   const [usePickupAsDropoff, setUsePickupAsDropoff] = useState(true);
@@ -40,6 +47,45 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
   const [backtime, setBackTime] = useState("");
   const [lastSearches, setLastSearches] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [calculatedPrice, setCalculatedPrice] = useState<string>("");
+  const [daysDifference, setDaysDifference] = useState<number>(0);
+
+  // Fiyat hesaplama fonksiyonu
+  const calculateTotalPrice = (startDate: string, endDate: string) => {
+    if (!startDate || !endDate || !carPrice) return;
+    
+    try {
+      // Türkçe tarih formatını parse et (dd/mm/yyyy formatında)
+      const parseDate = (dateStr: string) => {
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+          return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+        return new Date(dateStr);
+      };
+      
+      const start = parseDate(startDate);
+      const end = parseDate(endDate);
+      const timeDiff = end.getTime() - start.getTime();
+      const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      
+      if (dayDiff > 0) {
+        const dailyPrice = parseFloat(carPrice.replace(/[^0-9]/g, '')) || 0;
+        const total = dailyPrice * dayDiff;
+        setDaysDifference(dayDiff);
+        setCalculatedPrice(total.toString());
+      }
+    } catch (error) {
+      console.log("Tarih parse hatası:", error);
+    }
+  };
+
+  // Tarih değiştiğinde fiyat hesapla
+  useEffect(() => {
+    if (getdate && backdate) {
+      calculateTotalPrice(getdate, backdate);
+    }
+  }, [getdate, backdate, carPrice]);
 
   useEffect(() => {
     const fetchSearches = async () => {
@@ -131,6 +177,58 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
     setLastSearches([]);
   };
 
+  const handleReservation = () => {
+    if (source === "HomePage" && carId) {
+      // HomePage'den geldiğinde form validasyonu yap
+      if (!pickupLocation) {
+        Alert.alert("Eksik Bilgi", "Lütfen alış lokasyonunu seçin");
+        return;
+      }
+      
+      if (!dropoffLocation && !usePickupAsDropoff) {
+        Alert.alert("Eksik Bilgi", "Lütfen dönüş lokasyonunu seçin");
+        return;
+      }
+      
+      if (!getdate) {
+        Alert.alert("Eksik Bilgi", "Lütfen alış tarihini seçin");
+        return;
+      }
+      
+      if (!backdate) {
+        Alert.alert("Eksik Bilgi", "Lütfen dönüş tarihini seçin");
+        return;
+      }
+      
+      if (!gettime) {
+        Alert.alert("Eksik Bilgi", "Lütfen alış saatini seçin");
+        return;
+      }
+      
+      if (!backtime) {
+        Alert.alert("Eksik Bilgi", "Lütfen dönüş saatini seçin");
+        return;
+      }
+
+      // Form bilgileri ile AdditionalRequests'e git
+      navigation.navigate("AdditionalRequests", {
+        carId: carId,
+        carModel: carModel || "",
+        carPrice: carPrice || "",
+        pickupDate: getdate,
+        dropDate: backdate,
+        pickupTime: gettime,
+        dropTime: backtime,
+        pickup: pickupLocation.name,
+        drop: usePickupAsDropoff ? pickupLocation.name : (dropoffLocation?.name || ""),
+        source: "HomePage"
+      });
+    } else {
+      // Normal arama flow'u
+      handleSearch();
+    }
+  };
+
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <ScrollView showsVerticalScrollIndicator={false} className="px-4">
@@ -152,7 +250,13 @@ const ReservationPage = ({ navigation }: ReservationPageProps) => {
           onBackDateChange={setBackDate}
           onGetTimeChange={setGetTime}
           onBackTimeChange={setBackTime}
-          onSearch={handleSearch}
+          onSearch={handleReservation}
+          source={source}
+          carId={carId}
+          carModel={carModel}
+          carPrice={carPrice}
+          calculatedPrice={calculatedPrice}
+          daysDifference={daysDifference}
         />
 
         <SearchHistory

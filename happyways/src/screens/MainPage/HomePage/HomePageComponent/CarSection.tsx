@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
@@ -70,7 +71,10 @@ const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
 
         <TouchableOpacity 
           className="bg-orange-500 py-2 rounded-lg"
-          onPress={() => navigation.navigate("CarsDetailPage", { carId: car.id })}
+          onPress={() => navigation.navigate("CarsDetailPage", { 
+            carId: car.id,
+            source: "HomePage" 
+          })}
         >
           <Text className="text-white font-bold text-center text-sm">
             {t('rentNow')}
@@ -86,10 +90,35 @@ const CarSection = ({ cars, searchText, navigation }: CarSectionProps) => {
         <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
           {searchText ? t('carsWithSearch', { searchText, count: cars.length }) : t('cars')}
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("AllCarsPage", {})}>
+        <TouchableOpacity onPress={() => navigation.navigate("AllCarsPage", { source: "HomePage" })}>
           <Text className="text-sm text-gray-500">{t('showAll')}</Text>
         </TouchableOpacity>
       </View>
+
+      <FlatList
+        horizontal={false}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        data={cars.slice(0, 4)} // Homepage'de sadece 4 araba göster
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderCarItem}
+        columnWrapperStyle={{ 
+          justifyContent: 'space-between',
+          paddingHorizontal: 0
+        }}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+        className="mb-6"
+        scrollEnabled={false} // HomePage'de scroll kapalı
+        ListEmptyComponent={() => 
+          searchText && cars.length === 0 ? (
+            <View className="w-full items-center justify-center py-8">
+              <Text className="text-gray-500 text-center">
+                "{searchText}" {t('noCarFound')}
+              </Text>
+            </View>
+          ) : null
+        }
+      />
     </>
   );
 };

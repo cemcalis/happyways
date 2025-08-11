@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types";
@@ -160,7 +161,8 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
         
         <TouchableOpacity
           onPress={handleRegister}
-          className="bg-orange-500 py-4 rounded-xl shadow-md active:bg-orange-600"
+          className="bg-orange-500 py-4 rounded-xl active:bg-orange-600"
+          style={styles.shadowButton}
         >
           <Text className="text-white font-bold text-center text-lg">{t('registerButton')}</Text>
         </TouchableOpacity>
@@ -185,5 +187,18 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});
 
 export default RegisterPage;

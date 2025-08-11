@@ -4,20 +4,23 @@ import { getDB } from "../../database/db.js";
 
 const router = express.Router();
 
-const refreshTokens = new Map();
-
-export const generateRefreshToken = (userId) => {
+export const generateRefreshToken = async (userId) => {
   const refreshToken = jwt.sign(
     { userId, tokenType: 'refresh' },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 
-  refreshTokens.set(refreshToken, {
-    userId,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000) 
-  });
+  // Database'e kaydet
+  try {
+    const db = getDB();
+    await db.run(
+      "INSERT OR REPLACE INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+      [userId, refreshToken, Date.now() + (7 * 24 * 60 * 60 * 1000)]
+    );
+  } catch (error) {
+    console.error("Refresh token kaydetme hatası:", error);
+  }
   
   return refreshToken;
 };
@@ -30,30 +33,30 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Refresh token gerekli" });
     }
 
-    if (!refreshTokens.has(refreshToken)) {
-      return res.status(401).json({ message: "Geçersiz refresh token" });
-    }
+    // Database'den kontrol et
+    const db = getDB();
+    const tokenRecord = await db.get(
+      "SELECT * FROM refresh_tokens WHERE token = ? AND expires_at > ?",
+      [refreshToken, Date.now()]
+    );
 
-    const tokenData = refreshTokens.get(refreshToken);
-    
-    if (Date.now() > tokenData.expiresAt) {
-      refreshTokens.delete(refreshToken);
-      return res.status(401).json({ message: "Refresh token süresi dolmuş" });
+    if (!tokenRecord) {
+      return res.status(401).json({ message: "Geçersiz veya süresi dolmuş refresh token" });
     }
 
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
     } catch (error) {
-      refreshTokens.delete(refreshToken);
+      // Geçersiz token'ı database'den sil
+      await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
       return res.status(401).json({ message: "Geçersiz refresh token" });
     }
 
-    const db = getDB();
     const user = await db.get("SELECT * FROM users WHERE id = ?", [decoded.userId]);
     
     if (!user) {
-      refreshTokens.delete(refreshToken);
+      await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
       return res.status(404).json({ message: "Kullanıcı bulunamadı" });
     }
 
@@ -63,13 +66,13 @@ router.post("/", async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" } 
+      { expiresIn: "2h" } // 15 dakikadan 2 saate çıkarıldı
     );
 
-    const newRefreshToken = generateRefreshToken(user.id);
+    const newRefreshToken = await generateRefreshToken(user.id);
     
-   
-    refreshTokens.delete(refreshToken);
+    // Eski refresh token'ı sil
+    await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
 
     res.status(200).json({
       accessToken: newAccessToken,
@@ -86,12 +89,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/", (req, res) => {
+router.delete("/", async (req, res) => {
   try {
     const { refreshToken } = req.body;
     
-    if (refreshToken && refreshTokens.has(refreshToken)) {
-      refreshTokens.delete(refreshToken);
+    if (refreshToken) {
+      const db = getDB();
+      await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
     }
     
     res.status(200).json({ message: "Refresh token geçersiz kılındı" });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../../types';
@@ -13,11 +13,76 @@ type PaymentPageProp = {
 
 const PaymentPage = ({ navigation }: PaymentPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "PaymentPage">>();
-  const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop } = route.params;
+  const { 
+    carId, 
+    carModel, 
+    carPrice, 
+    pickupDate, 
+    dropDate, 
+    pickupTime, 
+    dropTime, 
+    pickup, 
+    drop, 
+    source,
+    extraDriver,
+    extraDriverPrice,
+    insurance,
+    insurancePrice,
+    totalPrice,
+    totalDays,
+    basePrice
+  } = route.params;
   
   const [carInfo, setCarInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { isDark } = useTheme();
+
+  // Ödeme başarı fonksiyonu
+  const handlePaymentSuccess = () => {
+    const reservationDetails = `
+🚗 REZERVASYON BİLGİLERİ
+
+� Müşteri Bilgileri:
+• Email: ${userEmail}
+
+�📋 Araç Bilgileri:
+• Model: ${carModel}
+• Günlük Fiyat: ${carPrice} ₺
+
+📍 Lokasyon Bilgileri:
+• Alış Yeri: ${pickup}
+• İade Yeri: ${drop}
+
+📅 Tarih ve Saat Bilgileri:
+• Alış Tarihi: ${pickupDate}
+• İade Tarihi: ${dropDate}
+• Alış Saati: ${pickupTime}
+• İade Saati: ${dropTime}
+
+🔧 Ek Hizmetler:
+• Ek Sürücü: ${extraDriver ? 'Evet' : 'Hayır'}${extraDriver ? ` (+${extraDriverPrice} ₺)` : ''}
+• Sigorta: ${insurance ? 'Evet' : 'Hayır'}${insurance ? ` (+${insurancePrice} ₺)` : ''}
+
+💰 Fiyat Detayları:
+• Araç Kirası: ${carPrice} ₺
+• Ek Sürücü: ${extraDriver ? extraDriverPrice : '0'} ₺
+• Sigorta: ${insurance ? insurancePrice : '0'} ₺
+• Toplam Tutar: ${totalPrice} ₺
+
+✅ Ödeme başarıyla tamamlandı!
+    `;
+
+    Alert.alert(
+      "Rezervasyon Tamamlandı! 🎉",
+      reservationDetails,
+      [
+        {
+          text: "Tamam",
+          onPress: () => navigation.navigate("HomePage")
+        }
+      ]
+    );
+  };
 
  
   useEffect(() => {
@@ -105,8 +170,27 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#111827' : '#F9FAFB' }}>
       <PaymentHeader onBack={() => navigation.goBack()} />
       <ScrollView>
-        <ReservationSummary carInfo={carInfo} />
-        <CreditCardForm carInfo={carInfo} userEmail={userEmail} onSuccess={() => navigation.navigate("HomePage")} />
+        <ReservationSummary 
+          carInfo={{
+            model: carModel || '',
+            pickup: pickup || '',
+            dropoff: drop || '',
+            pickupDate: pickupDate || '',
+            dropoffDate: dropDate || '',
+            pickupTime: pickupTime,
+            dropoffTime: dropTime,
+            price: basePrice || carInfo.price,
+            kdv: Math.round((basePrice || carInfo.price) * 0.18),
+            total: totalPrice || carInfo.total,
+            totalDays: totalDays ? parseInt(totalDays) : undefined
+          }} 
+          extraDriver={extraDriver}
+          extraDriverPrice={extraDriverPrice}
+          insurance={insurance}
+          insurancePrice={insurancePrice}
+          totalPrice={totalPrice}
+        />
+        <CreditCardForm carInfo={carInfo} userEmail={userEmail} onSuccess={handlePaymentSuccess} />
       </ScrollView>
       <TabBar navigation={navigation} activeRoute="HomePage" />
     </SafeAreaView>

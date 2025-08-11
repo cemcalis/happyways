@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from '../Icons/Icons';
 
 interface ReservationCardProps {
@@ -20,7 +20,10 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
   dropoffTime = "14:00"
 }) => {
   return (
-    <View className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+    <View 
+      className="bg-white rounded-lg p-4 border border-gray-100"
+      style={styles.shadowContainer}
+    >
       <View className="flex-row justify-between items-center">
         {/* Sol - Alış */}
         <View className="flex-1">
@@ -44,5 +47,18 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+  },
+});
 
 export default ReservationCard;

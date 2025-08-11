@@ -78,8 +78,18 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
 />
 
           <TouchableOpacity 
-            className="bg-orange-500 py-4 rounded-xl shadow-lg active:bg-orange-600 mt-4"
+            className="bg-orange-500 py-4 rounded-xl active:bg-orange-600 mt-4"
             onPress={handleSubmit}
+            style={{
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 4.65,
+              elevation: 8,
+            }}
           >
             <Text className="text-white font-bold text-center text-lg">
               {t('send')}
