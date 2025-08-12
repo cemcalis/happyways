@@ -1,0 +1,17 @@
+{
+  "tabs": {
+    "home": "Home",
+    "cars": "Cars",
+    "reservation": "Reservation",
+    "campaigns": "Campaigns",
+    "account": "Account"
+  },
+  "headquarters": "Headquarters",
+  "address": "Address: Nicosia, TRNC - Near East Boulevard No: 123",
+  "phone": "Phone",
+  "writeToUs": "Write to Us",
+  "fullName": "Full Name",
+  "phoneNumber": "Your Phone Number",
+  "message": "Your Message",
+  "send": "Send"
+}

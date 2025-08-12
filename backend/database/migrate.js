@@ -21,7 +21,7 @@ const migrateDatabaseSchema = async () => {
       await db.exec("ALTER TABLE cars ADD COLUMN available BOOLEAN DEFAULT 1");
       console.log("'available' column başarıyla eklendi");
     } else {
-      console.log("ℹ️ 'available' column zaten mevcut");
+      console.log("ℹ 'available' column zaten mevcut");
     }
 
     const reservationInfo = await db.all("PRAGMA table_info(reservations)");

@@ -36,6 +36,14 @@ const AdditionalRequests = () => {
   // Route parametrelerini al
   const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, source } = route.params;
 
+  console.log('=== ROUTE PARAMS DEBUG ===');
+  console.log('source:', source);
+  console.log('pickupDate:', pickupDate);
+  console.log('dropDate:', dropDate);
+  console.log('pickupTime:', pickupTime);
+  console.log('dropTime:', dropTime);
+  console.log('=== END ROUTE PARAMS ===');
+
   const [extraDriver, setExtraDriver] = React.useState(false);
   const [insurance, setInsurance] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -43,17 +51,40 @@ const AdditionalRequests = () => {
   
   // Gün hesaplaması
   const calculateDays = () => {
-    if (!pickupDate || !dropDate) return 1;
+    console.log('=== CALCULATE DAYS DEBUG ===');
+    console.log('pickupDate:', pickupDate);
+    console.log('dropDate:', dropDate);
+    
+    if (!pickupDate || !dropDate) {
+      console.log('Missing dates, returning 1');
+      return 1;
+    }
+    
+    // Tarih formatını kontrol et
+    console.log('pickupDate type:', typeof pickupDate);
+    console.log('dropDate type:', typeof dropDate);
     
     const pickup = new Date(pickupDate);
     const dropoff = new Date(dropDate);
+    
+    console.log('Pickup date object:', pickup);
+    console.log('Dropoff date object:', dropoff);
+    console.log('Pickup valid:', !isNaN(pickup.getTime()));
+    console.log('Dropoff valid:', !isNaN(dropoff.getTime()));
+    
     const timeDiff = dropoff.getTime() - pickup.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    console.log('Time diff (ms):', timeDiff);
+    console.log('Days calculated:', daysDiff);
+    console.log('Final result:', daysDiff > 0 ? daysDiff : 1);
+    console.log('=== END DEBUG ===');
     
     return daysDiff > 0 ? daysDiff : 1;
   };
 
   const totalDays = calculateDays();
+  console.log('Final totalDays:', totalDays);
   
   // carPrice'ı sayısal değere çevir
   const extractPrice = (priceString: string) => {

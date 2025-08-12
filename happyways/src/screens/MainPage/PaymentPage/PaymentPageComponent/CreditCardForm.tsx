@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as SecureStore from 'expo-secure-store';
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import CheckBox from 'react-native-check-box';
 import { useTheme } from "../../../../../contexts/ThemeContext";
@@ -17,9 +18,43 @@ interface CreditCardFormProps {
   };
   userEmail: string;
   onSuccess: () => void;
+  // Rezervasyon bilgileri
+  carId: number;
+  carModel: string | undefined;
+  carPrice: string | undefined;
+  pickupDate: string | undefined;
+  dropDate: string | undefined;
+  pickupTime: string | undefined;
+  dropTime: string | undefined;
+  pickup: string | undefined;
+  drop: string | undefined;
+  extraDriver: boolean;
+  extraDriverPrice: string;
+  insurance: boolean;
+  insurancePrice: string;
+  totalPrice: string;
 }
 
-const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onSuccess }) => {
+const CreditCardForm: React.FC<CreditCardFormProps> = ({ 
+  carInfo, 
+  userEmail, 
+  onSuccess,
+  // Rezervasyon bilgileri
+  carId,
+  carModel,
+  carPrice,
+  pickupDate,
+  dropDate,
+  pickupTime,
+  dropTime,
+  pickup,
+  drop,
+  extraDriver,
+  extraDriverPrice,
+  insurance,
+  insurancePrice,
+  totalPrice
+}) => {
   const [name, setName] = useState("");
   const [cardNo, setCardNo] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
@@ -34,11 +69,15 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
 
   const handlePayment = async () => {
     setLoading(true);
-    
     try {
+  const token = await SecureStore.getItemAsync('userToken');
+      console.log('DEBUG carInfo gönderilen:', carInfo);
       const validationResponse = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           name,
           cardNo,
@@ -54,11 +93,11 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
       });
 
       const validationData = await validationResponse.json();
-      
+
       if (!validationData.success) {
         Alert.alert(
-          "Form Hatası", 
-          validationData.validation.errors.join("\n"), 
+          "Form Hatası",
+          validationData.validation.errors.join("\n"),
           [{ text: "TAMAM" }]
         );
         setLoading(false);
@@ -67,18 +106,18 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
 
       if (validationData.validation.warnings.length > 0) {
         Alert.alert(
-          "Uyarı", 
+          "Uyarı",
           validationData.validation.warnings.join("\n") + "\n\nDevam etmek istiyor musunuz?",
           [
             { text: "İptal", style: "cancel", onPress: () => setLoading(false) },
-            { text: "Devam Et", onPress: () => processPayment() }
+            { text: "Devam Et", onPress: () => processPayment(token ?? undefined) }
           ]
         );
         return;
       }
 
-      await processPayment();
-      
+      await processPayment(token ?? undefined);
+
     } catch (err) {
       console.error("Validasyon hatası:", err);
       Alert.alert("Validasyon Hatası", "Form doğrulaması yapılamadı. Lütfen tekrar deneyiniz.", [{ text: "TAMAM" }]);
@@ -86,11 +125,14 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
     }
   };
 
-  const processPayment = async () => {
+  const processPayment = async (token?: string) => {
     try {
       const res = await fetch("http://10.0.2.2:3000/api/payment", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           name,
           cardNo,
@@ -102,9 +144,24 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
           secure,
           emailChecked,
           smsChecked,
+          // Rezervasyon bilgileri
+          carId,
+          carModel,
+          carPrice,
+          pickupDate,
+          dropDate,
+          pickupTime,
+          dropTime,
+          pickup,
+          drop,
+          extraDriver,
+          extraDriverPrice,
+          insurance,
+          insurancePrice,
+          totalPrice
         }),
       });
-   
+
       const data = await res.json();
       Alert.alert(data.message || (data.success ? "Ödemeniz Başarılı" : "İşlem başarısız"), "", [
         { text: "TAMAM", onPress: data.success ? onSuccess : undefined }

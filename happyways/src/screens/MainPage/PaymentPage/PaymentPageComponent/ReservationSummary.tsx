@@ -26,9 +26,9 @@ interface ReservationSummaryProps {
 const ReservationSummary: React.FC<ReservationSummaryProps> = ({ 
   carInfo, 
   extraDriver, 
-  extraDriverPrice, 
-  insurance, 
-  insurancePrice, 
+  extraDriverPrice,
+  insurance,
+  insurancePrice,
   totalPrice 
 }) => {
   const { isDark } = useTheme();
@@ -100,6 +100,12 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
               color: isDark ? "#D1D5DB" : "#000000" 
             }}>Sigorta : {insurancePrice} TL</Text>
           )}
+          
+          <Text style={{ 
+            marginBottom: 4, 
+            color: isDark ? "#F59E0B" : "#D97706",
+            fontWeight: "600" 
+          }}>Depozito : {carInfo.model?.includes('BMW') ? '1800' : '2000'} TL</Text>
           
           <Text style={{ 
             marginBottom: 4, 

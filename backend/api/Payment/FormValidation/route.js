@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-// Kredi kartı validasyonu için Luhn algoritması
+
 function validateCardNumber(cardNumber) {
   const number = cardNumber.replace(/\D/g, '');
   let sum = 0;
@@ -25,7 +25,7 @@ function validateCardNumber(cardNumber) {
   return sum % 10 === 0;
 }
 
-// Kart tipini tespit et
+
 function getCardType(cardNumber) {
   const number = cardNumber.replace(/\D/g, '');
   
@@ -37,7 +37,7 @@ function getCardType(cardNumber) {
   return 'Unknown';
 }
 
-// Ödeme formu validasyonu endpoint'i
+
 router.post("/", async (req, res) => {
   try {
     const { 
@@ -56,14 +56,14 @@ router.post("/", async (req, res) => {
     const errors = [];
     const warnings = [];
 
-    // İsim validasyonu
+
     if (!name || name.trim().length < 2) {
       errors.push("Ad Soyad en az 2 karakter olmalıdır");
     } else if (!/^[a-zA-ZğĞıİşŞöÖüÜçÇ\s]+$/.test(name.trim())) {
       errors.push("Ad Soyad sadece harflerden oluşmalıdır");
     }
 
-    // Kart numarası validasyonu
+
     if (!cardNo || cardNo.trim().length === 0) {
       errors.push("Kart numarası gereklidir");
     } else {
@@ -81,14 +81,14 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // Son kullanma tarihi validasyonu
+   
     if (!expiryMonth || !expiryYear) {
       errors.push("Son kullanma tarihi gereklidir");
     } else {
       const month = parseInt(expiryMonth);
       const year = parseInt(expiryYear);
       const currentDate = new Date();
-      const currentYear = currentDate.getFullYear() % 100; // Son 2 hane
+      const currentYear = currentDate.getFullYear() % 100; 
       const currentMonth = currentDate.getMonth() + 1;
 
       if (month < 1 || month > 12) {
@@ -104,31 +104,39 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // CVV validasyonu
+  
     if (!cvv) {
       errors.push("CVV gereklidir");
     } else if (!/^\d{3,4}$/.test(cvv)) {
       errors.push("CVV 3-4 haneli olmalıdır");
     }
 
-    // Email validasyonu
+ 
     if (!userEmail) {
       errors.push("Email adresi gereklidir");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
       errors.push("Geçersiz email formatı");
     }
 
-    // Araç bilgileri validasyonu
+    console.log(" DEBUG carInfo:", JSON.stringify(carInfo, null, 2));
+  
     if (!carInfo || !carInfo.total || carInfo.total <= 0) {
+      console.log(" CarInfo validation failed:", {
+        carInfoExists: !!carInfo,
+        totalExists: carInfo ? !!carInfo.total : false,
+        totalValue: carInfo ? carInfo.total : 'undefined'
+      });
       errors.push("Geçersiz ödeme tutarı");
+    } else {
+      console.log(" CarInfo validation passed:", carInfo.total);
     }
 
-    // İletişim tercihi kontrolü
+  
     if (!emailChecked && !smsChecked) {
       warnings.push("Bilgilendirme için en az bir iletişim yöntemi seçmeniz önerilir");
     }
 
-    // Risk analizi
+  
     const riskFactors = [];
     if (!secure) {
       riskFactors.push("3D Secure kullanılmıyor");
@@ -152,7 +160,7 @@ router.post("/", async (req, res) => {
       recommendations: []
     };
 
-    // Öneriler ekle
+  
     if (!secure) {
       validationResult.recommendations.push("Güvenlik için 3D Secure kullanmanız önerilir");
     }

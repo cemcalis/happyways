@@ -80,11 +80,11 @@ router.post("/", async (req, res) => {
     // Sıralama
     switch (sortBy) {
       case 'price_asc':
-        filteredCars.sort((a, b) => {
-          const priceA = Number(a.price.replace(/[^0-9]/g, "")) || 0;
-          const priceB = Number(b.price.replace(/[^0-9]/g, "")) || 0;
-          return priceA - priceB;
-        });
+          filteredCars.sort((a, b) => {
+            const priceA = typeof a.price === "string" ? Number(a.price.replace(/[^0-9]/g, "")) : Number(a.price);
+            const priceB = typeof b.price === "string" ? Number(b.price.replace(/[^0-9]/g, "")) : Number(b.price);
+            return priceA - priceB;
+          });
         break;
       case 'price_desc':
         filteredCars.sort((a, b) => {

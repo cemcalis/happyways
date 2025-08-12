@@ -33,12 +33,15 @@ const seed = async () => {
     );
   `);
 
+  await db.exec(`DROP TABLE IF EXISTS cars`);
+
   await db.exec(`
-    CREATE TABLE IF NOT EXISTS cars (
+    CREATE TABLE cars (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       model TEXT,
       year INTEGER,
       price REAL,
+      deposit REAL,
       image TEXT,
       gear TEXT,
       fuel TEXT,
@@ -51,25 +54,29 @@ const seed = async () => {
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS reservations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER,
-      car_id INTEGER,
+      id TEXT PRIMARY KEY,
+      car_id INTEGER NOT NULL,
+      user_email TEXT NOT NULL,
       pickup_location TEXT NOT NULL,
-      dropoff_location TEXT,
+      dropoff_location TEXT NOT NULL,
       pickup_date TEXT NOT NULL,
       dropoff_date TEXT NOT NULL,
       pickup_time TEXT NOT NULL,
       dropoff_time TEXT NOT NULL,
-      total_price TEXT,
-      status TEXT DEFAULT 'active',
+      total_price TEXT NOT NULL,
+      extra_driver BOOLEAN DEFAULT 0,
+      extra_driver_price TEXT DEFAULT '0',
+      insurance BOOLEAN DEFAULT 0,
+      insurance_price TEXT DEFAULT '0',
+      payment_id TEXT,
+      status TEXT DEFAULT 'pending',
+      payment_status TEXT DEFAULT 'pending',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (car_id) REFERENCES cars(id)
     );
   `);
 
   await db.exec(`DELETE FROM campaigns`);
-  await db.exec(`DELETE FROM cars`);
 
   await db.exec(`
     INSERT INTO campaigns 
@@ -100,25 +107,25 @@ const seed = async () => {
        'Ücretsiz kilometre');
   `);
 
- 
   await db.exec(`
-    INSERT INTO cars (model, year, price, image, gear, fuel, seats, ac, kosullar) VALUES
-      ('Mercedes C220', 2024, 5000, 'mercedes.png', 'Otomatik', 'Dizel', 5, 1, 
-       '• Minimum yaş: 21\n• Ehliyet süresi: En az 2 yıl\n• Kredi kartı gerekli\n• Depozito: 2.000 TL\n• Günlük km limiti: 300 km'),
-      ('BMW 3 Serisi', 2020, 4500, 'bmw.png', 'Otomatik', 'Benzin', 5, 1,
-       '• Minimum yaş: 23\n• Ehliyet süresi: En az 3 yıl\n• Kredi kartı gerekli\n• Depozito: 1.800 TL\n• Günlük km limiti: 250 km');
+    INSERT INTO cars (model, year, price, deposit, image, gear, fuel, seats, ac, kosullar) VALUES
+      ('Mercedes C220', 2024, 5000, 2000, 'mercedes.png', 'Otomatik', 'Dizel', 5, 1, 
+       '• Minimum yaş: 21\n• Ehliyet süresi: En az 2 yıl\n• Kredi kartı gerekli\n• Günlük km limiti: 300 km'),
+      ('BMW 3 Serisi', 2020, 4500, 1800, 'bmw.png', 'Otomatik', 'Benzin', 5, 1,
+       '• Minimum yaş: 23\n• Ehliyet süresi: En az 3 yıl\n• Kredi kartı gerekli\n• Günlük km limiti: 250 km');
   `);
 
-
-   await db.exec(`   INSERT INTO locations (name, address) VALUES
+  await db.exec(`
+    INSERT INTO locations (name, address) VALUES
     ('Ercan Havalimanı', 'Ercan Havalimanı, Lefkoşa'),
     ('Girne Merkez', 'Atatürk Cd. No:12, Girne'),
     ('Gazimağusa Otogar', 'Otogar Sk. No:5, Gazimağusa'),
     ('Güzelyurt Terminal', 'Terminal Cd. No:3, Güzelyurt'),
     ('Lefke Meydan', 'Meydan Sk. No:1, Lefke')
   `);
-    
-  console.log(" Seed tamamlandı");
+
+  console.log("Seed tamamlandı");
+  await db.close();
 };
 
 seed();

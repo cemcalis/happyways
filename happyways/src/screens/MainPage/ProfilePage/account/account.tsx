@@ -50,7 +50,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
           <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <View className="flex-row items-center space-x-3">
               <Icon name="money" size={20} />
-              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Para Birimi</Text>
+              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>{t('profile:currency')}</Text>
             </View>
             <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>₺ TRY</Text>
           </TouchableOpacity>
@@ -85,7 +85,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
 
        
         <View className="p-4 items-center">
-          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>Sosyal Medya Hesaplarımız</Text>
+           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t('profile:SocialMediaAccounts')}</Text>
           <View className="flex-row space-x-6">
             <Icon name="linkedin" size={22} />
             <Icon name="instagram" size={22} />
