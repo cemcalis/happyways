@@ -28,5 +28,21 @@
   "pickupDate": "Pickup Date",
   "dropoffDate": "Dropoff Date",
   "rentalPeriod": "Rental Period",
-  "days": "days"
+  "days": "days",
+  "deposit": "Deposit",
+  "extraDriver": "Extra Driver",
+  "insurance": "Insurance",
+  "kdv": "Kdv",
+  "reservationSummary": "Reservation Summary",
+  "car": "Car",
+  "duration": "Duration",
+  "time": "Time",
+  "fullName": "Full Name",
+  "expiryMonth": "Expiry Month",
+  "expiryYear": "Expiry Year",
+  "3DSecurePayment": "3D Secure Payment",
+  "pay": "Pay",
+  "email": "Email",
+  "creditCardInformation": "Credit Card Information",
+  "communicationPreference": "Communication Preference"
 }

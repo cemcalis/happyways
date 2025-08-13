@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import Icon from "../Icons/Icons";
 import { useTheme } from "../../contexts/ThemeContext";
-
+import { useTranslation } from "react-i18next";
 
 type TabBarProps = {
 navigation: any;
@@ -10,8 +10,8 @@ navigation: any;
 };
 export default function TabBar({ navigation, activeRoute }: TabBarProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation('common');
 
-  
   return (
     <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-t py-1`}>
       <TouchableOpacity
@@ -20,7 +20,7 @@ export default function TabBar({ navigation, activeRoute }: TabBarProps) {
       >
         <Icon name="home" size={22} fill={activeRoute === "HomePage" ? "#f97316" : "#9ca3af"} />
         <Text className={activeRoute === "HomePage" ? "text-orange-500 font-semibold text-xs" : "text-gray-400 text-xs"}>
-          Anasayfa
+          {t("home")}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -29,7 +29,7 @@ export default function TabBar({ navigation, activeRoute }: TabBarProps) {
       >
         <Icon name="car" size={22} fill={activeRoute === "AllCarsPage" ? "#f97316" : "#9ca3af"} />
         <Text className={activeRoute === "AllCarsPage" ? "text-orange-500 font-semibold text-xs" : "text-gray-400 text-xs"}>
-          Araçlar
+          {t("cars")}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -38,7 +38,7 @@ export default function TabBar({ navigation, activeRoute }: TabBarProps) {
       >
         <Icon name="search" size={22} fill={activeRoute === "ReservationPage" ? "#f97316" : "#9ca3af"} />
         <Text className={activeRoute === "ReservationPage" ? "text-orange-500 font-semibold text-xs" : "text-gray-400 text-xs"}>
-          Rezervasyon
+          {t("reservation")}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -47,7 +47,7 @@ export default function TabBar({ navigation, activeRoute }: TabBarProps) {
       >
         <Icon name="campaign" size={22} fill={activeRoute === "CampaignPage" ? "#f97316" : "#9ca3af"} />
         <Text className={activeRoute === "CampaignPage" ? "text-orange-500 font-semibold text-xs" : "text-gray-400 text-xs"}>
-          Kampanyalar
+          {t("campaigns")}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -56,8 +56,8 @@ export default function TabBar({ navigation, activeRoute }: TabBarProps) {
       >
         <Icon name="user" size={22} fill={activeRoute === "ProfilePage" ? "#f97316" : "#9ca3af"} />
         <Text className={activeRoute === "ProfilePage" ? "text-orange-500 font-semibold text-xs" : "text-gray-400 text-xs"}>
-          Hesabım
-        </Text>
+          {t("profile")}
+        </Text> 
       </TouchableOpacity>
     </View>
   );

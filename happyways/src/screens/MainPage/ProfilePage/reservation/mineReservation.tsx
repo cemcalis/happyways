@@ -182,7 +182,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-xs`}>Süre: {item.duration}</Text>
       </View>
       
-      {/* Reservation Details using ReservationCard */}
+    
       <View className="p-2">
         <ReservationCard
           pickupLocation={item.pickup_location}
@@ -226,7 +226,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         </View>
       )}
 
-      {/* Tab Navigation */}
+
       <View className={`flex-row ${isDark ? 'bg-gray-800' : 'bg-white'} mx-4 mt-4 rounded-lg shadow-sm`}>
         {(['active', 'upcoming', 'completed', 'cancelled'] as const).map((tab, index) => {
           const labels = {
@@ -252,7 +252,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         })}
       </View>
 
-      {/* Filter and Sort */}
+  
       <View className={`flex-row justify-between items-center px-4 py-3 ${isDark ? 'bg-gray-800' : 'bg-white'} mx-4 mt-2 rounded-lg shadow-sm`}>
         <TouchableOpacity className="flex-row items-center">
           <Icon name="filter" size={18} />
@@ -263,14 +263,14 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         </TouchableOpacity>
       </View>
 
-      {/* Loading State */}
+     
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#0066cc" />
           <Text className={`mt-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{t('loadingReservations')}</Text>
         </View>
       ) : (
-        /* Reservations List */
+     
         <FlatList
           data={getTabData()}
           renderItem={renderItem}

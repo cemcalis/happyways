@@ -8,6 +8,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import { useTheme } from '../../../../../contexts/ThemeContext'
 import TabBar from '../../../../../Components/TabBar/TapBar'
 import ReservationCard from '../../../../../Components/ReservationCard/ReservationCard'
+import { useTranslation } from 'react-i18next'
 
 type AdditionalRequestsProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "AdditionalRequests">;
@@ -32,8 +33,7 @@ const AdditionalRequests = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "AdditionalRequests">>();
   const route = useRoute<RouteProp<RootStackParamList, "AdditionalRequests">>();
   const { isDark } = useTheme();
-
-  // Route parametrelerini al
+  const { t } = useTranslation('cars');
   const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, source } = route.params;
 
   console.log('=== ROUTE PARAMS DEBUG ===');
@@ -49,7 +49,7 @@ const AdditionalRequests = () => {
   const [loading, setLoading] = React.useState(false);
   const [priceData, setPriceData] = React.useState<PriceData | null>(null);
   
-  // Gün hesaplaması
+  
   const calculateDays = () => {
     console.log('=== CALCULATE DAYS DEBUG ===');
     console.log('pickupDate:', pickupDate);
@@ -60,7 +60,7 @@ const AdditionalRequests = () => {
       return 1;
     }
     
-    // Tarih formatını kontrol et
+    
     console.log('pickupDate type:', typeof pickupDate);
     console.log('dropDate type:', typeof dropDate);
     
@@ -86,18 +86,17 @@ const AdditionalRequests = () => {
   const totalDays = calculateDays();
   console.log('Final totalDays:', totalDays);
   
-  // carPrice'ı sayısal değere çevir
+
   const extractPrice = (priceString: string) => {
-    if (!priceString) return 200; // Varsayılan fiyat
+    if (!priceString) return 200; 
     
-    // Eğer zaten sayısal değerse direkt parse et
+
     const numericPrice = parseFloat(priceString);
     if (!isNaN(numericPrice)) {
       console.log('Direct parse successful:', numericPrice);
       return numericPrice;
     }
     
-    // String formatında ise temizle (örn: "5.000 ₺" -> 5000)
     const numericString = priceString.replace(/[^0-9.]/g, '');
     const price = parseFloat(numericString);
     
@@ -148,7 +147,7 @@ const AdditionalRequests = () => {
   }, [extraDriver, insurance]);
 
   const extraDriverTotal = extraDriver ? extraDriverPrice : 0;
-  const insurancePrice = insurance ? (basePrice * 0.1) : 0; // Sigorta %10
+  const insurancePrice = insurance ? (basePrice * 0.1) : 0; 
   const finalPrice = basePrice + extraDriverTotal + insurancePrice;
 
   const handleRentNow = async () => {
@@ -169,9 +168,9 @@ const AdditionalRequests = () => {
         extraDriverPrice: extraDriverTotal.toString(),
         insurance: insurance,
         insurancePrice: insurancePrice.toString(),
-        totalPrice: finalPrice.toString(), // Toplam fiyat
-        totalDays: totalDays.toString(), // Toplam gün sayısı
-        basePrice: basePrice.toString() // Araç için toplam fiyat (günlük × gün sayısı)
+        totalPrice: finalPrice.toString(),
+        totalDays: totalDays.toString(),
+        basePrice: basePrice.toString()
       });
     } catch (error) {
       console.error('Navigation error:', error);
@@ -180,16 +179,16 @@ const AdditionalRequests = () => {
 
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-      {/* Header */}
+
       <View className="flex-row items-center px-4 py-4">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text className={`text-2xl ${isDark ? 'text-white' : 'text-black'}`}>←</Text>
         </TouchableOpacity>
-        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'} ml-4`}>Araç Detayı</Text>
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'} ml-4`}>{t('carDetails')}</Text>
       </View>
 
       <View className="flex-1">
-        {/* Ek Sürücü Kartı */}
+   
         <View className="px-4 mb-4">
           <TouchableOpacity 
             onPress={toggleExtraDriver}
@@ -201,16 +200,16 @@ const AdditionalRequests = () => {
                   <Image 
                     source={require("../../../../../assets/CarsPage/adddriver.png")} 
                     style={styles.iconImage}
-                    // tintColor='white' // Bu prop artık deprecated
+                   
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>Ek Sürücü</Text>
-                  <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Toplam Fiyat ({totalDays} Gün):</Text>
+                  <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{t('extraDriver')}</Text>
+                  <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{t('totalPrice')} ({totalDays} {t('days')}):</Text>
                   <Text className="text-orange-600 font-bold">₺ {extraDriverPrice.toFixed(2)}</Text>
                 </View>
               </View>
-              {/* Custom Toggle Switch */}
+            
               <View className={`w-12 h-6 rounded-full items-end justify-center pr-1 ${extraDriver ? 'bg-orange-500' : 'bg-gray-200'}`}>
                 <View className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-all duration-200 ${extraDriver ? 'translate-x-0' : '-translate-x-5'}`}></View>
               </View>
@@ -218,38 +217,38 @@ const AdditionalRequests = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Rezervasyon Detayları */}
+      
         <View className="flex-1 justify-center px-4">
           <View className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl p-4 shadow-sm border`}>
-            {/* Lokasyon Bilgileri */}
+         
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-1">
-                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>Alış</Text>
+                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{t('pickUp')}</Text>
                 <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{pickup || "Ercan"}</Text>
                 <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{pickupDate}, {pickupTime}</Text>
               </View>
               <View className={`w-8 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-300'} mx-4`}></View>
               <View className="flex-1 items-end">
-                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>Dönüş</Text>
+                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{t('dropOff')}</Text>
                 <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{drop || "Lefkoşa"}</Text>
                 <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{dropDate}, {dropTime}</Text>
               </View>
             </View>
 
-            {/* Süre Bilgisi */}
+        
             <View className={`mt-4 pt-4 border-t ${isDark ? 'border-gray-600' : 'border-gray-100'}`}>
-              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{totalDays} Gün İçin Toplam</Text>
+              <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{totalDays} {t('Days')}</Text>
               <Text className={`${isDark ? 'text-white' : 'text-black'} font-bold text-2xl`}>₺ {finalPrice.toFixed(2)}</Text>
               {extraDriver && (
                 <Text className="text-orange-500 text-sm mt-1">
-                  Ek sürücü dahil (+₺ {extraDriverTotal.toFixed(2)})
+                  {t('extraDriver')} (+₺ {extraDriverTotal.toFixed(2)})
                 </Text>
               )}
             </View>
           </View>
         </View>
 
-        {/* Hemen Kirala Butonu */}
+    
         <View className="px-4 pb-4">
           <TouchableOpacity 
             className="bg-orange-500 rounded-xl py-4 active:opacity-80"
@@ -257,7 +256,7 @@ const AdditionalRequests = () => {
             style={styles.shadowButton}
           >
             <Text className="text-white text-center font-bold text-lg">
-              Hemen Kirala
+              {t('rentNow')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -282,7 +281,7 @@ const styles = StyleSheet.create({
   iconImage: {
     width: 20,
     height: 20,
-    // tintColor artık React Native'de deprecated
+
   },
 });
 

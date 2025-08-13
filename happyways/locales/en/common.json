@@ -28,11 +28,18 @@
   "register": "Register",
   "home": "Home",
   "cars": "Cars",
+  "theme": "Theme",
+  "system": "System",
+  "selectTheme": "Select Theme",
+  "reservation": "Reservation",
   "myAccount": "My Account",
   "campaigns": "Campaigns",
+  "light": "Light",
+  "dark": "Dark",
   "infoPage": {
     "title": "Find Your Perfect Car Today!",
     "description": "Always start your journey with the car you want - discover the best opportunities.",
-    "callToAction": "Start now and find the car of your dreams!"
+    "callToAction": "Start now and find the car of your dreams!",
+    "mescription": "The system option uses your device's theme settings."
   }
 }

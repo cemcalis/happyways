@@ -50,5 +50,14 @@
   "availableForRent": "Available for rent",
   "notAvailable": "Not available",
   "conditions": "Terms and Conditions",
-  "termsAndConditions": "Rental Terms"
+  "termsAndConditions": "Rental Terms",
+  "rentNow": "Rent Now",
+  "extraDriver": "Extra Driver",
+  "Days": "Days",
+  "dropOff": "Drop Off",
+  "pickUp": "Pick Up"
+
+  
+
+
 }

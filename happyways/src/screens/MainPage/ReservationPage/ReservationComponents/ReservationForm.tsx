@@ -5,7 +5,7 @@ import { useTheme } from "../../../../../contexts/ThemeContext";
 import ReusableTextInput from "../../../../../Components/ReusableTextInput/ReusableTextInput";
 import LocationSelect from "../../../../../Components/LocationSelect/LocationSelect";
 import Icon from "../../../../../Components/Icons/Icons";
-
+import { useTranslation } from "react-i18next";
 type LocationType = {
   id: number;
   name: string;
@@ -64,20 +64,19 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   daysDifference,
 }) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('reservation');
   
-  // Date/Time picker states
   const [showPickupDatePicker, setShowPickupDatePicker] = useState(false);
   const [showDropoffDatePicker, setShowDropoffDatePicker] = useState(false);
   const [showPickupTimePicker, setShowPickupTimePicker] = useState(false);
   const [showDropoffTimePicker, setShowDropoffTimePicker] = useState(false);
   
-  // Date objects
+  
   const [pickupDate, setPickupDate] = useState(new Date());
   const [dropoffDate, setDropoffDate] = useState(new Date());
   const [pickupTime, setPickupTime] = useState(new Date());
   const [dropoffTime, setDropoffTime] = useState(new Date());
 
-  // Date/Time handlers
   const handlePickupDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setShowPickupDatePicker(false);
     if (selectedDate) {
@@ -119,24 +118,24 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border p-4 mb-4`}
       style={styles.shadowContainer}
     >
-      {/* Pickup Location */}
+      
       <View className="mb-4">
         <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-          Alış Lokasyonu
+          {t('pickupLocation')}
         </Text>
         <LocationSelect onSelect={onPickupLocationSelect} />
         {pickupLocation && (
           <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-            Seçilen: {pickupLocation.name}
+            {t('selected')}: {pickupLocation.name}
           </Text>
         )}
       </View>
 
-      {/* Date Selection */}
+      
       <View className="flex-row space-x-3 mb-4">
         <View className="flex-1">
           <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-            Alış Tarihi
+            {t('pickupDate')}
           </Text>
           <TouchableOpacity
             onPress={() => setShowPickupDatePicker(true)}
@@ -145,7 +144,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           >
             <Icon name="date" size={20} />
             <Text className={`flex-1 ml-3 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base`}>
-              {getdate || "Tarih Seçin"}
+              {getdate || t('selectDate')}
             </Text>
           </TouchableOpacity>
           {showPickupDatePicker && (
@@ -154,13 +153,13 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               mode="date"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handlePickupDateChange}
-              minimumDate={new Date()} // Geçmiş tarihler seçilemez
+              minimumDate={new Date()} 
             />
           )}
         </View>
         <View className="flex-1">
           <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-            İade Tarihi
+            {t('dropoffDate')}
           </Text>
           <TouchableOpacity
             onPress={() => setShowDropoffDatePicker(true)}
@@ -169,7 +168,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           >
             <Icon name="date" size={20} />
             <Text className={`flex-1 ml-3 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base`}>
-              {backdate || "Tarih Seçin"}
+              {backdate || t('selectDate')}
             </Text>
           </TouchableOpacity>
           {showDropoffDatePicker && (
@@ -178,17 +177,17 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               mode="date"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleDropoffDateChange}
-              minimumDate={pickupDate} // Alış tarihinden önce seçilemez
+              minimumDate={pickupDate} 
             />
           )}
         </View>
       </View>
 
-      {/* Time Selection */}
+      
       <View className="flex-row space-x-3 mb-4">
         <View className="flex-1">
           <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-            Alış Saati
+            {t('pickupTime')}
           </Text>
           <TouchableOpacity
             onPress={() => setShowPickupTimePicker(true)}
@@ -197,7 +196,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           >
             <Icon name="clock" size={20} />
             <Text className={`flex-1 ml-3 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base`}>
-              {gettime || "Saat Seçin"}
+              {gettime || t('selectTime')}
             </Text>
           </TouchableOpacity>
           {showPickupTimePicker && (
@@ -211,7 +210,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         </View>
         <View className="flex-1">
           <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-            İade Saati
+            {t('dropoffTime')}
           </Text>
           <TouchableOpacity
             onPress={() => setShowDropoffTimePicker(true)}
@@ -220,7 +219,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           >
             <Icon name="clock" size={20} />
             <Text className={`flex-1 ml-3 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base`}>
-              {backtime || "Saat Seçin"}
+              {backtime || t('selectTime')}
             </Text>
           </TouchableOpacity>
           {showDropoffTimePicker && (
@@ -234,19 +233,18 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         </View>
       </View>
 
-      {/* Price Information - HomePage flow'unda göster */}
+      
       {source === "HomePage" && carId && calculatedPrice && (
         <View className={`mb-4 p-3 rounded-lg ${isDark ? 'bg-blue-900/30 border-blue-700' : 'bg-blue-50 border-blue-200'} border`}>
           <Text className={`text-sm font-medium ${isDark ? 'text-blue-300' : 'text-blue-700'} mb-1`}>
-            Fiyat Hesaplaması
+            {t('priceCalculation')}
           </Text>
           <Text className={`text-xs ${isDark ? 'text-blue-200' : 'text-blue-600'}`}>
-            {daysDifference} gün × {carPrice} = {calculatedPrice} ₺
+            {daysDifference} {t('days')} × {carPrice} = {calculatedPrice} ₺
           </Text>
         </View>
       )}
 
-      {/* Different Dropoff Location Toggle */}
       <TouchableOpacity
         className="flex-row items-center mb-6"
         onPress={onToggleDropoffSameAsPickup}
@@ -263,26 +261,26 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           )}
         </View>
         <Text className={`${isDark ? 'text-gray-300' : 'text-gray-700'} font-medium`}>
-          Farklı İade Lokasyonu
+          {t('differentDropoffLocation')}
         </Text>
       </TouchableOpacity>
 
-      {/* Dropoff Location - Only show if different location is selected */}
+
       {!usePickupAsDropoff && (
         <View className="mb-4">
           <Text className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-            İade Lokasyonu
+            {t('dropoffLocation')}
           </Text>
           <LocationSelect onSelect={onDropoffLocationSelect} />
           {dropoffLocation && (
             <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-              Seçilen: {dropoffLocation.name}
+              {t('selected')}: {dropoffLocation.name}
             </Text>
           )}
         </View>
       )}
 
-      {/* Search Button */}
+
       <TouchableOpacity
         onPress={onSearch}
         disabled={isSearching}
@@ -291,10 +289,10 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       >
         <Text className="text-center text-white text-lg font-bold">
           {isSearching 
-            ? "Aranıyor..." 
+            ? t('searching') 
             : source === "HomePage" && carId 
-              ? "Rezervasyon Devam Et" 
-              : "Rezervasyon Ara"
+              ? t('continueReservation') 
+              : t('searchCars')
           }
         </Text>
       </TouchableOpacity>

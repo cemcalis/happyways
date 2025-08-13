@@ -6,6 +6,7 @@ import { RootStackParamList } from '../../../../types';
 import TabBar from '../../../../Components/TabBar/TapBar';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { PaymentHeader, ReservationSummary, CreditCardForm } from "./PaymentPageComponent";
+import { useTranslation } from 'react-i18next';
 
 type PaymentPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "PaymentPage">
@@ -32,7 +33,8 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
     totalDays,
     basePrice
   } = route.params;
-  
+
+const { t } = useTranslation('payment');
 
   const calculateDaysDirectly = () => {
     if (!pickupDate || !dropDate) return 1;
@@ -98,10 +100,10 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
     const reservationDetails = `
  REZERVASYON BİLGİLERİ
 
-� Müşteri Bilgileri:
+ Müşteri Bilgileri:
 • Email: ${userEmail}
 
-� Araç Bilgileri:
+ Araç Bilgileri:
 • Model: ${carModel}
 • Günlük Fiyat: ${carPrice} ₺
 
@@ -129,11 +131,11 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
     `;
 
     Alert.alert(
-      "Rezervasyon Tamamlandı! 🎉",
+      "Rezervasyon Tamamlandı! ",
       reservationDetails,
       [
         {
-          text: "Tamam",
+          text: t('OK'),
           onPress: () => navigation.navigate("HomePage")
         }
       ]
@@ -222,7 +224,7 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
         <PaymentHeader onBack={() => navigation.goBack()} />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="orange" />
-          <Text style={{ marginTop: 16, color: isDark ? '#fff' : '#333', fontSize: 16 }}>Ödeme sayfası yükleniyor...</Text>
+          <Text style={{ marginTop: 16, color: isDark ? '#fff' : '#333', fontSize: 16 }}>{t('Loading payment page...')}</Text>
         </View>
         <TabBar navigation={navigation} activeRoute="HomePage" />
       </SafeAreaView>

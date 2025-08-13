@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
-
+import { useTranslation } from "react-i18next";
 interface CarInfo {
   id: number;
   brand: string;
@@ -17,7 +17,8 @@ interface SelectedCarInfoProps {
 
 const SelectedCarInfo: React.FC<SelectedCarInfoProps> = ({ carInfo }) => {
   const { isDark } = useTheme();
-
+  const { t } = useTranslation('reservation');
+1
   if (!carInfo) {
     return null;
   }
@@ -28,7 +29,7 @@ const SelectedCarInfo: React.FC<SelectedCarInfoProps> = ({ carInfo }) => {
       style={styles.shadowContainer}
     >
       <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-4`}>
-        Seçilen Araç
+        {t('selectedCar')}
       </Text>
       
       <View className="flex-row items-center">

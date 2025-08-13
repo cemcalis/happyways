@@ -18,7 +18,7 @@ interface CreditCardFormProps {
   };
   userEmail: string;
   onSuccess: () => void;
-  // Rezervasyon bilgileri
+
   carId: number;
   carModel: string | undefined;
   carPrice: string | undefined;
@@ -39,7 +39,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
   carInfo, 
   userEmail, 
   onSuccess,
-  // Rezervasyon bilgileri
+
   carId,
   carModel,
   carPrice,
@@ -144,7 +144,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
           secure,
           emailChecked,
           smsChecked,
-          // Rezervasyon bilgileri
+       
           carId,
           carModel,
           carPrice,
@@ -180,9 +180,9 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         fontSize: 16, 
         marginBottom: 8, 
         color: isDark ? "#FFFFFF" : "#000000" 
-      }}>Kredi Kartı Bilgileri</Text>
+      }}>{t("creditCardInformation")}</Text>
       <TextInput 
-        placeholder="Ad Soyad" 
+        placeholder={t("fullName")}
         value={name} 
         onChangeText={setName} 
         style={{ 
@@ -196,7 +196,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
       />
       <TextInput 
-        placeholder="Kart No" 
+        placeholder={t("cardNumber")}
         value={cardNo} 
         onChangeText={setCardNo} 
         style={{ 
@@ -212,7 +212,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
       />
       <View style={{ flexDirection: "row", marginBottom: 8 }}>
         <TextInput 
-          placeholder="Ay" 
+          placeholder={t("expiryMonth")} 
           value={expiryMonth} 
           onChangeText={setExpiryMonth} 
           style={{ 
@@ -228,7 +228,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
           placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
         />
         <TextInput 
-          placeholder="Yıl" 
+          placeholder={t("expiryYear")} 
           value={expiryYear} 
           onChangeText={setExpiryYear} 
           style={{ 
@@ -269,7 +269,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         <Text style={{ 
           marginLeft: 8, 
           color: isDark ? "#D1D5DB" : "#000000" 
-        }}>3D Secure ile ödemek istiyorum</Text>
+        }}>{t("3DSecurePayment")}</Text>
       </View>
   
       <Text style={{ 
@@ -277,7 +277,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         fontSize: 16, 
         marginBottom: 8, 
         color: isDark ? "#FFFFFF" : "#000000" 
-      }}>İletişim Tercihiniz</Text>
+      }}>{t("communicationPreference")}</Text>
       <View style={{ flexDirection: "row", marginBottom: 8 }}>
         <CheckBox
           isChecked={emailChecked}
@@ -287,7 +287,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         <Text style={{ 
           marginLeft: 8, 
           color: isDark ? "#D1D5DB" : "#000000" 
-        }}>E-Posta</Text>
+        }}>{t("email")}</Text>
         <CheckBox
           isChecked={smsChecked}
           onClick={() => setSmsChecked(!smsChecked)}
@@ -300,7 +300,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
         }}>SMS</Text>
       </View>
       <TouchableOpacity onPress={handlePayment} style={{ backgroundColor: "orange", padding: 12, borderRadius: 8, alignItems: "center" }} disabled={loading}>
-        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>Öde</Text>
+        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{t("pay")}</Text>
       </TouchableOpacity>
     </View>
   );

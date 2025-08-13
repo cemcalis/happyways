@@ -35,7 +35,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('reservation');
   
-  // Route parametrelerini al
+
   const { carId, carModel, carPrice, source, pickupDate, dropDate, pickupTime, dropTime, pickup, drop } = route.params || {};
   
   const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
@@ -50,12 +50,12 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   const [calculatedPrice, setCalculatedPrice] = useState<string>("");
   const [daysDifference, setDaysDifference] = useState<number>(0);
 
-  // Fiyat hesaplama fonksiyonu
+
   const calculateTotalPrice = (startDate: string, endDate: string) => {
     if (!startDate || !endDate || !carPrice) return;
     
     try {
-      // Türkçe tarih formatını parse et (dd/mm/yyyy formatında)
+  
       const parseDate = (dateStr: string) => {
         const parts = dateStr.split('/');
         if (parts.length === 3) {
@@ -80,7 +80,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
     }
   };
 
-  // Tarih değiştiğinde fiyat hesapla
+
   useEffect(() => {
     if (getdate && backdate) {
       calculateTotalPrice(getdate, backdate);
@@ -179,7 +179,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
 
   const handleReservation = () => {
     if (source === "HomePage" && carId) {
-      // HomePage'den geldiğinde form validasyonu yap
+     
       if (!pickupLocation) {
         Alert.alert("Eksik Bilgi", "Lütfen alış lokasyonunu seçin");
         return;
@@ -210,7 +210,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
         return;
       }
 
-      // Form bilgileri ile AdditionalRequests'e git
+   
       navigation.navigate("AdditionalRequests", {
         carId: carId,
         carModel: carModel || "",
@@ -224,7 +224,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
         source: "HomePage"
       });
     } else {
-      // Normal arama flow'u
+   
       handleSearch();
     }
   };

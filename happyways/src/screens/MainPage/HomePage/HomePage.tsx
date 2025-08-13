@@ -184,7 +184,7 @@ const HomePage = ({navigation} : HomePageProps) => {
       </View>
 
       <Text className={`${isDark ? 'text-white' : 'text-black'} text-[22px] font-extrabold mb-4 leading-7`}>
-        {t('find Suitable Car')}
+        {t('findSuitableCar')}
       </Text>
 
       <SearchFilter

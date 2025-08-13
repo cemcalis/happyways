@@ -49,5 +49,8 @@
   "rentalPeriod": "Kiralama Süresi",
   "from": "Başlangıç",
   "to": "Bitiş",
-  "duration": "Süre"
+  "duration": "Süre",
+  "Pickup": "Alış",
+  "differentDropoffLocation": "Farklı Bırakış Yeri",
+  "continueReservation": "Rezervasyonu Devam Ettir"
 }

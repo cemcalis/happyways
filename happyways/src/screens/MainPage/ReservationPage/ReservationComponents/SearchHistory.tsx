@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
-
+import { useTranslation } from "react-i18next";
 interface SearchHistoryItem {
   pickup: string;
   drop: string;
@@ -18,7 +18,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
   onClearHistory,
 }) => {
   const { isDark } = useTheme();
-
+  const {t} = useTranslation('reservation');
   if (lastSearches.length === 0) {
     return null;
   }
@@ -29,7 +29,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
       style={styles.shadowContainer}
     >
       <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-4`}>
-        Son Aramalar
+        {t('recentSearches')}
       </Text>
       
       <FlatList
@@ -53,7 +53,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
       
       <TouchableOpacity onPress={onClearHistory} className="mt-2">
         <Text className="text-red-500 text-sm text-center font-semibold">
-          Geçmişi Temizle
+          {t('clearHistory')}
         </Text>
       </TouchableOpacity>
     </View>

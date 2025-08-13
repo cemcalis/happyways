@@ -362,7 +362,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Kullanıcının tüm rezervasyonlarını getir
 router.post("/my-reservations", async (req, res) => {
   try {
     const { userEmail } = req.body;
@@ -376,7 +375,7 @@ router.post("/my-reservations", async (req, res) => {
 
     const db = getDB();
 
-    // Kullanıcının tüm rezervasyonlarını getir
+   
     const reservations = await db.all(`
       SELECT 
         r.*,
@@ -405,7 +404,6 @@ router.post("/my-reservations", async (req, res) => {
   }
 });
 
-// Kullanıcının rezervasyonlarını getir
 router.post("/my-reservations", async (req, res) => {
   try {
     const { userEmail } = req.body;
@@ -419,7 +417,7 @@ router.post("/my-reservations", async (req, res) => {
 
     const db = getDB();
 
-    // Kullanıcının tüm rezervasyonlarını getir
+ 
     const reservations = await db.all(`
       SELECT 
         r.*,

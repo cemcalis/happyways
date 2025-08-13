@@ -20,7 +20,7 @@ const transporter = {
   }
 };
 
-// Rezervasyon onay emaili gönderme fonksiyonu
+
 async function sendReservationEmail(userEmail, reservationData) {
   const mailOptions = {
     from: 'happyways.rental@gmail.com',
@@ -28,7 +28,7 @@ async function sendReservationEmail(userEmail, reservationData) {
     subject: 'HappyWays - Rezervasyon Onayı',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2196F3;">🚗 Rezervasyonunuz Onaylandı!</h2>
+        <h2 style="color: #2196F3;"> Rezervasyonunuz Onaylandı!</h2>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3>Rezervasyon Detayları</h3>
@@ -58,7 +58,7 @@ async function sendReservationEmail(userEmail, reservationData) {
         </div>
 
         <p style="text-align: center; color: #666;">
-          İyi yolculuklar dileriz! 🛣️<br>
+          İyi yolculuklar dileriz! <br>
           <strong>HappyWays Ekibi</strong>
         </p>
       </div>
@@ -88,7 +88,7 @@ router.post("/", async (req, res) => {
       secure,
       emailChecked,
       smsChecked,
-      // Rezervasyon bilgileri
+  
       carId,
       carModel,
       carPrice,
@@ -106,7 +106,7 @@ router.post("/", async (req, res) => {
       calculatedBasePrice
     } = req.body;
 
-    // Token kontrolü
+ 
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ 
@@ -127,7 +127,7 @@ router.post("/", async (req, res) => {
 
     const user_id = decoded.id;
 
-    // Basit email validasyonu
+
     if (!userEmail || !userEmail.includes('@')) {
       return res.status(400).json({ 
         success: false,
@@ -137,7 +137,7 @@ router.post("/", async (req, res) => {
 
     const db = getDB();
 
-    // Kullanıcının varlığını kontrol et
+  
     const user = await db.get("SELECT * FROM users WHERE id = ?", [user_id]);
     if (!user) {
       return res.status(404).json({ 
@@ -162,38 +162,50 @@ router.post("/", async (req, res) => {
 
     if (payment_success) {
     
-      const payment_id = `PAY_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const reservation_id = `RES_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const uniqueId = Date.now();
+  const payment_id = `PAY_${uniqueId}_${Math.random().toString(36).substr(2, 9)}`;
+  const reservation_id = uniqueId;
       const currentTimestamp = new Date().toISOString();
 
  
-      await db.run(
-        `INSERT INTO reservations (
-          id, user_id, car_id, pickup_location, dropoff_location, 
-          pickup_date, dropoff_date, pickup_time, dropoff_time, 
-          total_price, status, created_at, user_email,
-          extra_driver, extra_driver_price, insurance, insurance_price
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          Date.now(), // id: integer, benzersiz
-          Number(user_id), // user_id: integer
-          Number(carId), // car_id: integer
-          String(pickup), // pickup_location: text
-          String(drop), // dropoff_location: text
-          String(pickupDate), // pickup_date: text
-          String(dropDate), // dropoff_date: text
-          String(pickupTime), // pickup_time: text
-          String(dropTime), // dropoff_time: text
-          String(totalPrice), // total_price: text
-          'confirmed', // status: text
-          currentTimestamp, // created_at: datetime
-          String(userEmail), // user_email: text
-          extraDriver ? 1 : 0, // extra_driver: integer
-          Number(extraDriverPrice) || 0, // extra_driver_price: integer
-          insurance ? 1 : 0, // insurance: integer
-          Number(insurancePrice) || 0 // insurance_price: integer
-        ]
-      );
+      const insertResult = await new Promise((resolve, reject) => {
+        db.run(
+          `INSERT INTO reservations (
+            id, user_id, car_id, pickup_location, dropoff_location, 
+            pickup_date, dropoff_date, pickup_time, dropoff_time, 
+            total_price, status, created_at, user_email,
+            extra_driver, extra_driver_price, insurance, insurance_price
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            reservation_id, 
+            Number(user_id),
+            Number(carId),
+            String(pickup),
+            String(drop),
+            String(pickupDate),
+            String(dropDate),
+            String(pickupTime),
+            String(dropTime),
+            String(totalPrice),
+            'confirmed',
+            currentTimestamp,
+            String(userEmail),
+            extraDriver ? 1 : 0,
+            Number(extraDriverPrice) || 0,
+            insurance ? 1 : 0,
+            Number(insurancePrice) || 0
+          ],
+          function(err) {
+            if (err) {
+              console.error('INSERT ERROR:', err.message);
+              reject(err);
+            } else {
+              console.log('INSERT SUCCESS, reservation_id:', reservation_id, 'rowid:', this.lastID, 'changes:', this.changes);
+              resolve({ lastID: this.lastID, changes: this.changes });
+            }
+          }
+        );
+      });
 
     
       const car = await db.get("SELECT * FROM cars WHERE id = ?", [carId]);
@@ -228,14 +240,12 @@ router.post("/", async (req, res) => {
         FROM reservations r
         LEFT JOIN cars c ON r.car_id = c.id
         WHERE r.id = ?
-      `, [reservation_id]);
+      `, [Number(reservation_id)]);
+      console.log('INSERT edilen reservation_id:', reservation_id);
 
-      res.status(200).json({ 
-        success: true,
-        message: "Ödeme başarılı, rezervasyonunuz onaylandı",
-        payment_id: payment_id,
-        reservation_id: reservation_id,
-        reservation_summary: {
+      let reservationSummary;
+      if (updatedReservation) {
+        reservationSummary = {
           user: updatedReservation.user_email || userEmail,
           car: `${updatedReservation.car_model} ${updatedReservation.car_year}`,
           period: `${updatedReservation.pickup_date} ${updatedReservation.pickup_time} - ${updatedReservation.dropoff_date} ${updatedReservation.dropoff_time}`,
@@ -243,7 +253,26 @@ router.post("/", async (req, res) => {
           total_paid: updatedReservation.total_price,
           payment_date: currentTimestamp,
           status: 'confirmed'
-        }
+        };
+      } else {
+        
+        reservationSummary = {
+          user: userEmail,
+          car: carModel,
+          period: `${pickupDate} ${pickupTime} - ${dropDate} ${dropTime}`,
+          locations: `${pickup} → ${drop}`,
+          total_paid: totalPrice,
+          payment_date: currentTimestamp,
+          status: 'confirmed'
+        };
+      }
+
+      res.status(200).json({ 
+        success: true,
+        message: "Ödeme başarılı, rezervasyonunuz onaylandı",
+        payment_id: payment_id,
+        reservation_id: reservation_id,
+        reservation_summary: reservationSummary
       });
     } else {
       res.status(400).json({ 
@@ -355,7 +384,6 @@ router.get("/status/:reservation_id", async (req, res) => {
   }
 });
 
-// Araç müsaitlik kontrolü
 async function checkCarAvailability(carId, pickupDate, dropDate) {
   const db = getDB();
   

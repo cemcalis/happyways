@@ -28,5 +28,7 @@
   "profileLoading": "Profil bilgileri yükleniyor...",
   "logout": "Çıkış Yap",
   "logoutConfirm": "Çıkış yapmak istediğinizden emin misiniz?",
-  "error": "Hata"
+  "error": "Hata",
+  "currency": "Para Birimi",
+  "socialMediaAccounts": "Sosyal Medya Hesapları"
 }

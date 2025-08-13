@@ -30,9 +30,15 @@
   "cars": "Araçlar",
   "myAccount": "Hesabım",
   "campaigns": "Kampanyalar",
+  "theme": "Tema",
+  "system": "Sistem",
+  "light": "Açık",
+  "dark": "Koyu",
+  "selectTheme": "Tema Seç",
   "infoPage": {
     "title": "Bugün Mükemmel Arabanızı Bulun!",
     "description": "Her zaman istediğiniz arabayla yolculuğunuza başlayın - en iyi fırsatları keşfedin.",
-    "callToAction": "Şimdi başlayın ve hayalinizdeki aracı bulun!"
+    "callToAction": "Şimdi başlayın ve hayalinizdeki aracı bulun!",
+    "mescription": "Sistem seçeneği, cihazınızın tema ayarlarını kullanır."
   }
 }

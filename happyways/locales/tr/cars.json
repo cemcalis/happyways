@@ -50,5 +50,11 @@
   "availableForRent": "Kiralama için müsait",
   "notAvailable": "Müsait değil",
   "conditions": "Şartlar ve Koşullar",
-  "termsAndConditions": "Kiralama Şartları"
+  "termsAndConditions": "Kiralama Şartları",
+  "rentNow": "Şimdi Kirala",
+  "extraDriver": "Ek Sürücü",
+  "Days": "Gün",
+  "dropOff": "Bırakma",
+  "pickUp": "Alış"
+ 
 }

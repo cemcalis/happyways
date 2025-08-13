@@ -83,7 +83,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
           <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('pickupLocation')} - {t('returnLocation')}</Text>
           <Text className="text-gray-600">Ercan - Lefkoşa</Text>
-          <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
+          <Text className="text-gray-600 mb-6">{t('totalPrice', { price: car.price })}</Text>
 
           <TouchableOpacity 
             className="bg-orange-500 py-4 rounded-lg mt-3 active:opacity-80"

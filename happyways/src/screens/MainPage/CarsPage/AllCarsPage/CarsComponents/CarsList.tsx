@@ -49,7 +49,7 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListPr
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       numColumns={isGrid ? 2 : 1}
-      key={isGrid ? 'grid' : 'list'} // Force re-render when layout changes
+      key={isGrid ? 'grid' : 'list'} 
       contentContainerStyle={{ 
         paddingHorizontal: 16, 
         paddingTop: 24, 

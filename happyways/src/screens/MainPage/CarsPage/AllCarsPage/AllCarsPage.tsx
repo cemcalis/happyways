@@ -92,7 +92,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
       }
     } catch (error) {
       console.error("Filtreleme hatası:", error);
-      // Fallback: eski filtreleme mantığı
+   
       let filtered = cars;
       
       if (searchText.trim() !== "") {
