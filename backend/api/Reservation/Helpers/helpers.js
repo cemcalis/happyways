@@ -1,6 +1,3 @@
-+57
--0
-
 export function calculateDuration(pickupDate, pickupTime, dropoffDate, dropoffTime) {
   const startDateTime = new Date(`${pickupDate}T${pickupTime}:00`);
   const endDateTime = new Date(`${dropoffDate}T${dropoffTime}:00`);

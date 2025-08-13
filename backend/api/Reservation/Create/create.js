@@ -1,4 +1,4 @@
-import { getDB } from "../../database/db.js";
+import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 

@@ -1,7 +1,7 @@
-import { getDB } from "../../database/db.js";
+import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { calculateDuration, getStatusInfo } from "./helpers.js";
+import { calculateDuration, getStatusInfo } from "../Helpers/helpers.js";
 
 dotenv.config();
 

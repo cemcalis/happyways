@@ -1,11 +1,11 @@
 const transporter = {
   sendMail: async (mailOptions) => {
-    console.log('\n🔔 EMAIL GÖNDERİLDİ:');
-    console.log('📧 To:', mailOptions.to);
-    console.log('📝 Subject:', mailOptions.subject);
-    console.log('📄 HTML Content Preview:');
+    console.log('\n EMAIL GÖNDERİLDİ:');
+    console.log(' To:', mailOptions.to);
+    console.log(' Subject:', mailOptions.subject);
+    console.log(' HTML Content Preview:');
     console.log(mailOptions.html.substring(0, 200) + '...');
-    console.log('✅ Email başarıyla gönderildi (simüle edildi)\n');
+    console.log(' Email başarıyla gönderildi ');
     return { success: true };
   }
 };
@@ -33,8 +33,8 @@ export async function sendReservationEmail(userEmail, reservationData) {
           <h3>Ödeme Bilgileri</h3>
           <p><strong>Toplam Tutar:</strong> ${reservationData.totalPrice} TL</p>
           <p><strong>Ödeme Durumu:</strong>  Onaylandı</p>
-          ${reservationData.extraDriver ? '<p><strong>Ek Sürücü:</strong> ✅ Dahil</p>' : ''}
-          ${reservationData.insurance ? '<p><strong>Sigorta:</strong> ✅ Dahil</p>' : ''}
+          ${reservationData.extraDriver ? '<p><strong>Ek Sürücü:</strong>  Dahil</p>' : ''}
+          ${reservationData.insurance ? '<p><strong>Sigorta:</strong>  Dahil</p>' : ''}
         </div>
 
         <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
