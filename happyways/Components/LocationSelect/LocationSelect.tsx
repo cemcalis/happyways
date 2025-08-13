@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
 import LocationSvg from "../../assets/HomePage/location.svg";
 import LeftArrowSvg from "../../assets/HomePage/leftarrow.svg";
@@ -45,22 +45,26 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
   };
 
   return (
-    <View style={{ position: 'relative', flexDirection: 'row', alignItems: 'center' }}>
+    <View className="relative flex-row items-center">
       <LocationSvg width={16} height={16} />
       <TouchableOpacity onPress={() => setShowLocationList(!showLocationList)}>
         <Text className={`text-sm ml-1.5 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
           {selectedLocation ? selectedLocation.name + ', ' + (selectedLocation.country || '') : 'Konum Seç'}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => setShowLocationList(!showLocationList)}>
-        <LeftArrowSvg width={12} height={12} style={{ transform: [{ rotate: showLocationList ? '180deg' : '90deg' }] }} fill={isDark ? "#9CA3AF" : "#6B7280"} />
+      <TouchableOpacity className="ml-1" onPress={() => setShowLocationList(!showLocationList)}>
+        <LeftArrowSvg
+          width={12}
+          height={12}
+          className={`${showLocationList ? 'rotate-180' : 'rotate-90'}`}
+          fill={isDark ? "#9CA3AF" : "#6B7280"}
+        />
       </TouchableOpacity>
       {showLocationList && (
-        <View 
-          className={`absolute top-7 left-6 min-w-40 max-w-55 rounded-lg border z-10 ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'}`}
-          style={styles.shadowContainer}
+        <View
+          className={`absolute top-7 left-6 min-w-40 max-w-55 rounded-lg border z-10 ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} shadow-[0_4px_4.65px_rgba(0,0,0,0.3)] elevation-[8]`}
         >
-          <ScrollView style={{ maxHeight: 90 }}>
+          <ScrollView className="max-h-[90px]">
             {locations.map((loc) => (
               <TouchableOpacity
                 key={loc.id}
@@ -77,17 +81,9 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  shadowContainer: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
-});
+
+
+
+
 
 export default LocationSelect;

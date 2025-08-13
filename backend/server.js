@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { initDB } from "./database/db.js";
+import { initDB, closeDB} from "./database/db.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { validateAndSanitize } from "./utils/requestValidator.js";
+import { errorHandler } from "./utils/errorHandler.js";
 
 import registerRoute from "./api/Register/route.js";
 import loginRoute from "./api/Login/route.js";
@@ -11,7 +13,6 @@ import forgetRoute from "./api/Forget/route.js";
 import resetRoute from "./api/Reset/route.js";
 import OtpRoute from "./api/Otp/route.js";
 import HomeRoute from "./api/main/Home/route.js";
-import AccountRoute from "./api/main/Profile/route.js";
 import CampaignRoute from "./api/main/Campaign/route.js";
 import AllCarsRoute from "./api/main/Cars/AllCarsPage/route.js";
 import PaymentRoute from "./api/Payment/route.js";
@@ -29,19 +30,15 @@ import CarsRoute from "./api/Cars/route.js";
 
 dotenv.config();  
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(cors()); 
 app.use(express.json()); 
+app.use(validateAndSanitize);
 
 app.use("/assets", express.static(path.join(__dirname, "assets")));
-
-app.use("/assets", (req, res, next) => {
-  console.log("Asset request:", req.url);
-  next();
-}, express.static(path.join(__dirname, "assets")));
 
 app.use("/api/register", registerRoute);
 app.use("/api/login", loginRoute);
@@ -50,7 +47,6 @@ app.use("/api/reset-password", resetRoute);
 app.use("/api/otp", OtpRoute);
 app.use("/api/auth/refresh", authRefreshRoute);
 app.use("/api/home", HomeRoute);
-app.use("/api/account", AccountRoute);
 app.use("/api/campaign", CampaignRoute);
 app.use("/api/cars/allcars", AllCarsRoute);
 app.use("/api/payment", PaymentRoute);
@@ -65,13 +61,26 @@ app.use("/api/cars/filter", carFilterRoute);
 app.use("/api/cars/additional-services", additionalServicesRoute);
 app.use("/api/cars", CarsRoute);
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use(errorHandler);
+
 const startServer = async () => {
   try {
     await initDB();
-    app.listen(PORT, "0.0.0.0", () => {
+     const server = app.listen(PORT, "0.0.0.0", () => {
       console.log(`Sunucu http://0.0.0.0:${PORT} adresinde çalışıyor.`);
     });
+    
+    const shutdown = async () => {
+      await closeDB();
+      server.close(() => {
+        console.log("Sunucu kapatıldı.");
+        process.exit(0);
+      });
+    };
+
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+
   } catch (error) {
     console.error(" Veritabanı çalışmıyo:", error.message);
   }

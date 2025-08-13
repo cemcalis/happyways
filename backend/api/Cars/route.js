@@ -3,7 +3,7 @@ import { getDB } from "../../database/db.js";
 
 const router = express.Router();
 
-// Tüm araçları listele
+
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Belirli tarih aralığında müsait araçları listele
+
 router.post("/available", async (req, res) => {
   try {
     const { pickupDate, dropDate } = req.body;
@@ -37,7 +37,6 @@ router.post("/available", async (req, res) => {
 
     const db = getDB();
     
-    // Müsait araçları bul (çakışan rezervasyonu olmayan araçlar)
     const availableCars = await db.all(`
       SELECT DISTINCT c.*
       FROM cars c
@@ -51,7 +50,7 @@ router.post("/available", async (req, res) => {
             (r.pickup_date >= ? AND r.pickup_date <= ?)
           )
       )
-      ORDER BY c.price_per_day
+       ORDER BY c.price
     `, [pickupDate, pickupDate, dropDate, dropDate, pickupDate, dropDate]);
 
     res.status(200).json({
@@ -74,7 +73,7 @@ router.post("/available", async (req, res) => {
   }
 });
 
-// Belirli bir aracın müsaitlik durumunu kontrol et
+
 router.post("/check-availability", async (req, res) => {
   try {
     const { carId, pickupDate, dropDate } = req.body;
@@ -88,7 +87,6 @@ router.post("/check-availability", async (req, res) => {
 
     const db = getDB();
     
-    // Araç var mı kontrol et
     const car = await db.get("SELECT * FROM cars WHERE id = ?", [carId]);
     if (!car) {
       return res.status(404).json({
@@ -97,7 +95,6 @@ router.post("/check-availability", async (req, res) => {
       });
     }
 
-    // Çakışan rezervasyonları kontrol et
     const conflictingReservations = await db.all(`
       SELECT id, pickup_date, dropoff_date, status, user_email
       FROM reservations 
@@ -134,7 +131,6 @@ router.post("/check-availability", async (req, res) => {
   }
 });
 
-// Araç detaylarını getir
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -149,7 +145,6 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    // Bu aracın gelecek rezervasyonlarını da getir
     const upcomingReservations = await db.all(`
       SELECT pickup_date, dropoff_date, status 
       FROM reservations 

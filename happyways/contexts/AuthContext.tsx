@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
     } catch (error) {
       console.error("Token yenileme hatası:", error);
-      // Network hatası durumunda mevcut token'ı kullanmaya devam et
+
       return false;
     }
   };
@@ -149,10 +149,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const refreshed = await refreshTokens();
         if (!refreshed) {
           console.log("Otomatik token yenileme başarısız");
-          // İlk hata durumunda hemen logout yapma, birkaç deneme yap
+     
         }
       }
-    }, 10 * 60 * 1000); // 10 dakikada bir kontrol et (daha az agresif)
+    }, 10 * 60 * 1000); 
 
     return () => clearInterval(interval);
   }, [token]);
@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       refreshTokenLength: refreshToken?.length
     });
     
-    // Token'ların string olduğundan emin ol
+
     if (!accessToken || typeof accessToken !== 'string') {
       console.error("Geçersiz access token:", accessToken);
       throw new Error("Geçersiz access token");

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
-// Password utilities
+
 export const hashPassword = (password) => {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
@@ -13,7 +13,7 @@ export const verifyPassword = (password, salt, hash) => {
   return hash === hashVerify;
 };
 
-// JWT utilities
+
 export const generateToken = (payload, expiresIn = '7d') => {
   return jwt.sign(payload, process.env.JWT_SECRET || 'fallback-secret', { expiresIn });
 };
@@ -26,7 +26,7 @@ export const verifyToken = (token) => {
   }
 };
 
-// OTP utilities
+
 export const generateOTP = (length = 6) => {
   const digits = '0123456789';
   let otp = '';
@@ -36,7 +36,7 @@ export const generateOTP = (length = 6) => {
   return otp;
 };
 
-// Date utilities
+
 export const formatDate = (date, format = 'YYYY-MM-DD') => {
   const d = new Date(date);
   const year = d.getFullYear();
@@ -66,7 +66,7 @@ export const isDateBetween = (date, startDate, endDate) => {
   return d >= start && d <= end;
 };
 
-// Validation utilities
+
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -82,7 +82,7 @@ export const sanitizeInput = (input) => {
   return input.trim().replace(/[<>\"']/g, '');
 };
 
-// Response utilities
+
 export const successResponse = (res, data, message = 'Success', statusCode = 200) => {
   return res.status(statusCode).json({
     success: true,
@@ -101,10 +101,10 @@ export const errorResponse = (res, message = 'Error', statusCode = 500, error = 
   });
 };
 
-// Database utilities
+
 export const sanitizeDbInput = (input) => {
   if (typeof input === 'string') {
-    return input.replace(/'/g, "''"); // SQL injection prevention
+    return input.replace(/'/g, "''"); 
   }
   return input;
 };
@@ -127,7 +127,6 @@ export const buildInsertQuery = (tableName, data) => {
   };
 };
 
-// File utilities
 export const getFileExtension = (filename) => {
   return filename.split('.').pop().toLowerCase();
 };
@@ -138,7 +137,6 @@ export const isValidImageFile = (filename) => {
   return validExtensions.includes(extension);
 };
 
-// Price utilities
 export const calculateTotalPrice = (basePrice, taxRate = 0.18, discountPercent = 0) => {
   const discountedPrice = basePrice * (1 - discountPercent / 100);
   const tax = discountedPrice * taxRate;
@@ -157,7 +155,6 @@ export const formatCurrency = (amount, currency = 'TRY') => {
   }).format(amount);
 };
 
-// Array utilities
 export const paginate = (array, page = 1, limit = 10) => {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
@@ -175,7 +172,6 @@ export const paginate = (array, page = 1, limit = 10) => {
   };
 };
 
-// Logging utilities
 export const logInfo = (message, data = null) => {
   const timestamp = new Date().toISOString();
   console.log(`[INFO] ${timestamp}: ${message}`, data ? JSON.stringify(data, null, 2) : '');

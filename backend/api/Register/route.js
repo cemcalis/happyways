@@ -7,13 +7,23 @@ const router = express.Router();
 
 
 router.post("/", async (req, res) => {
-const db = getDB();
+  const db = getDB();
   const { email, password, phone } = req.body;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
   if (!email || !password) {
     return res.status(400).json({ message: "Email ve şifre zorunludur." });
   }
 
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Geçersiz email formatı." });
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ message: "Geçersiz şifre formatı." });
+  }
   try {
     const existingUser = await db.get("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser) {

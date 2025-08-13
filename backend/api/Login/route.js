@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "2h" } // 15 dakikadan 2 saate çıkarıldı
+      { expiresIn: "2h" } 
     );
 
     const refreshToken = await generateRefreshToken(user.id);

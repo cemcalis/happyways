@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { WebView } from "react-native-webview";
 
 type MapProps = {
@@ -41,11 +41,11 @@ const MapComponent = ({ latitude, longitude, zoom = 15 }: MapProps) => {
   `;
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-white rounded-[10px] overflow-hidden">
       <WebView
         originWhitelist={["*"]}
         source={{ html: mapHTML }}
-        style={styles.webview}
+        className="flex-1"
         javaScriptEnabled={true}
         domStorageEnabled={true}
         startInLoadingState={true}
@@ -54,16 +54,6 @@ const MapComponent = ({ latitude, longitude, zoom = 15 }: MapProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  webview: {
-    flex: 1,
-  },
-});
+
 
 export default MapComponent;

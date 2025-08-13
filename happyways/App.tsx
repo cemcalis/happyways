@@ -23,7 +23,7 @@ export default function App() {
   
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        const userJson = await AsyncStorage.getItem("currentUser");
+         const userJson = await AsyncStorage.getItem("user");
         if (userJson) {
           setInitialRoute("HomePage");
         } else {

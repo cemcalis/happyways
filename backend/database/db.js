@@ -16,6 +16,8 @@
       driver: sqlite3.Database,
     });
 
+      await db.exec("PRAGMA foreign_keys = ON");
+
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -113,7 +115,12 @@
     }
     return db;
   }
-
+export async function closeDB() {
+    if (db) {
+      await db.close();
+      db = null;
+    }
+  }
 
   export async function getUserByEmail(email) {
     const database = getDB();
