@@ -19,9 +19,10 @@ export type RootStackParamList = {
     dropTime: string;
     pickup: string;
     drop: string;
-    source?: string; // Nereden geldiğini takip etmek için
+    userEmail?: string;
+    source?: string; 
   };
-  AllCarsPage: { 
+  AllCarsPage: {
     searchParams?: {
       pickup: string;
       drop: string;
@@ -31,26 +32,28 @@ export type RootStackParamList = {
       dropTime: string;
     };
     campaignDiscount?: number;
-    source?: string; // Nereden geldiğini takip etmek için
+    userEmail?: string;
+    source?: string; 
   };
   PaymentPage: {
     carId: number;
     carModel?: string;
-    carPrice?: string; // Günlük araç fiyatı
+    carPrice?: string; 
     pickupDate?: string;
     dropDate?: string;
     pickupTime?: string;
     dropTime?: string;
     pickup?: string;
     drop?: string;
-    source?: string; // Nereden geldiğini takip etmek için
-    extraDriver?: boolean; // Ek sürücü seçimi
-    extraDriverPrice?: string; // Ek sürücü fiyatı
-    insurance?: boolean; // Sigorta seçimi
-    insurancePrice?: string; // Sigorta fiyatı
-    totalPrice?: string; // Toplam fiyat
-    totalDays?: string; // Toplam gün sayısı
-    basePrice?: string; // Araç için toplam fiyat (günlük × gün sayısı)
+    source?: string; 
+    userEmail?: string;
+    extraDriver?: boolean; 
+    extraDriverPrice?: string; 
+    insurance?: boolean; 
+    insurancePrice?: string; 
+    totalPrice?: string; 
+    totalDays?: string; 
+    basePrice?: string; 
   };
   ReservationPage: {
     carId?: number;
@@ -67,9 +70,10 @@ export type RootStackParamList = {
     pickup?: string;
     drop?: string;
     prefilledData?: any;
-    source?: string; // Nereden geldiğini takip etmek için
+    source?: string; 
+    userEmail?: string;
   };
-  CarsDetailPage: { 
+  CarsDetailPage: {
     carId: number;
     pickupLocation?: string;
     dropoffLocation?: string;
@@ -77,7 +81,8 @@ export type RootStackParamList = {
     dropoffDate?: string;
     pickupTime?: string;
     dropoffTime?: string;
-    source?: string; // Nereden geldiğini takip etmek için
+    source?: string; 
+    userEmail?: string;
   };
   TapBar : undefined;
   CampaignDetailPage: { campaignId: number };

@@ -8,6 +8,7 @@ import { RootStackParamList } from "../../../../types";
 import { useTheme } from "../../../../contexts/ThemeContext";
 import TabBar from "../../../../Components/TabBar/TapBar";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../../contexts/AuthContext";
 import {
   ReservationHeader,
   ReservationForm,
@@ -36,8 +37,10 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   const { t } = useTranslation('reservation');
   
 
-  const { carId, carModel, carPrice, source, pickupDate, dropDate, pickupTime, dropTime, pickup, drop } = route.params || {};
-  
+   const { carId, carModel, carPrice, source, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, userEmail: userEmailParam } = route.params || {};
+  const { getUserFromToken } = useAuth();
+  const userEmail = userEmailParam || getUserFromToken()?.email;
+
   const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
   const [dropoffLocation, setDropoffLocation] = useState<LocationType | null>(null);
   const [usePickupAsDropoff, setUsePickupAsDropoff] = useState(true);
@@ -163,7 +166,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
       await AsyncStorage.setItem("lastSearches", JSON.stringify(updatedSearches));
       setLastSearches(updatedSearches);
 
-      navigation.navigate("AllCarsPage", { searchParams });
+       navigation.navigate("AllCarsPage", { searchParams, userEmail, source: "ReservationPage" });
     } catch (error) {
       console.log("Arama hatası:", error);
       Alert.alert("Hata", "Arama sırasında bir hata oluştu");
@@ -178,7 +181,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   };
 
   const handleReservation = () => {
-    if (source === "HomePage" && carId) {
+   if (carId) {
      
       if (!pickupLocation) {
         Alert.alert("Eksik Bilgi", "Lütfen alış lokasyonunu seçin");
@@ -221,7 +224,8 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
         dropTime: backtime,
         pickup: pickupLocation.name,
         drop: usePickupAsDropoff ? pickupLocation.name : (dropoffLocation?.name || ""),
-        source: "HomePage"
+        source: source || "ReservationPage",
+        userEmail 
       });
     } else {
    

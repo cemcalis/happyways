@@ -22,7 +22,7 @@ type CarDetail = {
 
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
-  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime, source } = route.params;
+  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime, source, userEmail } = route.params;
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
 
@@ -90,21 +90,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
             style={styles.shadowButton}
             onPress={() => {
             
-              if (source === "HomePage") {
-                navigation.navigate("ReservationPage", {
-                  carId: car.id,
-                  carModel: car.model,
-                  carPrice: car.price,
-                  pickupDate: pickupDate || "",
-                  dropDate: dropoffDate || "",
-                  pickupTime: pickupTime || "",
-                  dropTime: dropoffTime || "",
-                  pickup: pickupLocation || "",
-                  drop: dropoffLocation || "",
-                  source: "HomePage"
-                });
-              } else {
-                
+           if (source === "ReservationPage") {
                 navigation.navigate("AdditionalRequests", {
                   carId: car.id,
                   carModel: car.model,
@@ -115,7 +101,23 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
                   dropTime: dropoffTime || "",
                   pickup: pickupLocation || "",
                   drop: dropoffLocation || "",
-                  source: source || "unknown"
+                  source: source || "ReservationPage",
+                  userEmail
+                });
+              } else {
+                  navigation.navigate("ReservationPage", {
+               
+                  carId: car.id,
+                  carModel: car.model,
+                  carPrice: car.price,
+                  pickupDate: pickupDate || "",
+                  dropDate: dropoffDate || "",
+                  pickupTime: pickupTime || "",
+                  dropTime: dropoffTime || "",
+                  pickup: pickupLocation || "",
+                  drop: dropoffLocation || "",
+                  source: source || "CarsDetailPage",
+                  userEmail
                 });
               }
             }}

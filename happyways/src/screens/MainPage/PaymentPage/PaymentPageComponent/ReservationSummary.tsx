@@ -21,6 +21,7 @@ interface ReservationSummaryProps {
   insurance?: boolean;
   insurancePrice?: string;
   totalPrice?: string;
+  userEmail?: string; 
 }
 
 const ReservationSummary: React.FC<ReservationSummaryProps> = ({ 
@@ -29,7 +30,8 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   extraDriverPrice,
   insurance,
   insurancePrice,
-  totalPrice 
+  totalPrice,
+  userEmail
 }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('payment');
@@ -72,15 +74,21 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           marginBottom: 4, 
           color: isDark ? "#D1D5DB" : "#000000" 
         }}>{t("pickupLocation")}: {carInfo.pickup}</Text>
-        <Text style={{ 
-          marginBottom: 4, 
-          color: isDark ? "#D1D5DB" : "#000000" 
+        <Text style={{
+          marginBottom: 4,
+          color: isDark ? "#D1D5DB" : "#000000"
         }}>{t("dropoffLocation")}: {carInfo.dropoff}</Text>
-        <View style={{ 
-          borderTopWidth: 1, 
-          borderTopColor: isDark ? "#374151" : "#ddd", 
-          paddingTop: 8, 
-          marginTop: 8 
+        {userEmail && (
+          <Text style={{
+            marginBottom: 4,
+            color: isDark ? "#D1D5DB" : "#000000"
+          }}>{t("email")}: {userEmail}</Text>
+        )}
+        <View style={{
+          borderTopWidth: 1,
+          borderTopColor: isDark ? "#374151" : "#ddd",
+          paddingTop: 8,
+          marginTop: 8
         }}>
           <Text style={{ 
             marginBottom: 4, 

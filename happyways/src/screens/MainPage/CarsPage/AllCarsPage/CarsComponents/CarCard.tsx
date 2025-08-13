@@ -30,9 +30,11 @@ type CarCardProps = {
     pickupTime: string;
     dropTime: string;
   };
+  source?: string;
+  userEmail?: string;
 };
 
-const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
+const CarCard = ({ car, isGrid, navigation, searchParams, source, userEmail }: CarCardProps) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
   
@@ -75,6 +77,8 @@ const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
             dropoffDate: searchParams?.dropDate,
             pickupTime: searchParams?.pickupTime,
             dropoffTime: searchParams?.dropTime,
+            source,
+            userEmail
           })}
         >
           <Text className="text-white font-bold text-center text-sm">

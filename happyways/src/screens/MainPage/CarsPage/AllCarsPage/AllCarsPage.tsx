@@ -46,7 +46,8 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   const { t } = useTranslation('cars');
   const { t: tAuth } = useTranslation('auth');
 
-  const searchParams = route.params?.searchParams;
+  const { searchParams, userEmail } = route.params || {};
+  const source = route.params?.source;
 
   const handleApplyFilters = useCallback(async (fuelTypes: string[], gearTypes: string[]) => {
     setActiveFilters({ fuelTypes, gearTypes });
@@ -281,13 +282,15 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
             filteredCarsCount={filteredCars.length}
             onApplyFilters={handleApplyFilters}
             currentFilters={activeFilters}
-          />
+          /> 
           
           <CarsList
             filteredCars={filteredCars}
             isGrid={isGrid}
             navigation={navigation}
             searchParams={searchParams}
+            source={source}
+            userEmail={userEmail}
           />
         </>
       )}

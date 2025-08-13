@@ -28,10 +28,13 @@ type CarsListProps = {
     dropDate: string;
     pickupTime: string;
     dropTime: string;
+    
   };
+  source?: string;
+  userEmail?: string;
 };
 
-const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListProps) => {
+const CarsList = ({ filteredCars, isGrid, navigation, searchParams, source, userEmail }: CarsListProps) => {
   const { isDark } = useTheme();
   
   const renderItem = ({ item }: { item: Car }) => (
@@ -40,6 +43,8 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListPr
       isGrid={isGrid}
       navigation={navigation}
       searchParams={searchParams}
+      source={source}
+      userEmail={userEmail}
     />
   );
 

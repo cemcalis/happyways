@@ -23,7 +23,7 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
         },
         {
           text: t('continue'),
-          onPress: () => navigation.navigate("AllCarsPage", {})
+         onPress: () => navigation.navigate("AllCarsPage", { source: "CampaignDetailPage" })
         }
       ]
     );

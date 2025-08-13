@@ -34,7 +34,7 @@ const AdditionalRequests = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AdditionalRequests">>();
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
-  const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, source } = route.params;
+  const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, source, userEmail } = route.params;
 
   console.log('=== ROUTE PARAMS DEBUG ===');
   console.log('source:', source);
@@ -170,7 +170,8 @@ const AdditionalRequests = () => {
         insurancePrice: insurancePrice.toString(),
         totalPrice: finalPrice.toString(),
         totalDays: totalDays.toString(),
-        basePrice: basePrice.toString()
+        basePrice: basePrice.toString(),
+        userEmail
       });
     } catch (error) {
       console.error('Navigation error:', error);

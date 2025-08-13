@@ -7,6 +7,7 @@ import TabBar from '../../../../Components/TabBar/TapBar';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { PaymentHeader, ReservationSummary, CreditCardForm } from "./PaymentPageComponent";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../../contexts/AuthContext';
 
 type PaymentPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "PaymentPage">
@@ -34,7 +35,9 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
     basePrice
   } = route.params;
 
-const { t } = useTranslation('payment');
+  const { t } = useTranslation('payment');
+  const { getUserFromToken } = useAuth();
+  const userEmail = route.params.userEmail || getUserFromToken()?.email || "";
 
   const calculateDaysDirectly = () => {
     if (!pickupDate || !dropDate) return 1;
@@ -84,7 +87,7 @@ const { t } = useTranslation('payment');
   console.log('Deposit:', depositPrice);
   console.log('Final total:', finalTotalPrice);
   
-  // Debug: totalDays parametresini kontrol et
+
   console.log('PaymentPage totalDays received:', totalDays, 'type:', typeof totalDays);
   console.log('PaymentPage calculated totalDays:', actualTotalDays);
   if (totalDays) {
@@ -216,7 +219,7 @@ const { t } = useTranslation('payment');
     calculatePrice();
   }, [carPrice, pickupDate, dropDate, carModel, pickup, drop]);
 
-  const userEmail = "kullanici@eposta.com";
+
 
   if (loading || !carInfo) {
     return (
@@ -236,6 +239,7 @@ const { t } = useTranslation('payment');
       <PaymentHeader onBack={() => navigation.goBack()} />
       <ScrollView>
         <ReservationSummary 
+         userEmail={userEmail}
           carInfo={{
             model: carModel || '',
             pickup: pickup || '',
