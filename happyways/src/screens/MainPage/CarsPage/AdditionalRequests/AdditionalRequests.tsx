@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Switch, Image, StyleSheet } from 'react-native'
+import { Text, View, TouchableOpacity, Switch, Image, StyleSheet, Alert } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BackButton from '../../../../../Components/BackButton/BackButton'

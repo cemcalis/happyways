@@ -92,9 +92,15 @@ router.post("/", async (req, res) => {
 
   } catch (error) {
     console.error("Fiyat hesaplama hatası:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Fiyat hesaplama sırasında bir hata oluştu" 
+    res.status(500).json({
+      success: false,
+      message: "Fiyat hesaplama sırasında bir hata oluştu",
+      validation: {
+        isValid: false,
+        errors: [],
+        warnings: [],
+        riskFactors: []
+      }
     });
   }
 });

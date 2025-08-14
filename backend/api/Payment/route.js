@@ -207,11 +207,16 @@ router.post("/", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Ödeme işleminde hata oluştu",
-      error: error.message
+      error: error.message,
+      validation: {
+        isValid: false,
+        errors: [],
+        warnings: [],
+        riskFactors: []
+      }
     });
   }
 });
-
 router.get("/history", async (req, res) => {
   try {
 

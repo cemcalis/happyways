@@ -185,9 +185,15 @@ router.post("/", async (req, res) => {
 
   } catch (error) {
     console.error("Form validasyon hatası:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Validasyon sırasında bir hata oluştu" 
+    res.status(500).json({
+      success: false,
+      message: "Validasyon sırasında bir hata oluştu",
+      validation: {
+        isValid: false,
+        errors: [],
+        warnings: [],
+        riskFactors: []
+      }
     });
   }
 });

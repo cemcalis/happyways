@@ -221,6 +221,8 @@ const PaymentPage = ({ navigation }: PaymentPageProp) => {
 
 
 
+  console.log('PaymentPage carInfo:', carInfo);
+  console.log('PaymentPage userEmail:', userEmail);
   if (loading || !carInfo) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#111827' : '#F9FAFB', justifyContent: 'center', alignItems: 'center' }}>
