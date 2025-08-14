@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { saveToken, getToken, deleteToken, saveRefreshToken, getRefreshToken, deleteRefreshToken } from "../lib/secureStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type AuthContextType = {
   token: string | null;
@@ -191,6 +192,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken(null);
     await deleteToken();
     await deleteRefreshToken();
+    await AsyncStorage.removeItem("user");
   };
 
   const isAuthenticated = !!token && isTokenValid(token);

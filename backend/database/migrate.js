@@ -13,6 +13,24 @@ const migrateDatabaseSchema = async () => {
 
     console.log("Database migration başlıyor...");
 
+     const userInfo = await db.all("PRAGMA table_info(users)");
+    const hasFirstName = userInfo.some(column => column.name === 'first_name');
+    const hasLastName = userInfo.some(column => column.name === 'last_name');
+
+    if (!hasFirstName) {
+      console.log("'first_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN first_name TEXT");
+      console.log("'first_name' column başarıyla eklendi");
+    }
+
+    if (!hasLastName) {
+      console.log("'last_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN last_name TEXT");
+      console.log("'last_name' column başarıyla eklendi");
+    }
+
+    
+
     const tableInfo = await db.all("PRAGMA table_info(cars)");
     const hasAvailableColumn = tableInfo.some(column => column.name === 'available');
 

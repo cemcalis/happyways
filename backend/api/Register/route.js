@@ -1,14 +1,18 @@
 import express from "express";
 import { getDB } from "../../database/db.js";
 import bcrypt from "bcryptjs";
-import jwt from  "jsonwebtoken";
+
 
 const router = express.Router();
 
 
 router.post("/", async (req, res) => {
-  const db = getDB();
-  const { email, password, phone } = req.body;
+const db = getDB();
+  const { email, password, phone, first_name, last_name } = req.body;
+
+  if (!email || !password || !first_name || !last_name) {
+    return res.status(400).json({ message: "Email, şifre, ad ve soyad zorunludur." });
+  }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
@@ -34,8 +38,15 @@ router.post("/", async (req, res) => {
 
  
     await db.run(
-      "INSERT INTO users (email, password, phone) VALUES (?, ?, ?)",
-      [email, hashedPassword, phone || ""]
+       "INSERT INTO users (email, password, phone, first_name, last_name, full_name) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        email,
+        hashedPassword,
+        phone || "",
+        first_name,
+        last_name,
+        `${first_name} ${last_name}`.trim()
+      ]
     );
 
     return res.status(201).json({ message: "Kayıt başarılı." });

@@ -8,6 +8,9 @@ import { useTheme } from '../../../../../contexts/ThemeContext';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../../../../../Components/LanguageSelector/LanguageSelector';
+import TabBar from '../../../../../Components/TabBar/TapBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../../../../contexts/AuthContext';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
@@ -18,7 +21,13 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
   const { currentLanguage, changeLanguage } = useLanguage();
   const { t } = useTranslation(['common', 'profile']);
   
- 
+ const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    await AsyncStorage.removeItem('user');
+    navigation.reset({ index: 0, routes: [{ name: 'LoginPage' }] });
+  };
   
   return (
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
@@ -59,23 +68,13 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         </View>
 
        
-        <TouchableOpacity 
-          className="mx-6 bg-[#FF0000] rounded-lg py-3 mb-[70px]"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 4,
-            },
-            shadowOpacity: 0.3,
-            shadowRadius: 4.65,
-            elevation: 8,
-          }}
+ <TouchableOpacity
+          className="mx-6 bg-[#FF0000] rounded-lg py-3 shadow-lg mb-[70px]"
+          onPress={handleLogout}
         >
           <Text className="text-white text-center text-base font-semibold">{t('common:logout')}</Text>
         </TouchableOpacity>
 
-       
         <TouchableOpacity className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[20px]`}
         onPress={() => navigation.navigate("ContactPage")}
         >
@@ -97,6 +96,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
           <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
         </View>
       </ScrollView>
+      <TabBar navigation={navigation} activeRoute="ProfilePage" />
     </View>
   )
 }

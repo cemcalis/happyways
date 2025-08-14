@@ -55,5 +55,7 @@
   "completed": "Completed",
   "cancelled": "Cancelled",
   "differentDropoffLocation": "Different Drop Off Location",
-  "continueReservation": "Continue Reservation"
+  "continueReservation": "Continue Reservation",
+  "recentSearches": "Recent Searches",
+  "clearHistory": "Clear History"
 }

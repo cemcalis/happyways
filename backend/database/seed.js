@@ -86,7 +86,7 @@ const seed = async () => {
        'Sezon sonu özel kampanya fırsatı sizlerle!',
        '01.08.2025 - 31.08.2025',
        '05.08.2025 - 30.08.2025',
-       'kampanya1.svg',
+       'kampanya1.png',
        'Günlük 4.000 ₺',
        'En iyi fiyat garantisi'),
 
@@ -94,7 +94,7 @@ const seed = async () => {
        'Sınırlı süreli yaz indirimlerini kaçırmayın!',
        '15.07.2025 - 15.08.2025',
        '20.07.2025 - 10.08.2025',
-       'kampanya2.svg',
+       'kampanya2.png',
        '%25 indirim fırsatı',
        'Hızlı rezervasyon avantajı'),
        
@@ -102,9 +102,48 @@ const seed = async () => {
        'Bütçe dostu araçlarla keyifli yolculuklar!',
        '10.08.2025 - 25.08.2025',
        '12.08.2025 - 23.08.2025',
-       'kampanya3.svg',
+       'kampanya3.png',
        'Günlük 2.500 ₺',
-       'Ücretsiz kilometre');
+       'Ücretsiz kilometre'),
+
+
+       ('Net %25 İndirim Fırsatı',
+        'Seçili modellerde NET %25 indirim – hemen kirala!', 
+        '01.08.2025 - 31.08.2025', 
+        '05.08.2025 - 30.08.2025', 
+        'kampanya4.png', 'Günlük 3.200 ₺',
+         'Net %25 İndirim'),
+
+('Günlük Kiralamada %40 İndirim',
+ 'Şimdi yola çıkmanın tam zamanı: günlük kiralamalarda %40 indirim!',
+  '10.08.2025 - 25.08.2025',
+   '10.08.2025 - 25.08.2025',
+    'kampanya5.png', 'Günlük 2.400 ₺', 
+    '%40 Anında İndirim'),
+
+('5+ Gün Kiralamaya %20',
+ '5 gün ve üzeri kiralamalarda ekstra %20 indirim fırsatı!',
+ '01.09.2025 - 30.09.2025',
+ '05.09.2025 - 30.09.2025',
+ 'kampanya6.png',
+ 'Günlük 2.800 ₺',
+ '5 Gün ve Üzeri %20'),
+
+('Yaz Boyunca DEV Kampanya',
+ 'SUV ve crossover modellerde yaz boyu özel fiyatlar!',
+ '01.06.2025 - 31.08.2025',
+ '01.06.2025 - 31.08.2025',
+ 'kampanya7.png',
+ 'Günlük 3.900 ₺',
+ 'Yaz Boyu Avantaj'),
+
+('%20 İndirim – Kupon: DAY20',
+ 'Kupon kodu DAY20 ile tüm kategorilerde %20 indirim. Yıl sonuna kadar!',
+ '01.09.2025 - 31.12.2025',
+ '01.09.2025 - 31.12.2025',
+ 'kampanya8.png',
+ 'Günlük 2.600 ₺',
+ 'Kuponla %20');       ;
   `);
 
   await db.exec(`

@@ -53,6 +53,7 @@
   "carsWithSearch": "Cars: \"{{searchText}}\" ({{count}} results)",
   "result": "Result",
   "results": "Results",
+  "firstName":"First Name",
   "home": "Home",
   "reservation": "Reservation"
 }

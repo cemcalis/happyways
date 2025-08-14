@@ -32,8 +32,12 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const validator = new FormValidator({
+     firstName: CommonValidationRules.name,
+    lastName: CommonValidationRules.surname,
     email: CommonValidationRules.email,
     phoneNumber: CommonValidationRules.phone,
     password: CommonValidationRules.password,
@@ -41,7 +45,7 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
   });
 
   const handleRegister = async () => {
-    const formData = { email, phoneNumber, password, confirmPassword };
+    const formData = { firstName, lastName, email, phoneNumber, password, confirmPassword };
     const validationErrors = validator.validate(formData);
     
     if (!agree) {
@@ -59,7 +63,7 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
     try {
       const data = await apiRequest("http://10.0.2.2:3000/api/register", {
         method: "POST",
-        body: JSON.stringify({ email, password, phone: phoneNumber })
+        body: JSON.stringify({first_name: firstName, last_name: lastName, email, password, phone: phoneNumber })
       });
       Alert.alert(t('registerSuccess'), t('registerSuccessMessage'), [
         {
@@ -107,6 +111,23 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
           </TouchableOpacity>
         </View>
 
+         <ReusableTextInput
+          label={t('firstName')}
+          placeholder={t('enterFirstName')}
+          value={firstName}
+          onChangeText={setFirstName}
+          keyboardType="default"
+          autoCapitalize="words"
+        />
+
+         <ReusableTextInput
+          label={t('lastName')}
+          placeholder={t('enterLastName')}
+          value={lastName}
+          onChangeText={setLastName}
+          keyboardType="default"
+          autoCapitalize="words"
+        />
         
         <ReusableTextInput
           label={t('email')}

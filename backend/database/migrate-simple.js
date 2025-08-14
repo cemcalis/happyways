@@ -21,22 +21,22 @@ db.run("ALTER TABLE cars ADD COLUMN available BOOLEAN DEFAULT 1", function(err) 
   } else {
     console.log('Available column başarıyla eklendi');
   }
-  
+
   db.run("ALTER TABLE reservations ADD COLUMN pickup_datetime TEXT", function(err) {
     if (err && !err.message.includes('duplicate column name')) {
       console.error('pickup_datetime migration hatası:', err.message);
     } else {
       console.log('pickup_datetime column hazır');
     }
-    
+
     db.run("ALTER TABLE reservations ADD COLUMN dropoff_datetime TEXT", function(err) {
       if (err && !err.message.includes('duplicate column name')) {
         console.error('dropoff_datetime migration hatası:', err.message);
       } else {
         console.log('dropoff_datetime column hazır');
       }
-      
-      db.run(`UPDATE reservations 
+
+      db.run(`UPDATE reservations
               SET pickup_datetime = pickup_date || ' ' || pickup_time,
                   dropoff_datetime = dropoff_date || ' ' || dropoff_time
               WHERE pickup_datetime IS NULL OR dropoff_datetime IS NULL`, function(err) {
@@ -45,7 +45,7 @@ db.run("ALTER TABLE cars ADD COLUMN available BOOLEAN DEFAULT 1", function(err) 
         } else {
           console.log('Existing data updated');
         }
-        
+
         console.log('Database migration tamamlandı!');
         db.close();
       });

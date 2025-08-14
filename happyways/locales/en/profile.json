@@ -29,6 +29,8 @@
   "logout": "Logout",
   "logoutConfirm": "Are you sure you want to logout?",
   "error": "Error",
-   "currency":"Currency",
+  "firstName":"First Name",
+  "lastName":"Last Name",
+  "currency":"Currency",
   "SocialMediaAccounts": "Social Media Accounts"
 }

@@ -19,13 +19,16 @@
       await db.exec("PRAGMA foreign_keys = ON");
 
     await db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        first_name TEXT,
+        last_name TEXT,
         full_name TEXT,
         phone TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
       `);
     await db.exec(`
     CREATE TABLE IF NOT EXISTS campaigns (

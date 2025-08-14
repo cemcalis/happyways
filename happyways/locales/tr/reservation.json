@@ -52,5 +52,7 @@
   "duration": "Süre",
   "Pickup": "Alış",
   "differentDropoffLocation": "Farklı Bırakış Yeri",
-  "continueReservation": "Rezervasyonu Devam Ettir"
+  "continueReservation": "Rezervasyonu Devam Ettir",
+  "recentSearches": "Son Aramalar",
+  "clearHistory": "Geçmişi Temizle"
 }

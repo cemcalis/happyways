@@ -13,6 +13,9 @@ import { RootStackParamList } from "../../../../../types";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import Icon from "../../../../../Components/Icons/Icons";
 import { useTranslation } from "react-i18next";
+import TabBar from "../../../../../Components/TabBar/TapBar";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import { ENV } from "../../../../../utils/env";
 
 type MeProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "MePage">;
@@ -21,48 +24,55 @@ type MeProp = {
 const MePage = ({ navigation }: MeProp) => {
   const { isDark } = useTheme();
   const { t } = useTranslation(["profile", "common", "home"]);
-  const [name, setName] = useState("");
+   const { token, getUserFromToken } = useAuth();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
-  const tabItems = [
-    { icon: <Icon name="home" size={20} />, label: t("home:home"), route: "HomePage" },
-    { icon: <Icon name="car" size={20} />, label: t("home:cars"), route: "AllCarsPage" },
-    { icon: <Icon name="search" size={20} />, label: t("home:reservation"), route: "ReservationPage" },
-    { icon: <Icon name="campaign" size={20} />, label: t("home:campaigns"), route: "CampaignPage" },
-    { icon: <Icon name="user" size={20} />, label: t("profile:myAccount"), route: "ProfilePage" },
-  ];
 
-  const API_URL = "http://192.168.1.10:3000/api/main/profile/1";
+  const userId = getUserFromToken()?.id;
+  const API_URL = `${ENV.API_BASE_URL}/api/main/profile/${userId}`
 
-  useEffect(() => {
+
+
+ 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         if (data) {
-          setName(data.name || "");
+          setFirstName(data.first_name || "");
+          setLastName(data.last_name || "");
           setEmail(data.email || "");
           setPhone(data.phone || "");
         }
+        if (!token || !userId) return;
       } catch (error) {
         console.log("Profil bilgileri alınamadı:", error);
       }
     };
+    useEffect(() => {
     fetchProfile();
   }, []);
+ 
 
   const handleSave = async () => {
-    if (!name || !email || !phone || !password) {
+     if (!firstName || !lastName || !email || !phone || !password) {
       return Alert.alert(t("profile:error"), t("profile:fillAllFields"));
     }
 
     try {
       const res = await fetch(API_URL, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, password }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ firstName, lastName, email, phone, password }),
       });
 
       if (res.ok) {
@@ -88,17 +98,20 @@ const MePage = ({ navigation }: MeProp) => {
           </Text>
         </View>
 
-        <Text className={`text-sm mb-1 ${isDark ? "text-gray-300" : "text-black"}`}>
-          {t("profile:name")}
-        </Text>
+      <Text className={`text-sm mb-1 ${isDark ? 'text-gray-300' : 'text-black'}`}>{t('profile:firstName')}</Text>
         <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder={t("profile:name")}
-          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
-          className={`border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm ${
-            isDark ? "text-white" : "text-black"
-          }`}
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder={t('profile:firstName')}
+          className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-black"
+        />
+
+        <Text className={`text-sm mb-1 ${isDark ? 'text-gray-300' : 'text-black'}`}>{t('profile:lastName')}</Text>
+        <TextInput
+          value={lastName}
+          onChangeText={setLastName}
+          placeholder={t('profile:lastName')}
+          className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-black"
         />
 
         <Text className={`text-sm mb-1 ${isDark ? "text-gray-300" : "text-black"}`}>
@@ -153,17 +166,11 @@ const MePage = ({ navigation }: MeProp) => {
           isDark ? "bg-gray-900 border-t border-gray-700" : "bg-white border-t border-gray-200"
         } py-1`}
       >
-        {tabItems.map(({ icon, label, route }, i) => (
-          <TouchableOpacity
-            key={i}
-            className="flex-1 items-center py-2"
-            onPress={() => navigation.navigate(route as any)}
-          >
-            <View>{icon}</View>
-            <Text className={`text-xs ${isDark ? "text-white" : "text-black"}`}>{label}</Text>
-          </TouchableOpacity>
-        ))}
+       
+            
       </View>
+      <TabBar navigation={navigation} activeRoute="ProfilePage" />
+
     </View>
   );
 };
