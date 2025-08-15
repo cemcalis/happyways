@@ -152,7 +152,33 @@ const AdditionalRequests = () => {
 
   const handleRentNow = async () => {
     try {
-    
+     const validationResponse = await fetch('http://10.0.2.2:3000/api/cars/additional-services/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          extraDriver,
+          insurance,
+          carId: 1,
+          pickupDate: "2024-04-17",
+          dropDate: "2024-04-24"
+        })
+      });
+
+      if (!validationResponse.ok) {
+        const errorText = await validationResponse.text();
+        try {
+          const errData = JSON.parse(errorText);
+          throw new Error(errData.message || 'Validation request failed');
+        } catch {
+          throw new Error(errorText);
+        }
+      }
+
+      const validationResult = await validationResponse.json();
+
+       if (validationResult.success) {
       navigation.navigate("PaymentPage", {
         carId: carId,
         carModel: carModel,
@@ -171,8 +197,10 @@ const AdditionalRequests = () => {
         totalPrice: finalPrice.toString(),
         totalDays: totalDays.toString(),
         basePrice: basePrice.toString(),
-        userEmail
+        userEmail,
+      
       });
+    }
     } catch (error) {
       console.error('Navigation error:', error);
     }

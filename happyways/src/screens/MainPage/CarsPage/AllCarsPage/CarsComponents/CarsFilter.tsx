@@ -4,6 +4,7 @@ import Icon from "../../../../../../Components/Icons/Icons";
 import { useTheme } from "../../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 
+
 type CarsFilterProps = {
   searchText: string;
   setSearchText: (text: string) => void;
@@ -33,7 +34,7 @@ const CarsFilter = ({
           className={`flex-row items-center ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'} border rounded-xl px-4 py-3 shadow-sm`}
           onPress={handleFilterPress}
         >
-          <Icon name="filter" size={18} />
+          
           <Text className={`${isDark ? 'text-gray-200' : 'text-gray-800'} ml-2`}>{t('filterBy')}</Text>
         </TouchableOpacity>
         <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{filteredCarsCount} {t('results', { count: filteredCarsCount })}</Text>

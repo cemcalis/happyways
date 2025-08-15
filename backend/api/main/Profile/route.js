@@ -44,9 +44,14 @@ router.put("/:id", async (req, res) => {
         id,
       ]
     );
-    return res.json({ message: "Profil güncellendi." });
+     res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ message: "Profil güncelleme hatası.", error: error.message });
+    console.error("Profile data fetch error:", error);
+    res.status(500).json({
+      message: "Profil verileri alınamadı",
+      error: error.message,
+    });
   }
 });
+  
 export default router;

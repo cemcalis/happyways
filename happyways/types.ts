@@ -54,6 +54,7 @@ export type RootStackParamList = {
     totalPrice?: string; 
     totalDays?: string; 
     basePrice?: string; 
+   
   };
   ReservationPage: {
     carId?: number;
@@ -73,6 +74,28 @@ export type RootStackParamList = {
     source?: string; 
     userEmail?: string;
   };
+ ReservationSummaryPage: {
+    reservationId: number;
+    fallback?: {
+      id: number;
+      car_id: number;
+      model: string;
+      year: number | string;
+      image: string;
+      pickup_location: string;
+      dropoff_location: string;
+      pickup_date: string;
+      dropoff_date: string;
+      pickup_time: string;
+      dropoff_time: string;
+      total_price: string;
+      status: string;
+      duration: string;
+      status_info?: { status: string; message: string; color: string; icon: string };
+    };
+  };
+
+
   CarsDetailPage: {
     carId: number;
     pickupLocation?: string;

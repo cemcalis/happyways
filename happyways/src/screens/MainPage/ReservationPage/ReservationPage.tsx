@@ -15,6 +15,7 @@ import {
   SearchHistory,
   SelectedCarInfo,
 } from "./ReservationComponents";
+import BackButton from "../../../../Components/BackButton/BackButton";
 
 type LocationType = {
   id: number;
@@ -236,7 +237,11 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <ScrollView showsVerticalScrollIndicator={false} className="px-4">
-        <ReservationHeader />
+        <ReservationHeader
+        />
+        <BackButton
+          onPress={() => navigation.goBack()}
+        />
         
         <ReservationForm
           pickupLocation={pickupLocation}

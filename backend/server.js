@@ -61,7 +61,13 @@ app.use("/api/cars/filter", carFilterRoute);
 app.use("/api/cars/additional-services", additionalServicesRoute);
 app.use("/api/cars", CarsRoute);
 
-app.use(errorHandler);
+app.use((req, res) => res.status(404).json({ message: "Not Found" }));
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({ message: "Internal Server Error" });
+});
+
 
 const startServer = async () => {
   try {

@@ -83,10 +83,21 @@ export const apiRequest = async (url: string, options: RequestInit = {}): Promis
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
+      if (!response.ok) {
+      let errorMessage: string | undefined;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData?.message;
+      } catch {
+        try {
+          errorMessage = await response.text();
+        } catch {
+          errorMessage = undefined;
+        }
+      }
+
       throw new NetworkError(
-        errorData?.message || `HTTP ${response.status}`,
+        errorMessage || `HTTP ${response.status}`,
         response.status,
         'HTTP_ERROR'
       );

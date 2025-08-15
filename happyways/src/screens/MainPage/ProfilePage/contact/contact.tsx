@@ -6,6 +6,7 @@ import { WebView } from "react-native-webview";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import Icon from "../../../../../Components/Icons/Icons";
+import BackButton from "../../../../../Components/BackButton/BackButton";   
 
 type ContactProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactPage">;
@@ -52,7 +53,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
   return (
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
- 
+        <BackButton onPress={() => navigation.goBack()} />
         <View className={`w-full h-48 mb-5 rounded-lg overflow-hidden border ${isDark ? 'border-gray-600' : 'border-gray-200'}`}>
           <WebView
             originWhitelist={["*"]}

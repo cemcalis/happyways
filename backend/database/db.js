@@ -25,7 +25,6 @@
         password TEXT NOT NULL,
         first_name TEXT,
         last_name TEXT,
-        full_name TEXT,
         phone TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
@@ -56,39 +55,56 @@
     );
   `);
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS reservations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER,
-      car_id INTEGER,
-      user_name TEXT,
-      user_email TEXT,
-      user_phone TEXT,
-      car_model TEXT,
-      car_year INTEGER,
-      car_image TEXT,
-      pickup_location TEXT NOT NULL,
-      dropoff_location TEXT,
-      pickup_location_id INTEGER,
-      dropoff_location_id INTEGER,
-      pickup_date TEXT NOT NULL,
-      dropoff_date TEXT NOT NULL,
-      pickup_time TEXT NOT NULL,
-      dropoff_time TEXT NOT NULL,
-      pickup_datetime TEXT,
-      dropoff_datetime TEXT,
-      total_price TEXT,
-      status TEXT DEFAULT 'pending',
-      payment_status TEXT DEFAULT 'pending',
-      payment_id TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (car_id) REFERENCES cars(id),
-      FOREIGN KEY (pickup_location_id) REFERENCES locations(id),
-      FOREIGN KEY (dropoff_location_id) REFERENCES locations(id)
-    );
-  `);
+ await db.exec(`
+  CREATE TABLE IF NOT EXISTS reservations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- ilişkiler
+    user_id INTEGER NOT NULL,
+    car_id  INTEGER NOT NULL,
+
+    -- opsiyonel kullanıcı/araç özet alanları (rapor/ekran için)
+    user_name  TEXT,
+    user_email TEXT,
+    user_phone TEXT,
+    car_model  TEXT,
+    car_year   INTEGER,
+    car_image  TEXT,
+
+    -- konum & tarih/saat
+    pickup_location   TEXT NOT NULL,
+    dropoff_location  TEXT NOT NULL,
+    pickup_location_id  INTEGER,
+    dropoff_location_id INTEGER,
+    pickup_date  TEXT NOT NULL,  
+    dropoff_date TEXT NOT NULL,
+    pickup_time  TEXT NOT NULL,  
+    dropoff_time TEXT NOT NULL,
+    pickup_datetime  TEXT,      
+    dropoff_datetime TEXT,
+    total_price REAL NOT NULL,   
+    status TEXT NOT NULL DEFAULT 'confirmed',
+    payment_status TEXT DEFAULT 'paid',
+    payment_id TEXT,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (car_id)  REFERENCES cars(id),
+    FOREIGN KEY (pickup_location_id)  REFERENCES locations(id),
+    FOREIGN KEY (dropoff_location_id) REFERENCES locations(id)
+  );
+  CREATE TRIGGER IF NOT EXISTS reservations_set_updated_at
+  AFTER UPDATE ON reservations
+  FOR EACH ROW
+  BEGIN
+    UPDATE reservations
+    SET updated_at = CURRENT_TIMESTAMP
+    WHERE id = NEW.id;
+  END;
+`);
+
+  
 
     await db.exec(`
     CREATE TABLE IF NOT EXISTS locations (

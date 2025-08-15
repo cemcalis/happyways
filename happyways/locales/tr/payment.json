@@ -41,6 +41,9 @@
   "pay": "Öde",
   "email": "E-posta",
   "creditCardInformation": "Kredi Kartı Bilgileri",
-  "communicationPreference": "İletişim Tercihi"
+  "communicationPreference": "İletişim Tercihi",
+  "car": "Araç",
+  "duration": "Süre",
+  "time": "Saat"
 
 }

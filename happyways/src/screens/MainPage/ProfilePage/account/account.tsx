@@ -11,6 +11,7 @@ import LanguageSelector from '../../../../../Components/LanguageSelector/Languag
 import TabBar from '../../../../../Components/TabBar/TapBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../../../../contexts/AuthContext';
+import BackButton from '../../../../../Components/BackButton/BackButton';
 
 type ProfilePageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ProfilePage">;
@@ -32,7 +33,7 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
   return (
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
- 
+        <BackButton onPress={() => navigation.goBack()} />
         <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myAccount')}</Text>
 
        

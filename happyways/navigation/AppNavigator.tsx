@@ -23,7 +23,7 @@ import ContactPage from "../src/screens/MainPage/ProfilePage/contact/contact";
 import ProfilePage from "../src/screens/MainPage/ProfilePage/account/account";
 import NotificationPage from "../src/screens/NotificationPage/NotificationPage";
 import AdditionalRequests from "../src/screens/MainPage/CarsPage/AdditionalRequests/AdditionalRequests";
-
+import ReservationSummaryPage from "../src/screens/MainPage/ProfilePage/reservation/reservationsummary/reservationsummary";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -160,6 +160,11 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
           <Stack.Screen
             name="NotificationPage"
             component={NotificationPage}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReservationSummaryPage"
+            component={ReservationSummaryPage}
             options={{ headerShown: false }}
           />
         </Stack.Group>

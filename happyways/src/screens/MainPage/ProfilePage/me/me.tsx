@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useAuth } from "../../../../../contexts/AuthContext";
 import { ENV } from "../../../../../utils/env";
+import BackButton from "../../../../../Components/BackButton/BackButton";
 
 type MeProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "MePage">;
@@ -88,6 +89,7 @@ const MePage = ({ navigation }: MeProp) => {
   return (
     <View className={`flex-1 ${isDark ? "bg-gray-900" : "bg-white"}`}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <BackButton onPress={() => navigation.goBack()} />
         <View className="items-center mb-5">
           <Image
             source={{ uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }}

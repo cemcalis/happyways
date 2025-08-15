@@ -6,6 +6,7 @@ import { RootStackParamList } from "../../../../../types";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import BackButton from "../../../../../Components/BackButton/BackButton";
 
 type Campaign = {
   id: number;
@@ -56,6 +57,7 @@ const CampaignPage = () => {
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
 
       <View className={`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+        <BackButton onPress={() => navigation.goBack()} />
         <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
       </View>
 

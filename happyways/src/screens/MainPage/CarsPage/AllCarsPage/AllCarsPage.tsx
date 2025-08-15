@@ -125,11 +125,11 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
   useEffect(() => {
     const fetchCars = async () => {
-      // Geçici olarak token kontrolü kaldırıldı
-      // if (!token) {
-      //   Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
-      //   return;
-      // }
+      setLoading(true);
+      if (!token) {
+        Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
+        return;
+      }
 
       try {
         let url = "http://10.0.2.2:3000/api/cars/allcars";

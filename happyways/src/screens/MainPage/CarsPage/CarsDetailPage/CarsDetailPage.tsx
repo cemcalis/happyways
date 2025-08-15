@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../../../../types";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import BackButton from "../../../../../Components/BackButton/BackButton";
 type CarsDetailPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "CarsDetailPage">;
 };
@@ -66,6 +67,10 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <View className={`flex-row items-center justify-between px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+        <BackButton onPress={() => navigation.goBack()} />
+          <Text className={`text-lg font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('carDetails')}</Text>
+      </View>
       <ScrollView>
 
         <Image
