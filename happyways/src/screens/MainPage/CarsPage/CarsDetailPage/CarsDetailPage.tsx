@@ -23,7 +23,7 @@ type CarDetail = {
 
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
-  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime, source, userEmail } = route.params;
+  const { car_id, pickup_location, dropoff_location, pickup_date, pickup_time, dropoff_date, dropoff_time, source, user_email } = route.params;
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
 
@@ -33,7 +33,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   useEffect(() => {
     const fetchCarDetail = async () => {
       try {
-        const response = await fetch(`http://10.0.2.2:3000/api/cars/carsdetail/${carId}`);
+        const response = await fetch(`http://10.0.2.2:3000/api/cars/carsdetail/${car_id}`);
         const data = await response.json();
         setCar(data.car);
       } catch (error) {
@@ -44,7 +44,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
     };
 
     fetchCarDetail();
-  }, [carId]);
+  }, [car_id]);
 
   if (loading) {
     return (
@@ -97,32 +97,32 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
             
            if (source === "ReservationPage") {
                 navigation.navigate("AdditionalRequests", {
-                  carId: car.id,
-                  carModel: car.model,
-                  carPrice: car.price,
-                  pickupDate: pickupDate || "",
-                  dropDate: dropoffDate || "",
-                  pickupTime: pickupTime || "",
-                  dropTime: dropoffTime || "",
-                  pickup: pickupLocation || "",
-                  drop: dropoffLocation || "",
+                  car_id: car.id,
+                  car_model: car.model,
+                  car_price: car.price,
+                  pickup_date: pickup_date || "",
+                  dropoff_date: dropoff_date || "",
+                  pickup_time: pickup_time || "",
+                  dropoff_time: dropoff_time || "",
+                  pickup_location: pickup_location || "",
+                  dropoff_location: dropoff_location || "",
                   source: source || "ReservationPage",
-                  userEmail
+                  user_email
                 });
               } else {
                   navigation.navigate("ReservationPage", {
-               
-                  carId: car.id,
-                  carModel: car.model,
-                  carPrice: car.price,
-                  pickupDate: pickupDate || "",
-                  dropDate: dropoffDate || "",
-                  pickupTime: pickupTime || "",
-                  dropTime: dropoffTime || "",
-                  pickup: pickupLocation || "",
-                  drop: dropoffLocation || "",
+
+                  car_id: car.id,
+                  car_model: car.model,
+                  car_price: car.price,
+                  pickup_date: pickup_date || "",
+                  dropoff_date: dropoff_date || "",
+                  pickup_time: pickup_time || "",
+                  dropoff_time: dropoff_time || "",
+                  pickup_location: pickup_location || "",
+                  dropoff_location: dropoff_location || "",
                   source: source || "CarsDetailPage",
-                  userEmail
+                  user_email
                 });
               }
             }}

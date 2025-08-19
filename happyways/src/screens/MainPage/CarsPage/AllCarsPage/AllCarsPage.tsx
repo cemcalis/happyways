@@ -46,7 +46,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   const { t } = useTranslation('cars');
   const { t: tAuth } = useTranslation('auth');
 
-  const { searchParams, userEmail } = route.params || {};
+  const { searchParams, user_email } = route.params || {};
   const source = route.params?.source;
 
   const handleApplyFilters = useCallback(async (fuelTypes: string[], gearTypes: string[]) => {
@@ -136,12 +136,12 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
     
         if (searchParams) {
           const queryParams = new URLSearchParams({
-            pickup: searchParams.pickup,
-            drop: searchParams.drop,
-            pickupDate: searchParams.pickupDate,
-            dropDate: searchParams.dropDate,
-            pickupTime: searchParams.pickupTime,
-            dropTime: searchParams.dropTime,
+            pickup_location: searchParams.pickup_location,
+            dropoff_location: searchParams.dropoff_location,
+            pickup_date: searchParams.pickup_date,
+            dropoff_date: searchParams.dropoff_date,
+            pickup_time: searchParams.pickup_time,
+            dropoff_time: searchParams.dropoff_time,
           });
           url += `?${queryParams.toString()}`;
         }
@@ -290,7 +290,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
             navigation={navigation}
             searchParams={searchParams}
             source={source}
-            userEmail={userEmail}
+            user_email={user_email}
           />
         </>
       )}

@@ -30,8 +30,8 @@ const MyReservations: React.FC = () => {
 
   const fetchReservations = async () => {
     try {
-      const userEmail = await AsyncStorage.getItem('userEmail');
-      if (!userEmail) {
+      const user_email = await AsyncStorage.getItem('user_email');
+      if (!user_email) {
         Alert.alert('Hata', 'Kullanıcı bilgisi bulunamadı');
         return;
       }
@@ -42,7 +42,7 @@ const MyReservations: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userEmail: userEmail
+          user_email
         }),
       });
 

@@ -29,10 +29,10 @@ type CarSectionProps = {
   cars: Car[];
   searchText: string;
   navigation: NativeStackNavigationProp<RootStackParamList, "HomePage">;
-  userEmail?: string;
+  user_email?: string;
 };
 
-const CarSection = ({ cars, searchText, navigation, userEmail }: CarSectionProps) => {
+const CarSection = ({ cars, searchText, navigation, user_email }: CarSectionProps) => {
   const { t } = useTranslation('home');
   const { isDark } = useTheme();
   
@@ -70,12 +70,12 @@ const CarSection = ({ cars, searchText, navigation, userEmail }: CarSectionProps
           )}
         </View>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           className="bg-orange-500 py-2 rounded-lg"
-          onPress={() => navigation.navigate("CarsDetailPage", { 
-            carId: car.id,
+          onPress={() => navigation.navigate("CarsDetailPage", {
+            car_id: car.id,
             source: "HomePage",
-            userEmail
+            user_email
           })}
         >
           <Text className="text-white font-bold text-center text-sm">

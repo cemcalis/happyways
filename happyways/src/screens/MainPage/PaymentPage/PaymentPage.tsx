@@ -22,10 +22,10 @@ export type CarInfo = {
   dayDifference: number;
   discountAmount: number;
   discountCode: string | null;
-  pickup: string;
-  dropoff: string;
-  pickupDate: string;   // "DD.MM.YYYY"
-  dropoffDate: string;  // "DD.MM.YYYY"
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_date: string;   // "DD.MM.YYYY"
+  dropoff_date: string;  // "DD.MM.YYYY"
   insuranceAmount?: number;
   insuranceOptions?: string[];
   breakdown?: Record<string, any>;
@@ -70,48 +70,48 @@ const PaymentPage = () => {
   const { isDark } = useTheme();
 
   const {
-    carId,
-    carModel,
-    carPrice,        // günlük fiyat (string olabilir)
-    pickupDate,
-    dropDate,
-    pickupTime,
-    dropTime,
-    pickup,
-    drop,
-    userEmail,       // email’i buradan alıyoruz
-    extraDriver,
-    extraDriverPrice,
+    car_id,
+    car_model,
+    car_price,        // günlük fiyat (string olabilir)
+    pickup_date,
+    dropoff_date,
+    pickup_time,
+    dropoff_time,
+    pickup_location,
+    dropoff_location,
+    user_email,
+    extra_driver,
+    extra_driver_price,
     insurance,
-    insurancePrice,
-    basePrice: basePriceParam,
-    totalDays: totalDaysParam,
+    insurance_price,
+    base_price: basePriceParam,
+    total_days: totalDaysParam,
   } = route.params || {};
 
   // gün sayısı
   const days = useMemo(() => {
     if (typeof totalDaysParam === "number") return Math.max(1, totalDaysParam);
-    return diffDaysClamp1(pickupDate, dropDate);
-  }, [pickupDate, dropDate, totalDaysParam]);
+    return diffDaysClamp1(pickup_date, dropoff_date);
+  }, [pickup_date, dropoff_date, totalDaysParam]);
 
   // hesaplanmış carInfo
   const computed = useMemo<CarInfo>(() => {
-    const dailyPrice = Number(carPrice) || 0;
+    const dailyPrice = Number(car_price) || 0;
     const basePrice = basePriceParam ? Number(basePriceParam) : dailyPrice * days;
 
     const extra =
-      (extraDriver ? Number(extraDriverPrice || 0) : 0) +
-      (insurance ? Number(insurancePrice || 0) : 0);
+      (extra_driver ? Number(extra_driver_price || 0) : 0) +
+      (insurance ? Number(insurance_price || 0) : 0);
 
     const subtotal = basePrice + extra;
     const kdv = Math.round(subtotal * 0.075);
     const total = subtotal + kdv;
 
-    const pickD = parseDate(pickupDate);
-    const dropD = parseDate(dropDate);
+    const pickD = parseDate(pickup_date);
+    const dropD = parseDate(dropoff_date);
 
     return {
-      model: carModel || "",
+      model: car_model || "",
       dailyPrice,
       basePrice,
       subtotal,
@@ -121,34 +121,34 @@ const PaymentPage = () => {
       dayDifference: days,
       discountAmount: 0,
       discountCode: null,
-      pickup: pickup || "",
-      dropoff: drop || "",
-      pickupDate: pickD ? toTR(pickD) : (pickupDate || ""),
-      dropoffDate: dropD ? toTR(dropD) : (dropDate || ""),
-      insuranceAmount: insurance ? Number(insurancePrice || 0) : 0,
+      pickup_location: pickup_location || "",
+      dropoff_location: dropoff_location || "",
+      pickup_date: pickD ? toTR(pickD) : (pickup_date || ""),
+      dropoff_date: dropD ? toTR(dropD) : (dropoff_date || ""),
+      insuranceAmount: insurance ? Number(insurance_price || 0) : 0,
       insuranceOptions: insurance ? ["full"] : [],
       breakdown: {
         dailyCalculation: `${dailyPrice} x ${days} gün = ${basePrice}`,
         originalPrice: basePrice,
-        insurance: insurance ? Number(insurancePrice || 0) : 0,
+        insurance: insurance ? Number(insurance_price || 0) : 0,
         discount: 0,
         kdv: `%7.5 KDV = ${kdv}`,
         finalTotal: total,
       },
     };
   }, [
-    carModel,
-    carPrice,
+    car_model,
+    car_price,
     basePriceParam,
     days,
-    extraDriver,
-    extraDriverPrice,
+    extra_driver,
+    extra_driver_price,
     insurance,
-    insurancePrice,
-    pickup,
-    drop,
-    pickupDate,
-    dropDate,
+    insurance_price,
+    pickup_location,
+    dropoff_location,
+    pickup_date,
+    dropoff_date,
   ]);
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const PaymentPage = () => {
     console.log("PaymentPage total:", computed.total);
   }, [computed, days]);
 
-  const email = userEmail || ""; // AuthContext'ten user alma ihtiyacı yok (tip hatasını kaldırır)
+  const email = user_email || ""; // AuthContext'ten user alma ihtiyacı yok (tip hatasını kaldırır)
 
   return (
     <ScrollView className={`${isDark ? "bg-gray-900" : "bg-gray-50"} flex-1`} contentContainerStyle={{ paddingBottom: 24 }}>
@@ -173,12 +173,12 @@ const PaymentPage = () => {
       {/* Kart Formu */}
       <CreditCardForm
         carInfo={computed}
-        userEmail={email}
-        carId={carId}
-        pickupDate={pickupDate}
-        dropDate={dropDate}
-        pickupTime={pickupTime}
-        dropTime={dropTime}
+        user_email={email}
+        car_id={car_id}
+        pickup_date={pickup_date}
+        dropoff_date={dropoff_date}
+        pickup_time={pickup_time}
+        dropoff_time={dropoff_time}
       />
     </ScrollView>
   );

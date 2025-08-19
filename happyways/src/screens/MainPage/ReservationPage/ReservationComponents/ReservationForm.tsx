@@ -32,11 +32,11 @@ interface ReservationFormProps {
   onBackTimeChange: (time: string) => void;
   onSearch: () => void;
   source?: string;
-  carId?: number;
-  carModel?: string;
-  carPrice?: string;
-  calculatedPrice?: string;
-  daysDifference?: number;
+  car_id?: number;
+  car_model?: string;
+  car_price?: string;
+  calculated_price?: string;
+  days_difference?: number;
 }
 
 const ReservationForm: React.FC<ReservationFormProps> = ({
@@ -57,11 +57,11 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   onBackTimeChange,
   onSearch,
   source,
-  carId,
-  carModel,
-  carPrice,
-  calculatedPrice,
-  daysDifference,
+  car_id,
+  car_model,
+  car_price,
+  calculated_price,
+  days_difference,
 }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('reservation');
@@ -234,13 +234,13 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       </View>
 
       
-      {source === "HomePage" && carId && calculatedPrice && (
+      {source === "HomePage" && car_id && calculated_price && (
         <View className={`mb-4 p-3 rounded-lg ${isDark ? 'bg-blue-900/30 border-blue-700' : 'bg-blue-50 border-blue-200'} border`}>
           <Text className={`text-sm font-medium ${isDark ? 'text-blue-300' : 'text-blue-700'} mb-1`}>
             {t('priceCalculation')}
           </Text>
           <Text className={`text-xs ${isDark ? 'text-blue-200' : 'text-blue-600'}`}>
-            {daysDifference} {t('days')} × {carPrice} = {calculatedPrice} ₺
+            {days_difference} {t('days')} × {car_price} = {calculated_price} ₺
           </Text>
         </View>
       )}
@@ -290,7 +290,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         <Text className="text-center text-white text-lg font-bold">
           {isSearching 
             ? t('searching') 
-            : source === "HomePage" && carId 
+            : source === "HomePage" && car_id
               ? t('continueReservation') 
               : t('searchCars')
           }

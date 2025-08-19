@@ -7,7 +7,6 @@ import { RootStackParamList } from '../../../../../types'
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import { useTheme } from '../../../../../contexts/ThemeContext'
 import TabBar from '../../../../../Components/TabBar/TapBar'
-import ReservationCard from '../../../../../Components/ReservationCard/ReservationCard'
 import { useTranslation } from 'react-i18next'
 
 type AdditionalRequestsProps = {
@@ -34,14 +33,14 @@ const AdditionalRequests = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AdditionalRequests">>();
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
-  const { carId, carModel, carPrice, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, source, userEmail } = route.params;
+  const { car_id, car_model, car_price, pickup_date, dropoff_date, pickup_time, dropoff_time, pickup_location, dropoff_location, source, user_email } = route.params;
 
   console.log('=== ROUTE PARAMS DEBUG ===');
   console.log('source:', source);
-  console.log('pickupDate:', pickupDate);
-  console.log('dropDate:', dropDate);
-  console.log('pickupTime:', pickupTime);
-  console.log('dropTime:', dropTime);
+  console.log('pickup_date:', pickup_date);
+  console.log('dropoff_date:', dropoff_date);
+  console.log('pickup_time:', pickup_time);
+  console.log('dropoff_time:', dropoff_time);
   console.log('=== END ROUTE PARAMS ===');
 
   const [extraDriver, setExtraDriver] = React.useState(false);
@@ -52,20 +51,20 @@ const AdditionalRequests = () => {
   
   const calculateDays = () => {
     console.log('=== CALCULATE DAYS DEBUG ===');
-    console.log('pickupDate:', pickupDate);
-    console.log('dropDate:', dropDate);
-    
-    if (!pickupDate || !dropDate) {
+    console.log('pickup_date:', pickup_date);
+    console.log('dropoff_date:', dropoff_date);
+
+    if (!pickup_date || !dropoff_date) {
       console.log('Missing dates, returning 1');
       return 1;
     }
     
     
-    console.log('pickupDate type:', typeof pickupDate);
-    console.log('dropDate type:', typeof dropDate);
-    
-    const pickup = new Date(pickupDate);
-    const dropoff = new Date(dropDate);
+    console.log('pickup_date type:', typeof pickup_date);
+    console.log('dropoff_date type:', typeof dropoff_date);
+
+    const pickup = new Date(pickup_date);
+    const dropoff = new Date(dropoff_date);
     
     console.log('Pickup date object:', pickup);
     console.log('Dropoff date object:', dropoff);
@@ -160,9 +159,9 @@ const AdditionalRequests = () => {
         body: JSON.stringify({
           extraDriver,
           insurance,
-          carId: 1,
-          pickupDate: "2024-04-17",
-          dropDate: "2024-04-24"
+      car_id: 1,
+      pickup_date: "2024-04-17",
+      dropoff_date: "2024-04-24"
         })
       });
 
@@ -180,25 +179,25 @@ const AdditionalRequests = () => {
 
        if (validationResult.success) {
       navigation.navigate("PaymentPage", {
-        carId: carId,
-        carModel: carModel,
-        carPrice: dailyCarPrice.toString(), 
-        pickupDate: pickupDate,
-        dropDate: dropDate,
-        pickupTime: pickupTime,
-        dropTime: dropTime,
-        pickup: pickup,
-        drop: drop,
+        car_id: car_id,
+        car_model: car_model,
+        car_price: dailyCarPrice.toString(),
+        pickup_date: pickup_date,
+        dropoff_date: dropoff_date,
+        pickup_time: pickup_time,
+        dropoff_time: dropoff_time,
+        pickup_location: pickup_location,
+        dropoff_location: dropoff_location,
         source: source,
-        extraDriver: extraDriver,
-        extraDriverPrice: extraDriverTotal.toString(),
+        extra_driver: extraDriver,
+        extra_driver_price: extraDriverTotal.toString(),
         insurance: insurance,
-        insurancePrice: insurancePrice.toString(),
-        totalPrice: finalPrice.toString(),
-        totalDays: totalDays.toString(),
-        basePrice: basePrice.toString(),
-        userEmail,
-      
+        insurance_price: insurancePrice.toString(),
+        total_price: finalPrice.toString(),
+        total_days: totalDays.toString(),
+        base_price: basePrice.toString(),
+        user_email,
+
       });
     }
     } catch (error) {
@@ -253,14 +252,14 @@ const AdditionalRequests = () => {
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-1">
                 <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{t('pickUp')}</Text>
-                <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{pickup || "Ercan"}</Text>
-                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{pickupDate}, {pickupTime}</Text>
+                <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{pickup_location || "Ercan"}</Text>
+                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{pickup_date}, {pickup_time}</Text>
               </View>
               <View className={`w-8 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-300'} mx-4`}></View>
               <View className="flex-1 items-end">
                 <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{t('dropOff')}</Text>
-                <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{drop || "Lefkoşa"}</Text>
-                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{dropDate}, {dropTime}</Text>
+                <Text className={`${isDark ? 'text-white' : 'text-black'} font-semibold text-lg`}>{dropoff_location || "Lefkoşa"}</Text>
+                <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{dropoff_date}, {dropoff_time}</Text>
               </View>
             </View>
 

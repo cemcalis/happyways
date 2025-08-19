@@ -18,24 +18,24 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 type Props = {
   carInfo: any | null;
-  userEmail?: string;
-  carId?: number;
-  pickupDate?: string;
-  dropDate?: string;
-  pickupTime?: string;
-  dropTime?: string;
-  carModel?: string;
+  user_email?: string;
+  car_id?: number;
+  pickup_date?: string;
+  dropoff_date?: string;
+  pickup_time?: string;
+  dropoff_time?: string;
+  car_model?: string;
 };
 
 const CreditCardForm: React.FC<Props> = ({
   carInfo,
-  userEmail,
-  carId,
-  pickupDate,
-  dropDate,
-  pickupTime,
-  dropTime,
-  carModel,
+  user_email,
+  car_id,
+  pickup_date,
+  dropoff_date,
+  pickup_time,
+  dropoff_time,
+  car_model,
 }) => {
   const { isDark } = useTheme();
   const { token } = useAuth();
@@ -94,7 +94,7 @@ const CreditCardForm: React.FC<Props> = ({
           expiryMonth,
           expiryYear,
           cvv,
-          userEmail,
+          userEmail: user_email,
           carInfo,
         }),
       });
@@ -122,13 +122,13 @@ const CreditCardForm: React.FC<Props> = ({
           expiryMonth,
           expiryYear,
           cvv,
-          userEmail,
+          userEmail: user_email,
           carInfo,
-          carId,
-          pickupDate,
-          dropDate,
-          pickupTime,
-          dropTime,
+          car_id,
+          pickup_date,
+          dropoff_date,
+          pickup_time,
+          dropoff_time,
         }),
       });
 

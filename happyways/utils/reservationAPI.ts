@@ -1,29 +1,32 @@
 import { API_CONFIG } from './config';
 
 export interface ReservationData {
-  carId: number;
-  pickupLocation: string;
-  dropoffLocation: string;
-  pickupDate: string;
-  dropoffDate: string;
-  pickupTime: string;
-  dropoffTime: string;
-  userId?: number;
+  car_id: number;
+  pickup_location?: string;
+  dropoff_location?: string;
+  pickup_location_id?: number;
+  dropoff_location_id?: number;
+  pickup_date: string;
+  dropoff_date: string;
+  pickup_time: string;
+  dropoff_time: string;
+  total_price?: number;
+  user_id?: number;
 }
 
 export interface Reservation {
   id: number;
-  carId: number;
-  carModel: string;
-  carImage: string;
-  pickupLocation: string;
-  dropoffLocation: string;
-  pickupDateTime: string;
-  dropoffDateTime: string;
-  totalPrice: number;
+  car_id: number;
+  car_model: string;
+  car_image: string;
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_datetime: string;
+  dropoff_datetime: string;
+  total_price: number;
   status: 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled';
-  createdAt: string;
-  userId: number;
+  created_at: string;
+  user_id: number;
 }
 
 export interface ReservationResponse {
@@ -173,15 +176,15 @@ class ReservationAPI {
   }
 
   async searchAvailableCars(searchParams: {
-    pickupLocation: string;
-    dropoffLocation: string;
-    pickupDate: string;
-    dropoffDate: string;
-    pickupTime: string;
-    dropoffTime: string;
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
   }): Promise<any[]> {
     try {
-      const queryParams = new URLSearchParams(searchParams);
+      const queryParams = new URLSearchParams(searchParams as any);
       const response = await fetch(`${this.baseURL}/api/cars/search?${queryParams}`);
 
       const data = await response.json();

@@ -52,7 +52,7 @@ type Car = {
 
 const HomePage = ({navigation} : HomePageProps) => {
   const { token, getUserFromToken } = useAuth();
-  const userEmail = getUserFromToken()?.email;
+  const user_email = getUserFromToken()?.email;
   const { isDark } = useTheme();
   const { t } = useTranslation('home');
   const { t: tAuth } = useTranslation('auth');
@@ -205,7 +205,7 @@ const HomePage = ({navigation} : HomePageProps) => {
         cars={filteredCars}
         searchText={currentSearchText}
         navigation={navigation}
-        userEmail={userEmail}
+        user_email={user_email}
       />
     </View>
   );

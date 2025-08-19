@@ -22,19 +22,19 @@ type CarsListProps = {
   isGrid: boolean;
   navigation: NativeStackNavigationProp<RootStackParamList, "AllCarsPage">;
   searchParams?: {
-    pickup: string;
-    drop: string;
-    pickupDate: string;
-    dropDate: string;
-    pickupTime: string;
-    dropTime: string;
-    
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
+
   };
   source?: string;
-  userEmail?: string;
+  user_email?: string;
 };
 
-const CarsList = ({ filteredCars, isGrid, navigation, searchParams, source, userEmail }: CarsListProps) => {
+const CarsList = ({ filteredCars, isGrid, navigation, searchParams, source, user_email }: CarsListProps) => {
   const { isDark } = useTheme();
   
   const renderItem = ({ item }: { item: Car }) => (
@@ -44,7 +44,7 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams, source, user
       navigation={navigation}
       searchParams={searchParams}
       source={source}
-      userEmail={userEmail}
+      user_email={user_email}
     />
   );
 
