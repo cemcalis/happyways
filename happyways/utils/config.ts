@@ -1,6 +1,16 @@
 
+import { Platform } from 'react-native';
+
+const defaultBaseUrl = Platform.select({
+  ios: 'http://127.0.0.1:3000',
+  android: 'http://10.0.2.2:3000',
+  default: 'http://localhost:3000'
+});
+
+const baseUrlFromEnv = (typeof process !== 'undefined' && (process as any)?.env?.EXPO_PUBLIC_API_BASE_URL) || defaultBaseUrl;
+
 export const API_CONFIG = {
-  BASE_URL: 'http://10.0.2.2:3000',
+  BASE_URL: baseUrlFromEnv as string,
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000,

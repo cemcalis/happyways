@@ -14,6 +14,7 @@ import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTex
 import BackButton from "../../../Components/BackButton/BackButton";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../utils/env";
 
 type ForgetPasswordPageProp = {
   navigation: NativeStackNavigationProp<
@@ -34,7 +35,7 @@ const ForgetPasswordPage = ({ navigation }: ForgetPasswordPageProp) => {
     }
 
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/forgot-password", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

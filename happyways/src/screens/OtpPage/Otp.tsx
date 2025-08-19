@@ -18,6 +18,7 @@ import BackButtons from "../../../assets/BackButtons/backButtons.svg";
 import BackButton from "../../../Components/BackButton/BackButton";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../utils/env";
 const Otp = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -46,7 +47,7 @@ const Otp = () => {
     }
 
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/otp/verify", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: otpCode }),
@@ -68,7 +69,7 @@ const Otp = () => {
 
   const resendOtp = async () => {
     try {
-      await fetch("http://10.0.2.2:3000/api/otp/verify", {
+      await fetch(`${ENV.API_BASE_URL}/api/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

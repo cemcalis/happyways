@@ -9,6 +9,7 @@ import { useTheme } from '../../../../../contexts/ThemeContext'
 import TabBar from '../../../../../Components/TabBar/TapBar'
 import ReservationCard from '../../../../../Components/ReservationCard/ReservationCard'
 import { useTranslation } from 'react-i18next'
+import { ENV } from '../../../../../utils/env'
 
 type AdditionalRequestsProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "AdditionalRequests">;
@@ -152,7 +153,7 @@ const AdditionalRequests = () => {
 
   const handleRentNow = async () => {
     try {
-     const validationResponse = await fetch('http://10.0.2.2:3000/api/cars/additional-services/validate', {
+     const validationResponse = await fetch(`${ENV.API_BASE_URL}/api/cars/additional-services/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

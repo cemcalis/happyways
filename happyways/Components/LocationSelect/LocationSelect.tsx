@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
 import LocationSvg from "../../assets/HomePage/location.svg";
 import LeftArrowSvg from "../../assets/HomePage/leftarrow.svg";
+import { ENV } from "../../utils/env";
 
 type LocationType = {
   id: number;
@@ -26,7 +27,7 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch("http://10.0.2.2:3000/api/location");
+        const response = await fetch(`${ENV.API_BASE_URL}/api/location`);
         const data = await response.json();
         setLocations(data);
         setSelectedLocation(data[0]);

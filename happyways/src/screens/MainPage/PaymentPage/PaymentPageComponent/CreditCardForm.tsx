@@ -15,8 +15,9 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../../../utils/env";
 
-const API_BASE = "http://10.0.2.2:3000";
+const API_BASE = ENV.API_BASE_URL;
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 

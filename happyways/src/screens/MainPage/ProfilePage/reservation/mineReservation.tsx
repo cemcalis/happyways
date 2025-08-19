@@ -15,6 +15,7 @@ import { useAuth } from "../../../../../contexts/AuthContext";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import Icon from "../../../../../Components/Icons/Icons"; 
 import TabBar from "../../../../../Components/TabBar/TapBar";
+import { ENV } from "../../../../../utils/env";
 
 
 type ReservationPageProp = {
@@ -96,7 +97,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     }
     try {
       setLoading(true);
-      const res = await fetch("http://10.0.2.2:3000/api/reservation", {
+      const res = await fetch(`${ENV.API_BASE_URL}/api/reservation`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });

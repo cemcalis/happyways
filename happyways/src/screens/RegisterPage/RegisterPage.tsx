@@ -17,6 +17,7 @@ import { FormValidator, CommonValidationRules, hasError, getError } from "../../
 import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/errorHandling";
 import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../utils/env";
 
 type RegisterPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "RegisterPage">;
@@ -61,7 +62,7 @@ const RegisterPage = ({ navigation }: RegisterPageProp) => {
     setErrors({});
     setLoading(true);
     try {
-      const data = await apiRequest("http://10.0.2.2:3000/api/register", {
+      const data = await apiRequest(`${ENV.API_BASE_URL}/api/register`, {
         method: "POST",
         body: JSON.stringify({first_name: firstName, last_name: lastName, email, password, phone: phoneNumber })
       });

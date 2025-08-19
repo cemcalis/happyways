@@ -9,6 +9,7 @@ import ReusableTextInput from "../../../Components/ReusableTextInput/ReusableTex
 import BackButtons from "../../../assets/BackButtons/backButtons.svg";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../utils/env";
 type ResetPasswordPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ResetPasswordPage">;
 };
@@ -34,7 +35,7 @@ const ResetPassword = ({ navigation }: ResetPasswordPageProp) => {
     }
 
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/reset-password", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, newPassword }),

@@ -21,6 +21,7 @@ import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
 import { useTranslation } from "react-i18next";
 
 import { SearchFilter, FilterModal, CampaignSection, CarSection } from "./HomePageComponent";
+import { ENV } from "../../../../utils/env";
 
 type HomePageProps={
 navigation: NativeStackNavigationProp <RootStackParamList, "HomePage">;}
@@ -134,7 +135,7 @@ const HomePage = ({navigation} : HomePageProps) => {
       }
 
       try {
-        const data = await apiRequest("http://10.0.2.2:3000/api/home", {
+        const data = await apiRequest(`${ENV.API_BASE_URL}/api/home`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`

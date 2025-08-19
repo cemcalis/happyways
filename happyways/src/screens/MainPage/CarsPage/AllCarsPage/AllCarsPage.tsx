@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../../../../types";
 import { useAuth } from "../../../../../contexts/AuthContext";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { apiRequest, handleApiError, showErrorAlert } from "../../../../../utils/errorHandling";
+import { ENV } from "../../../../../utils/env";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import FilterModal from "../../HomePage/HomePageComponent/FilterModal";
 import { CarsHeader, CarsLoadingState, CarsFilter, CarsList } from "./CarsComponents";
@@ -54,7 +55,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
     
     try {
    
-      const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/cars/filter`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -132,7 +133,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
       }
 
       try {
-        let url = "http://10.0.2.2:3000/api/cars/allcars";
+        let url = `${ENV.API_BASE_URL}/api/cars/allcars`;
     
         if (searchParams) {
           const queryParams = new URLSearchParams({
@@ -191,7 +192,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
     const filterCars = async () => {
       try {
 
-        const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
+        const response = await fetch(`${ENV.API_BASE_URL}/api/cars/filter`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

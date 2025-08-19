@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ENV } from '../../utils/env';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -36,7 +37,7 @@ const MyReservations: React.FC = () => {
         return;
       }
 
-      const response = await fetch('http://172.20.10.3:3000/api/reservation/my-reservations', {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/reservation/my-reservations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

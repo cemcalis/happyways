@@ -19,6 +19,7 @@ import { apiRequest, handleApiError, showErrorAlert } from "../../../utils/error
 import LoadingSpinner from "../../../Components/LoadingSpinner/LoadingSpinner";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../utils/env";
 type LoginPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "LoginPage">;
 };
@@ -50,7 +51,7 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
     setErrors({});
     setLoading(true);
     try {
-      const data = await apiRequest("http://10.0.2.2:3000/api/login", {
+      const data = await apiRequest(`${ENV.API_BASE_URL}/api/login`, {
         method: "POST",
         body: JSON.stringify({ email, password })
       });

@@ -8,6 +8,7 @@ import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import BackButton from "../../../../../Components/BackButton/BackButton";
+import { ENV } from "../../../../../utils/env";
 type CarsDetailPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "CarsDetailPage">;
 };
@@ -33,7 +34,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   useEffect(() => {
     const fetchCarDetail = async () => {
       try {
-        const response = await fetch(`http://10.0.2.2:3000/api/cars/carsdetail/${carId}`);
+        const response = await fetch(`${ENV.API_BASE_URL}/api/cars/carsdetail/${carId}`);
         const data = await response.json();
         setCar(data.car);
       } catch (error) {

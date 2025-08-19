@@ -8,6 +8,7 @@ import { useTheme } from "../../../../../contexts/ThemeContext";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import BackButton from "../../../../../Components/BackButton/BackButton";
 import { useTranslation } from "react-i18next";
+import { ENV } from "../../../../../utils/env";
 
 
 import { 
@@ -44,7 +45,7 @@ const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
   useEffect(() => {
     const fetchCampaignDetail = async () => {
       try {
-        const response = await fetch(`http://10.0.2.2:3000/api/campaign`);
+        const response = await fetch(`${ENV.API_BASE_URL}/api/campaign`);
         const data = await response.json();
         const foundCampaign = data.campaigns.find((c: any) => c.id === campaignId);
         setCampaign(foundCampaign || null);

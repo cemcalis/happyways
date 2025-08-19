@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { saveToken, getToken, deleteToken, saveRefreshToken, getRefreshToken, deleteRefreshToken } from "../lib/secureStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ENV } from "../utils/env";
 
 type AuthContextType = {
   token: string | null;
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log("Token yenileme başlatılıyor...");
       
-      const response = await fetch("http://10.0.2.2:3000/api/auth/refresh", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

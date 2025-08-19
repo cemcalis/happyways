@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../../../../../types";
 import { useAuth } from "../../../../../../contexts/AuthContext";
 import { useTheme } from "../../../../../../contexts/ThemeContext";
 import Icon from "../../../../../../Components/Icons/Icons";
+import { ENV } from "../../../../../../utils/env";
 
 type ReservationSummaryRouteProp = RouteProp<RootStackParamList, "ReservationSummaryPage">;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "ReservationSummaryPage">;
@@ -68,7 +69,7 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
     const run = async () => {
  
       try {
-        const res = await fetch(`http://10.0.2.2:3000/api/reservation/${reservationId}`, {
+        const res = await fetch(`${ENV.API_BASE_URL}/api/reservation/${reservationId}`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });

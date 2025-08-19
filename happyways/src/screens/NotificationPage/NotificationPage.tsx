@@ -9,6 +9,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import LoadingSpinner from '../../../Components/LoadingSpinner/LoadingSpinner';
 import { useTranslation } from 'react-i18next';
+import { ENV } from '../../../utils/env';
 
 
 type NotificationPageProps = {
@@ -34,7 +35,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/notifications", {
+      const response = await fetch(`${ENV.API_BASE_URL}/api/notifications`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -60,7 +61,7 @@ const NotificationPage = ({ navigation }: NotificationPageProps) => {
 
   const markAsRead = async (id: number) => {
     try {
-      await fetch(`http://10.0.2.2:3000/api/notifications/${id}/read`, {
+      await fetch(`${ENV.API_BASE_URL}/api/notifications/${id}/read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
