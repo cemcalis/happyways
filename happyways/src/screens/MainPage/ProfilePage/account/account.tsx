@@ -30,76 +30,152 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
     navigation.reset({ index: 0, routes: [{ name: 'LoginPage' }] });
   };
   
-  return (
-    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-      <ScrollView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+ return (
+  <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-[#F9FAFB]'}`}>
+    <ScrollView
+      className="flex-1"
+      contentContainerStyle={{ paddingBottom: 110 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Üst Başlık */}
+      <View className="px-4 pt-3 pb-2 flex-row items-center justify-between">
         <BackButton onPress={() => navigation.goBack()} />
-        <Text className={`text-center text-lg font-semibold my-3 ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myAccount')}</Text>
+        <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
+          {t('profile:myAccount')}
+        </Text>
+        <View style={{ width: 32, height: 32 }} />
+      </View>
 
-       
-        
-        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
-         onPress={() => navigation.navigate("MePage")}
+      {/* Liste (Üyelik Bilgilerim, Rezervasyonlarım, İletişim) 
+          — Sadece üst ve alt çizgi, iç ayraç YOK */}
+      <View
+        className={`mx-0 ${isDark ? 'border-gray-800' : 'border-gray-200'}`}
+        style={{ borderTopWidth: 1, borderBottomWidth: 1 }}
+      >
+        <TouchableOpacity
+          className="px-4 py-4 flex-row items-center justify-between"
+          onPress={() => navigation.navigate('MePage')}
         >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:personalInfo')}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>
+            {t('profile:personalInfo')}
+          </Text>
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
         </TouchableOpacity>
 
-        
-        <TouchableOpacity className={`px-4 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[16px]`}
-         onPress={() => navigation.navigate("MineReservationPage")}
+        <TouchableOpacity
+          className="px-4 py-4 flex-row items-center justify-between"
+          onPress={() => navigation.navigate('MineReservationPage')}
         >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:myReservations')}</Text>
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>
+            {t('profile:myReservations')}
+          </Text>
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
-        </TouchableOpacity>       
-        <View className="px-4 mb-[10px]">
-          <Text className={`${isDark ? 'text-orange-400' : 'text-[#FE5502]'} font-semibold mb-3`}>{t('common:settings')}</Text>
+        </TouchableOpacity>
 
+        <TouchableOpacity
+          className="px-4 py-4 flex-row items-center justify-between"
+          onPress={() => navigation.navigate('ContactPage')}
+        >
+          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>
+            {t('profile:contactUs')}
+          </Text>
+          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Ayarlar başlık */}
+      <View className="px-5 mt-6 mb-2">
+        <Text className={`${isDark ? 'text-orange-300' : 'text-[#FE5502]'} font-semibold`}>
+          {t('common:settings')}
+        </Text>
+      </View>
+
+      {/* Ayarlar — ortaya hizalı kart, İÇ ÇİZGİ YOK */}
+      <View
+        className={`mx-5 mt-1 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'} px-4 py-2`}
+        style={{
+          shadowColor: '#000',
+          shadowOpacity: isDark ? 0 : 0.06,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 6 },
+          elevation: isDark ? 0 : 2,
+        }}
+      >
+        <View className="py-2">
           <LanguageSelector />
+        </View>
 
-          <TouchableOpacity className={`flex-row items-center justify-between py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-            <View className="flex-row items-center space-x-3">
-              <Icon name="money" size={20} />
-              <Text className={`${isDark ? 'text-white' : 'text-black'}`}>{t('profile:currency')}</Text>
+        {/* Para Birimi — ayrac YOK, sadece satır */}
+        <TouchableOpacity className="py-2 flex-row items-center justify-between">
+          <View className="flex-row items-center">
+            {/* İkonlar assets/Account içinden okunuyor */}
+            <View
+              className="w-8 h-8 rounded-full items-center justify-center mr-3"
+              style={{
+                backgroundColor: isDark ? 'rgba(254,85,2,0.15)' : 'rgba(254,85,2,0.12)',
+              }}
+            >
+              <Icon name="money" size={18} />
             </View>
-            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>₺ TRY</Text>
-          </TouchableOpacity>
+            <Text className={`${isDark ? 'text-white' : 'text-black'}`}>
+              {t('profile:currency')}
+            </Text>
+          </View>
+          <View className="flex-row items-center">
+            <Text className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mr-2`}>₺ TRY</Text>
+            <Icon name="arrow" size={14} />
+          </View>
+        </TouchableOpacity>
 
+        <View className="py-2">
           <ThemeSelector />
         </View>
+      </View>
 
-       
- <TouchableOpacity
-          className="mx-6 bg-[#FF0000] rounded-lg py-3 shadow-lg mb-[70px]"
-          onPress={handleLogout}
-        >
-          <Text className="text-white text-center text-base font-semibold">{t('common:logout')}</Text>
-        </TouchableOpacity>
+      {/* Çıkış — yuvarlatılmış ve BORDER'LI (outline) */}
+      <TouchableOpacity
+        onPress={handleLogout}
+        className="mx-6 mt-5 rounded-full py-3 items-center justify-center"
+        style={{
+          borderWidth: 1.5,
+          borderColor: '#FF3B30',
+          backgroundColor: 'transparent',
+        }}
+      >
+        <Text style={{ color: '#FF3B30' }} className="text-base font-semibold">
+          {t('common:logout')}
+        </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-row justify-between mb-[20px]`}
-        onPress={() => navigation.navigate("ContactPage")}
-        >
-          <Text className={`text-base ${isDark ? 'text-white' : 'text-black'}`}>{t('profile:contactUs')}</Text>
-          <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{'>'}</Text>
-        </TouchableOpacity>
+      {/* Sosyal Medya & Versiyon — tamamen ortada */}
+      <View className="px-4 mt-8 items-center">
+        <Text className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mb-3 text-center`}>
+          {t('profile:SocialMediaAccounts')}
+        </Text>
 
-       
-        <View className="p-4 items-center">
-           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t('profile:SocialMediaAccounts')}</Text>
-          <View className="flex-row space-x-6">
-            <Icon name="linkedin" size={22} />
-            <Icon name="instagram" size={22} />
-            <Icon name="x" size={22} />
-            <Icon name="youtube" size={22} />
-            <Icon name="facebook" size={22} />
-          </View>
-          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>{t('profile:version')}</Text>
-          <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
+        <View className="flex-row items-center justify-center">
+          {['linkedin', 'instagram', 'x', 'youtube', 'facebook'].map((n, i) => (
+            <View
+              key={i}
+              className="w-10 h-10 mx-3 rounded-full items-center justify-center"
+              style={{
+                backgroundColor: isDark ? 'rgba(254,85,2,0.18)' : 'rgba(254,85,2,0.12)',
+              }}
+            >
+              <Icon name={n as any} size={20} />
+            </View>
+          ))}
         </View>
-      </ScrollView>
-      <TabBar navigation={navigation} activeRoute="ProfilePage" />
-    </View>
-  )
-}
 
+        <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-4`}>
+          {t('profile:version')}
+        </Text>
+        <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>
+      </View>
+    </ScrollView>
+
+    <TabBar navigation={navigation} activeRoute="ProfilePage" />
+  </View>
+);
+}
 export default AccountPage;

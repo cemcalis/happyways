@@ -219,12 +219,3 @@ export interface FormErrors {
 
 
 
-// Rezervasyon Detay endpoint’i yok
-// Backend route.js’te GET /api/reservation/:id tanımı yok. Detay sayfası hep fallback ile çalıştığı için kullanıcı/şartlar/ödeme kalemleri gibi alanlar boş kalıyor.
-
-// Süre (NaN saat) ve Invalid Date
-// Backend’te calculateDuration() **new Date(\${pickup_date}T${time}`)** ile parse ediyor. pickup_date ISO değilse (DD.MM.YYYYvb.)Invalid Date→NaN` üretiyor. Bu da “NaN saat” sorununa neden oluyor.
-// (Aynı neden, ekranda Invalid Date görülmesine de yol açıyor.)
-
-// mineReservation.tsx ve reservationsummary.tsx
-// İçerik kararlı değil (bazı satırlar bozulmuş/eksik). Filtre–sıralama–navigasyon ve özet görünümü stabil hale getirildi.
