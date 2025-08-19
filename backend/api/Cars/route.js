@@ -1,13 +1,12 @@
 import express from "express";
-import { getDB } from "../../database/db.js";
+import { dbAll, dbGet, getDB } from "../../database/db.js";
 
 const router = express.Router();
 
 
 router.get("/", async (req, res) => {
   try {
-    const db = getDB();
-    const cars = await db.all("SELECT * FROM cars ORDER BY model");
+    const cars = await dbAll("SELECT * FROM cars ORDER BY model");
     
     res.status(200).json({
       success: true,
@@ -36,8 +35,7 @@ router.post("/available", async (req, res) => {
     }
 
     const db = getDB();
-    
-    const availableCars = await db.all(`
+    const availableCars = await dbAll(`
       SELECT DISTINCT c.*
       FROM cars c
       WHERE c.id NOT IN (
@@ -59,7 +57,7 @@ router.post("/available", async (req, res) => {
       searchCriteria: {
         pickupDate,
         dropDate,
-        totalCarsChecked: await db.get("SELECT COUNT(*) as total FROM cars")
+        totalCarsChecked: await dbGet("SELECT COUNT(*) as total FROM cars")
       }
     });
 
@@ -86,8 +84,7 @@ router.post("/check-availability", async (req, res) => {
     }
 
     const db = getDB();
-    
-    const car = await db.get("SELECT * FROM cars WHERE id = ?", [carId]);
+    const car = await dbGet("SELECT * FROM cars WHERE id = ?", [carId]);
     if (!car) {
       return res.status(404).json({
         success: false,
@@ -95,7 +92,7 @@ router.post("/check-availability", async (req, res) => {
       });
     }
 
-    const conflictingReservations = await db.all(`
+    const conflictingReservations = await dbAll(`
       SELECT id, pickup_date, dropoff_date, status, user_email
       FROM reservations 
       WHERE car_id = ? 
@@ -135,8 +132,7 @@ router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const db = getDB();
-    
-    const car = await db.get("SELECT * FROM cars WHERE id = ?", [id]);
+    const car = await dbGet("SELECT * FROM cars WHERE id = ?", [id]);
     
     if (!car) {
       return res.status(404).json({
@@ -145,7 +141,7 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    const upcomingReservations = await db.all(`
+    const upcomingReservations = await dbAll(`
       SELECT pickup_date, dropoff_date, status 
       FROM reservations 
       WHERE car_id = ? 

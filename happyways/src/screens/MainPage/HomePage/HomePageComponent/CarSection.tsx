@@ -30,9 +30,10 @@ type CarSectionProps = {
   searchText: string;
   navigation: NativeStackNavigationProp<RootStackParamList, "HomePage">;
   userEmail?: string;
+  source?: string;
 };
 
-const CarSection = ({ cars, searchText, navigation, userEmail }: CarSectionProps) => {
+const CarSection = ({ cars, searchText, navigation, userEmail, source }: CarSectionProps) => {
   const { t } = useTranslation('home');
   const { isDark } = useTheme();
   
@@ -74,7 +75,7 @@ const CarSection = ({ cars, searchText, navigation, userEmail }: CarSectionProps
           className="bg-orange-500 py-2 rounded-lg"
           onPress={() => navigation.navigate("CarsDetailPage", { 
             carId: car.id,
-            source: "HomePage",
+            source,
             userEmail
           })}
         >

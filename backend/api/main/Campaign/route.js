@@ -1,12 +1,11 @@
 import express from "express";
-import { getDB } from "../../../database/db.js";
+import { dbAll } from "../../../database/db.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const db = getDB();
-    const campaigns = await db.all("SELECT * FROM campaigns");
+    const campaigns = await dbAll("SELECT * FROM campaigns");
 
     const updatedCampaigns = campaigns.map(c => ({
       ...c,

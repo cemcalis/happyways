@@ -2,10 +2,10 @@ import express from "express";
 import nodemailer from "nodemailer";
 import { saveOtpForEmail } from "../../utils/otpStore.js";
 import { getUserByEmail } from "../../database/db.js";
-import dotenv from "dotenv";
+import { loadEnv } from "../../utils/env.js";
 
-dotenv.config();
 
+loadEnv();
 const router = express.Router();
 
 router.post("/", async (req, res) => {

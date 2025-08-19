@@ -1,5 +1,5 @@
 import express from "express";
-import { getDB } from "../../../../database/db.js";
+import { dbAll } from "../../../../database/db.js";
 // import authenticateToken from "../../../../middleware.js"; 
 
 const router = express.Router();
@@ -7,10 +7,9 @@ const router = express.Router();
 router.get("/", async (req, res) => { 
   try {
     console.log("AllCars API hit with query:", req.query);
-    const db = getDB();
     const { pickup, drop, pickupDate, dropDate, pickupTime, dropTime } = req.query;
 
-    const cars = await db.all("SELECT * FROM cars");
+    const cars = await dbAll("SELECT * FROM cars");
 
     const updatedCars = cars.map((car) => ({
       ...car,

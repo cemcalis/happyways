@@ -8,7 +8,7 @@ console.log("[PAYMENT ROUTE] build=2025-08-19T08:10Z");
 
 const router = express.Router();
 
-const BYPASS = true;
+const BYPASS = false;
 
 const AVAIL_TIMEOUT_MS = 6000;
 const INSERT_TIMEOUT_MS = 6000;
@@ -101,12 +101,7 @@ function withTimeout(promise, ms, label) {
 }
 
 router.post("/", async (req, res) => {
-  console.log(
-    "[PAYMENT] hit",
-    new Date().toISOString(),
-    "keys=",
-    Object.keys(req.body || {})
-  );
+  console.log("[PAYMENT] hit", new Date().toISOString(), "keys=", Object.keys(req.body || {}));
   normalizeNameOnReq(req);
 
   if (BYPASS) {
@@ -138,7 +133,6 @@ router.post("/", async (req, res) => {
     });
   }
 
-
   try {
     const { firstName, lastName, cardNo, expiryMonth, expiryYear, cvv, carInfo, userEmail } =
       req.body || {};
@@ -149,9 +143,7 @@ router.post("/", async (req, res) => {
     if (!cardNo || !expiryMonth || !expiryYear || !cvv)
       return res.status(400).json({ success: false, message: "Kart bilgileri eksik" });
     if (!carInfo || typeof carInfo !== "object")
-      return res
-        .status(400)
-        .json({ success: false, message: "Rezervasyon bilgisi (carInfo) eksik" });
+      return res.status(400).json({ success: false, message: "Rezervasyon bilgisi (carInfo) eksik" });
 
     const norm = normalizeReservationBody(req.body);
     console.log("[PAYMENT] normalized:", norm);
@@ -175,15 +167,11 @@ router.post("/", async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
     if (!token) return res.status(401).json({ success: false, message: "Token gerekli" });
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user_id = decoded.id;
+    const user_id = decoded.userId; // <-- Login payload ile uyumlu
     console.log("[PAYMENT] user ok", user_id);
 
     const db = getDB();
-    const user = await new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM users WHERE id = ?`, [user_id], (err, row) =>
-        err ? reject(err) : resolve(row)
-      );
-    });
+    const user = await db.get(`SELECT * FROM users WHERE id = ?`, [user_id]);
     if (!user) return res.status(404).json({ success: false, message: "Kullanıcı bulunamadı" });
 
     const pickup_date = norm.pickup_date || normalizeDate(carInfo?.pickupDate);
@@ -216,69 +204,61 @@ router.post("/", async (req, res) => {
 
     console.log("[PAYMENT] inserting reservation...");
     const nowISO = new Date().toISOString();
-    const insertPromise = new Promise((resolve, reject) => {
-      db.run(
-        `INSERT INTO reservations (
-          user_id, car_id,
-          pickup_location, dropoff_location,
-          pickup_date, dropoff_date,
-          pickup_time, dropoff_time,
-          total_price, status,
-          created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          user_id,
-          Number(norm.car_id),
-          norm.pickup_location ?? carInfo?.pickup ?? "",
-          norm.dropoff_location ?? carInfo?.dropoff ?? "",
-          pickup_date,
-          dropoff_date,
-          pickup_time_n,
-          dropoff_time_n,
-          priceNum,
-          "confirmed",
-          nowISO,
-          nowISO,
-        ],
-        function (err) {
-          if (err) reject(err);
-          else resolve({ lastID: this.lastID });
-        }
-      );
-    });
 
-    const insertResult = await withTimeout(insertPromise, INSERT_TIMEOUT_MS, "INSERT");
+    const insertResult = await db.run(
+      `INSERT INTO reservations (
+        user_id, car_id,
+        pickup_location, dropoff_location,
+        pickup_date, dropoff_date,
+        pickup_time, dropoff_time,
+        total_price, status,
+        created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        user_id,
+        Number(norm.car_id),
+        norm.pickup_location ?? carInfo?.pickup ?? "",
+        norm.dropoff_location ?? carInfo?.dropoff ?? "",
+        pickup_date,
+        dropoff_date,
+        pickup_time_n,
+        dropoff_time_n,
+        priceNum,
+        "confirmed",
+        nowISO,
+        nowISO,
+      ]
+    );
+
     const reservationId = insertResult?.lastID;
+    if (!reservationId) {
+      return res.status(500).json({ success: false, message: "Rezervasyon DB insert başarısız." });
+    }
     console.log("[PAYMENT] insert done id=", reservationId);
 
-    (async () => {
-      try {
-        await sendReservationEmail({
-          to: userEmail || user.email,
-          reservationId,
-          userName: `${firstName} ${lastName}`,
-          carModel: carInfo?.model || "",
-          pickup: norm.pickup_location ?? carInfo?.pickup ?? "",
-          dropoff: norm.dropoff_location ?? carInfo?.dropoff ?? "",
-          pickupDate: pickup_date,
-          dropDate: dropoff_date,
-          total: priceNum,
-        });
-      } catch (mailErr) {
-        console.warn("[PAYMENT] email send failed:", mailErr?.message);
-      }
-    })();
+    // E-posta (emailService imzasına uygun: (userEmail, reservationData))
+    try {
+      await sendReservationEmail(userEmail || user.email, {
+        reservationId,
+        userName: `${firstName} ${lastName}`,
+        carModel: carInfo?.model || "",
+        pickup: norm.pickup_location ?? carInfo?.pickup ?? "",
+        dropoff: norm.dropoff_location ?? carInfo?.dropoff ?? "",
+        pickupDate: pickup_date,
+        dropDate: dropoff_date,
+        total: priceNum,
+      });
+    } catch (mailErr) {
+      console.warn("[PAYMENT] email send failed:", mailErr?.message);
+    }
 
-    const updatedReservation = await new Promise((resolve, reject) => {
-      db.get(
-        `SELECT r.*, c.model AS car_model, c.year AS car_year
-         FROM reservations r
-         LEFT JOIN cars c ON r.car_id = c.id
-         WHERE r.id = ?`,
-        [reservationId],
-        (err, row) => (err ? reject(err) : resolve(row))
-      );
-    });
+    const updatedReservation = await db.get(
+      `SELECT r.*, c.model AS car_model, c.year AS car_year
+       FROM reservations r
+       LEFT JOIN cars c ON r.car_id = c.id
+       WHERE r.id = ?`,
+      [reservationId]
+    );
 
     console.log("[PAYMENT] respond 201");
     return res.status(201).json({

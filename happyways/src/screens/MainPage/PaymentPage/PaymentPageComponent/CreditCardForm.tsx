@@ -22,14 +22,14 @@ const API_BASE = ENV.API_BASE_URL;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export type ReservationInput = {
-  carId?: number;
-  pickup?: string;
-  drop?: string;
-  pickupDate?: string;
-  dropDate?: string;
-  pickupTime?: string;
-  dropTime?: string;
-  totalPrice?: number;
+  car_id?: number;
+  pickup_location?: string;
+  dropoff_location?: string;
+  pickup_date?: string;
+  dropoff_date?: string;
+  pickup_time?: string;
+  dropoff_time?: string;
+  total_price?: number;
 };
 
 export type CreditCardFormProps = {
@@ -140,15 +140,15 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, res
         cvv,
         userEmail,
         carInfo,
-        // reservation → snake_case payload
-        car_id: reservation.carId,
-        pickup_location: reservation.pickup,
-        dropoff_location: reservation.drop,
-        pickup_date: reservation.pickupDate,
-        dropoff_date: reservation.dropDate,
-        pickup_time: reservation.pickupTime,
-        dropoff_time: reservation.dropTime,
-        total_price: reservation.totalPrice ?? carInfo?.total ?? 0,
+        // reservation → strict snake_case payload
+        car_id: reservation.car_id,
+        pickup_location: reservation.pickup_location,
+        dropoff_location: reservation.dropoff_location,
+        pickup_date: reservation.pickup_date,
+        dropoff_date: reservation.dropoff_date,
+        pickup_time: reservation.pickup_time,
+        dropoff_time: reservation.dropoff_time,
+        total_price: Number(reservation.total_price ?? carInfo?.total ?? 0),
       };
 
       console.log("[PAY] /api/payment payload:", payload);

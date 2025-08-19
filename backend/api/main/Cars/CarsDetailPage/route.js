@@ -1,15 +1,14 @@
 import express from "express";
-import { getDB } from "../../../../database/db.js";
+import { dbGet } from "../../../../database/db.js";
 
 const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const db = getDB();
     const { id } = req.params;
 
    
-    const car = await db.get("SELECT * FROM cars WHERE id = ?", [id]);
+    const car = await dbGet("SELECT * FROM cars WHERE id = ?", [id]);
 
     if (!car) {
       return res.status(404).json({ message: "Araç bulunamadı" });

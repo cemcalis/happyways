@@ -27,11 +27,12 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch(`${ENV.API_BASE_URL}/api/location`);
-        const data = await response.json();
-        setLocations(data);
-        setSelectedLocation(data[0]);
-        if (onSelect) onSelect(data[0]);
+  const response = await fetch(`${ENV.API_BASE_URL}/api/location`);
+  const data = await response.json();
+  const safeLocations = Array.isArray(data) ? data : [];
+  setLocations(safeLocations);
+  setSelectedLocation(safeLocations[0]);
+  if (onSelect && safeLocations[0]) onSelect(safeLocations[0]);
       } catch (err) {
 
       }

@@ -10,17 +10,17 @@ export type RootStackParamList = {
   CampaignPage: undefined;
   NotificationPage: undefined;
   AdditionalRequests: {
-    carId: number;
-    carModel: string;
-    carPrice: string;
-    pickupDate: string;
-    dropDate: string;
-    pickupTime: string;
-    dropTime: string;
-    pickup: string;
-    drop: string;
-    userEmail?: string;
-    source?: string; 
+    car_id: number;
+    car_model: string;
+    car_price: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
+    pickup_location: string;
+    dropoff_location: string;
+    user_email?: string;
+    source?: string;
   };
   AllCarsPage: {
     searchParams?: {
@@ -57,22 +57,22 @@ export type RootStackParamList = {
    
   };
   ReservationPage: {
-    carId?: number;
-    carModel?: string;
-    carPrice?: string;
-    basePrice?: string;
-    extraDriverPrice?: string;
-    extraDriverSelected?: boolean;
-    totalDays?: number;
-    pickupDate?: string;
-    dropDate?: string;
-    pickupTime?: string;
-    dropTime?: string;
-    pickup?: string;
-    drop?: string;
-    prefilledData?: any;
-    source?: string; 
-    userEmail?: string;
+    car_id?: number;
+    car_model?: string;
+    car_price?: string;
+    base_price?: string;
+    extra_driver_price?: string;
+    extra_driver_selected?: boolean;
+    total_days?: number;
+    pickup_date?: string;
+    dropoff_date?: string;
+    pickup_time?: string;
+    dropoff_time?: string;
+    pickup_location?: string;
+    dropoff_location?: string;
+    prefilled_data?: any;
+    source?: string;
+    user_email?: string;
   };
  ReservationSummaryPage: {
     reservationId: number;

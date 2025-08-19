@@ -1,10 +1,10 @@
 import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+
 import { calculateDuration, getStatusInfo } from "../Helpers/helpers.js";
+import { loadEnv } from "../../../utils/env.js";
 
-dotenv.config();
-
+loadEnv();
 export async function listReservations(req, res) {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');

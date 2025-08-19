@@ -181,3 +181,5 @@ export const logError = (message, error = null) => {
   const timestamp = new Date().toISOString();
   console.error(`[ERROR] ${timestamp}: ${message}`, error);
 };
+
+

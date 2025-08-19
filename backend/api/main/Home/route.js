@@ -1,15 +1,13 @@
 import express from "express";
-import { getDB } from "../../../database/db.js";
+import { dbAll } from "../../../database/db.js";
 import authenticateToken from "../../../middleware.js";
 
 const router = express.Router();
 
 router.get("/", authenticateToken, async (req, res) => {
-  const db = getDB();
-
   try {
-    const campaigns = await db.all("SELECT * FROM campaigns");
-    const cars = await db.all("SELECT * FROM cars");
+    const campaigns = await dbAll("SELECT * FROM campaigns");
+    const cars = await dbAll("SELECT * FROM cars");
 
  const updatedCampaigns = campaigns.map(campaign => ({
       ...campaign,

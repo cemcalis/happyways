@@ -243,14 +243,14 @@ const PaymentPage: React.FC = () => {
           carInfo={computed}
           userEmail={email}
           reservation={{
-            carId,
-            pickup,
-            drop: drop,
-            pickupDate,
-            dropDate,
-            pickupTime,
-            dropTime,
-            totalPrice: computed.total,
+            car_id: carId,
+            pickup_location: pickup,
+            dropoff_location: drop,
+            pickup_date: pickupDate,
+            dropoff_date: dropDate,
+            pickup_time: pickupTime,
+            dropoff_time: dropTime,
+            total_price: Number(computed.total),
           }}
         />
 

@@ -1,9 +1,8 @@
 import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { loadEnv } from "../../../utils/env.js";
 
-dotenv.config();
-
+loadEnv();  
 export async function cancelReservation(req, res) {
   try {
     const { id } = req.params;
