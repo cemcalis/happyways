@@ -7,6 +7,9 @@ import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import Icon from "../../../../../Components/Icons/Icons";
 import BackButton from "../../../../../Components/BackButton/BackButton";   
+import TabBar from "../../../../../Components/TabBar/TapBar";
+
+
 
 type ContactProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactPage">;
@@ -16,14 +19,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('contact');
   
-  const tabItems = [
-    { icon: <Icon name="home" size={20} />, label: t('tabs.home'), route: "HomePage" },
-    { icon: <Icon name="car" size={20} />, label: t('tabs.cars'), route: "AllCarsPage" },
-    { icon: <Icon name="search" size={20} />, label: t('tabs.reservation'), route: "ReservationPage" },
-    { icon: <Icon name="campaign" size={20} />, label: t('tabs.campaigns'), route: "CampaignPage" },
-    { icon: <Icon name="user" size={20} />, label: t('tabs.account'), route: "ProfilePage" },
-  ];
-  
+
   const latitude = 35.1856;
   const longitude = 33.3823;
 
@@ -49,6 +45,8 @@ const ContactPage = ({ navigation }: ContactProp) => {
       </body>
     </html>
   `;
+
+  
 
   return (
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
@@ -96,18 +94,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
         </TouchableOpacity>
       </ScrollView>
 
-      <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} border-t py-1`}>
-        {tabItems.map(({ icon, label, route }, i) => (
-          <TouchableOpacity
-            key={i}
-            className="flex-1 items-center py-2"
-            onPress={() => navigation.navigate(route as any)}
-          >
-            <View>{icon}</View>
-            <Text className={`text-xs ${isDark ? 'text-white' : 'text-[#000000]'}`}>{label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+     <TabBar navigation={navigation} activeRoute="ContactPage" />
     </View>
   );
 };

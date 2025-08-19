@@ -3,6 +3,9 @@ import bcrypt from "bcryptjs";
 import { getDB } from "../../../database/db.js";
 
 const router = express.Router();
+
+
+
 router.get("/:id", async (req, res) => {
   const db = getDB();
   const { id } = req.params;

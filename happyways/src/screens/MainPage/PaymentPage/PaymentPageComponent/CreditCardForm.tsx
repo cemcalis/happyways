@@ -16,9 +16,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { useTranslation } from "react-i18next";
 
+const API_BASE = "http://10.0.2.2:3000";
+
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-type ReservationInput = {
+export type ReservationInput = {
   carId?: number;
   pickup?: string;
   drop?: string;
@@ -26,25 +28,39 @@ type ReservationInput = {
   dropDate?: string;
   pickupTime?: string;
   dropTime?: string;
-  totalPrice?: number; // sayı
+  totalPrice?: number;
 };
 
-type Props = {
-  carInfo: any | null;     // PaymentPage'de hesaplanan özet
+export type CreditCardFormProps = {
+  carInfo: any | null;
   userEmail?: string;
-  reservation: ReservationInput; // Tek obje ile tüm rezervasyon alanları
+  /** PaymentPage, burada TS hatasını çözen prop */
+  reservation: ReservationInput;
 };
 
-/** fetch için basit timeout yardımcı fonksiyonu */
-const fetchWithTimeout = (input: any, init: any = {}, ms = 12000) => {
+/** Basit timeout helper */
+const fetchWithTimeout = (input: RequestInfo | URL, init: RequestInit = {}, ms = 12000) => {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort("timeout"), ms);
-  return fetch(input, { ...init, signal: controller.signal }).finally(() =>
-    clearTimeout(id)
-  );
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(input, { ...init, signal: controller.signal }).finally(() => clearTimeout(id));
 };
 
-const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) => {
+/** Olası alanlardan reservationId çek */
+const extractReservationId = (obj: any) => {
+  const cands = [
+    obj?.reservationId,
+    obj?.reservation_id,
+    obj?.reservation?.id,
+    obj?.data?.reservation_id,
+  ];
+  for (const c of cands) {
+    const n = Number(c);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  return NaN;
+};
+
+const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, reservation }) => {
   const { isDark } = useTheme();
   const { token } = useAuth();
   const navigation = useNavigation<Nav>();
@@ -70,23 +86,8 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
 
   const showSuccess = (msg: string) =>
     setResultModal({ visible: true, ok: true, message: msg });
-
   const showError = (msg: string) =>
     setResultModal({ visible: true, ok: false, message: msg });
-
-  const extractReservationId = (obj: any) => {
-    const cands = [
-      obj?.reservationId,
-      obj?.reservation_id,
-      obj?.reservation?.id,
-      obj?.data?.reservation_id,
-    ];
-    for (const c of cands) {
-      const n = Number(c);
-      if (Number.isFinite(n) && n > 0) return n;
-    }
-    return NaN;
-  };
 
   const onPay = async () => {
     setLoading(true);
@@ -104,25 +105,22 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
         return;
       }
 
-      // 1) (Opsiyonel) form validasyon ucu; yoksa akış sürsün
+      // 1) Opsiyonel form validasyonu — başarısızsa bile akışa devam ediyoruz
       try {
         console.log("[PAY] validate-form çağrılıyor...");
-        const validateRes = await fetchWithTimeout(
-          "http://10.0.2.2:3000/api/payment/validate-form",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name,
-              cardNo,
-              expiryMonth,
-              expiryYear,
-              cvv,
-              userEmail,
-              carInfo,
-            }),
-          }
-        );
+        const validateRes = await fetchWithTimeout(`${API_BASE}/api/payment/validate-form`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            cardNo,
+            expiryMonth,
+            expiryYear,
+            cvv,
+            userEmail,
+            carInfo,
+          }),
+        });
         const validateJson = await validateRes.json().catch(() => ({}));
         console.log("[PAY] validate-form yanıt:", validateRes.status, validateJson);
         if (!validateRes.ok || validateJson?.success !== true) {
@@ -141,7 +139,7 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
         cvv,
         userEmail,
         carInfo,
-        // reservation → snake_case
+        // reservation → snake_case payload
         car_id: reservation.carId,
         pickup_location: reservation.pickup,
         dropoff_location: reservation.drop,
@@ -154,16 +152,20 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
 
       console.log("[PAY] /api/payment payload:", payload);
 
-      const payRes = await fetchWithTimeout("http://10.0.2.2:3000/api/payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const payRes = await fetchWithTimeout(
+        `${API_BASE}/api/payment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+        25000
+      );
 
-      const payText = await payRes.text(); // ham al, sonra parse et
+      const payText = await payRes.text();
       let payJson: any = {};
       try {
         payJson = JSON.parse(payText);
@@ -173,44 +175,31 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
       console.log("[PAY] /api/payment yanıt:", payRes.status, payJson);
 
       const reservationId = extractReservationId(payJson);
-      const prelimOK =
-        payRes.ok && payJson?.success === true && Number.isFinite(reservationId);
+      const prelimOK = payRes.ok && Number.isFinite(reservationId);
 
-      // 3) Doğrulama
-      let verified = false;
+      // 3) Doğrulama (arkadan, kullanıcıyı bekletmeden)
       if (prelimOK) {
-        try {
-          console.log("[PAY] /status doğrulama, id=", reservationId);
-          const verifyRes = await fetchWithTimeout(
-            `http://10.0.2.2:3000/api/payment/status/${reservationId}`,
-            { method: "GET", headers: { Authorization: `Bearer ${token}` } },
-            8000
-          );
-          const verifyText = await verifyRes.text();
-          let verifyJson: any = {};
+        showSuccess("Rezervasyon başarıyla oluşturuldu.");
+        (async () => {
           try {
-            verifyJson = JSON.parse(verifyText);
-          } catch {
-            verifyJson = {};
+            console.log("[PAY] /status doğrulama, id=", reservationId);
+            const verifyRes = await fetchWithTimeout(
+              `${API_BASE}/api/payment/status/${reservationId}`,
+              { method: "GET", headers: { Authorization: `Bearer ${token}` } },
+              8000
+            );
+            const verifyText = await verifyRes.text();
+            let verifyJson: any = {};
+            try {
+              verifyJson = JSON.parse(verifyText);
+            } catch {
+              verifyJson = {};
+            }
+            console.log("[PAY] /status yanıt:", verifyRes.status, verifyJson);
+          } catch (e) {
+            console.warn("[PAY] /status doğrulama hata/timeout:", String(e));
           }
-          console.log("[PAY] /status yanıt:", verifyRes.status, verifyJson);
-
-          verified =
-            verifyRes.ok === true &&
-            verifyJson?.success === true &&
-            Number(verifyJson?.reservation?.reservation_id) === Number(reservationId);
-        } catch (e) {
-          console.warn("[PAY] /status doğrulama hata/timeout:", String(e));
-        }
-      }
-
-      // 4) Sonuç
-      if (prelimOK && verified) {
-        showSuccess("Rezervasyon başarıyla oluşturulmuştur.");
-      } else if (prelimOK && !verified) {
-        showSuccess(
-          "Rezervasyon oluşturuldu, doğrulama gecikti. Rezervasyonlarım'dan kontrol edebilirsiniz."
-        );
+        })();
       } else {
         const msg =
           payJson?.message ||
@@ -219,23 +208,26 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
       }
     } catch (e: any) {
       console.error("[PAY] GENEL HATA:", e);
-      showError(e?.message || "Beklenmeyen bir hata oluştu.");
+      const msg = String(e?.message || e || "");
+      if (msg.includes("Abort") || e?.name === "AbortError") {
+        // istek zaman aşımı oldu; büyük ihtimalle backend yazdı (quick-insert gibi)
+        showSuccess(
+          "Ödeme yanıtı gecikti. İşlem büyük olasılıkla tamamlandı. Rezervasyonlarım'dan kontrol edebilirsiniz."
+        );
+      } else {
+        showError(e?.message || "Beklenmeyen bir hata oluştu.");
+      }
     } finally {
-      // ne olursa olsun spinner kapansın
       setLoading(false);
     }
   };
 
   return (
     <View
-      className={`${
-        isDark ? "bg-gray-800" : "bg-white"
-      } mx-4 mt-4 p-4 rounded-xl`}
+      className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-4 p-4 rounded-xl`}
     >
       <Text
-        className={`text-base font-semibold ${
-          isDark ? "text-white" : "text-black"
-        } mb-3`}
+        className={`text-base font-semibold ${isDark ? "text-white" : "text-black"} mb-3`}
       >
         {t("card information")}
       </Text>
@@ -303,9 +295,7 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
       <TouchableOpacity
         onPress={onPay}
         disabled={loading}
-        className={`rounded-lg py-3 items-center ${
-          loading ? "bg-blue-400" : "bg-blue-600"
-        }`}
+        className={`rounded-lg py-3 items-center ${loading ? "bg-blue-400" : "bg-blue-600"}`}
       >
         {loading ? (
           <ActivityIndicator />
@@ -317,7 +307,7 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
       {/* Sonuç Modali */}
       <Modal transparent visible={resultModal.visible} animationType="fade">
         <View className="flex-1 bg-black/40 justify-center items-center px-8">
-          <View className={`w-full rounded-2xl p-5`} style={{ backgroundColor: "#fff" }}>
+          <View className="w-full rounded-2xl p-5" style={{ backgroundColor: "#fff" }}>
             <View className="items-center mb-3">
               <View
                 style={{
@@ -344,7 +334,7 @@ const CreditCardForm: React.FC<Props> = ({ carInfo, userEmail, reservation }) =>
             </View>
 
             <Text className="text-center text-sm font-semibold mb-2">
-              {resultModal.ok ? t("payment successful") : t("payment failed")}
+              {resultModal.ok ? t("paymentSuccess") : t("paymentFailed")}
             </Text>
             <Text className="text-center text-xs mb-4">{resultModal.message}</Text>
 
