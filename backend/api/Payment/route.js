@@ -31,7 +31,7 @@ function normalizeNameOnReq(req) {
 router.post("/", async (req, res) => {
   normalizeNameOnReq(req);
 
-  try {
+   try {
     const {
       firstName,
       lastName,
@@ -44,12 +44,15 @@ router.post("/", async (req, res) => {
       secure,
       emailChecked,
       smsChecked,
-      carId,
+      carId: carIdParam,
+      car_id: carIdSnake,
       pickupDate,
       dropDate,
       pickupTime,
       dropTime,
     } = req.body;
+
+    const carId = carIdParam ?? carIdSnake;
 
     if (!firstName || !lastName) {
       return res.status(400).json({ success: false, message: "İsim bilgisi eksik" });
@@ -60,7 +63,9 @@ router.post("/", async (req, res) => {
     if (!carInfo || typeof carInfo !== "object") {
       return res.status(400).json({ success: false, message: "Rezervasyon bilgisi (carInfo) eksik" });
     }
-
+    if (!carId) {
+      return res.status(400).json({ success: false, message: "Araç ID gerekli" });
+    }
     // fiyat normalize (FormValidation'da da yapıyoruz; burada da emniyet)
     const priceNum = Number(
       carInfo.price ??
