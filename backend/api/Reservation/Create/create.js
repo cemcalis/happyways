@@ -121,7 +121,7 @@ export async function createReservation(req, res) {
       WHERE r.id = ?
     `, [result.lastID]);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Rezervasyon başarıyla oluşturuldu",
       reservation_id: result.lastID,

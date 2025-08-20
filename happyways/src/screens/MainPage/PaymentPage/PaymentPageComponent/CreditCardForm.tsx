@@ -44,7 +44,7 @@ const CreditCardForm: React.FC<Props> = ({
   const [name, setName] = useState("");
   const [cardNo, setCardNo] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
-  const [expiryYear, setExpiryYear] = useState("");
+ const [expiryYear, setExpiryYear] = useState("");
   const [cvv, setCvv] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -69,22 +69,26 @@ const CreditCardForm: React.FC<Props> = ({
 
   const onPay = async () => {
     try {
+      console.log("CreditCardForm -> onPay çağrıldı");
       if (!carInfo) {
+        console.log("CreditCardForm -> carInfo yok");
         Alert.alert("Bekleyin", "Fiyat bilgileri hazırlanıyor. Lütfen tekrar deneyin.");
         return;
       }
       if (!token) {
+        console.log("CreditCardForm -> token yok");
         Alert.alert("Giriş gerekli", "Ödeme için lütfen giriş yapın.");
         return;
       }
       if (!name || name.trim().length < 2) {
+        console.log("CreditCardForm -> isim eksik");
         Alert.alert("Uyarı", "Kart üzerindeki Ad Soyad bilgisini girin.");
         return;
       }
 
       setLoading(true);
+      console.log("CreditCardForm -> form validasyonu için istek atılıyor");
 
- 
       const validateRes = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,25 +102,28 @@ const CreditCardForm: React.FC<Props> = ({
           carInfo,
         }),
       });
+      console.log("CreditCardForm -> validate status", validateRes.status);
       const validateJson = await validateRes.json();
+      console.log("CreditCardForm -> validate response", validateJson);
       if (!validateRes.ok || !validateJson?.success) {
         const errs =
           validateJson?.validation?.errors?.join("\n") ??
           validateJson?.message ??
           "Form validasyonu başarısız";
         setLoading(false);
+        console.log("CreditCardForm -> validate hata", errs);
         showError(errs);
         return;
       }
 
-   
+      console.log("CreditCardForm -> ödeme isteği gönderiliyor");
       const payRes = await fetch("http://10.0.2.2:3000/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-         body: JSON.stringify({
+        body: JSON.stringify({
           name,
           cardNo,
           expiryMonth,
@@ -131,28 +138,31 @@ const CreditCardForm: React.FC<Props> = ({
           dropoff_time,
         }),
       });
+      console.log("CreditCardForm -> ödeme cevap status", payRes.status);
 
       const payJson = await payRes.json();
+      console.log("CreditCardForm -> ödeme response", payJson);
       setLoading(false);
 
-   
       if (payRes.ok && payJson?.success && payJson?.reservation?.id) {
+        console.log("CreditCardForm -> ödeme başarılı");
         showSuccess("Rezervasyon başarıyla oluşturulmuştur.");
       } else {
         const msg =
           payJson?.message ||
           "İşleminizi şu anda gerçekleştiremiyoruz. Lütfen daha sonra tekrar deneyiniz.";
+        console.log("CreditCardForm -> ödeme başarısız", msg);
         showError(msg);
       }
     } catch (e: any) {
       setLoading(false);
+      console.log("CreditCardForm -> hata", e);
       showError(
         e?.message ||
           "İşleminizi şu anda gerçekleştiremiyoruz. Lütfen daha sonra tekrar deneyiniz."
       );
     }
   };
-
   return (
     <View
       className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-4 p-4 rounded-xl`}
