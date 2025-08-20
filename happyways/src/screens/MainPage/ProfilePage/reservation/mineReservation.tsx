@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTranslation } from "react-i18next";
 import { RootStackParamList } from "../../../../../types";
@@ -27,7 +28,7 @@ type Reservation = {
   image: string;
   pickup_location: string;
   dropoff_location: string;
-  pickup_date: string;   // "YYYY-MM-DD" veya "DD.MM.YYYY"
+  pickup_date: string;   
   dropoff_date: string;
   pickup_time: string;   // "HH:mm"
   dropoff_time: string;
@@ -89,11 +90,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
   const [sortBy, setSortBy] = useState<SortBy>("new");
   const [filters, setFilters] = useState<Filters>({ date: "all", pickup: null, dropoff: null });
 
-  useEffect(() => {
-    fetchReservations();
-  }, []);
-
-  const fetchReservations = async () => {
+ const fetchReservations = useCallback(async () => {
     if (!token) {
       Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
       navigation.navigate("LoginPage");
@@ -118,9 +115,15 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     } finally {
       setLoading(false);
     }
-  };
+ }, [token, navigation]);
 
-  // --- Yardımcılar ---
+  useFocusEffect(
+    useCallback(() => {
+      fetchReservations();
+    }, [fetchReservations])
+  );
+
+
   const parseDateOnly = (str: string): number => {
     if (!str) return Number.NaN;
 

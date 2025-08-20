@@ -113,29 +113,29 @@ class ReservationAPI {
     }
   }
 
-  async cancelReservation(
+   async deleteReservation(
     reservationId: number,
     token: string
   ): Promise<ReservationResponse> {
     try {
-      const response = await fetch(`${this.baseURL}/api/reservation/${reservationId}/cancel`, {
-        method: 'PUT',
+      const response = await fetch(`${this.baseURL}/api/reservation/${reservationId}`, {
+        method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Rezervasyon iptal edilemedi');
+        throw new Error(data.message || 'Rezervasyon silinemedi');
       }
 
       return data;
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Rezervasyon iptal edilirken hata oluştu',
+        message: error.message || 'Rezervasyon silinirken hata oluştu',
         error: error.message,
       };
     }

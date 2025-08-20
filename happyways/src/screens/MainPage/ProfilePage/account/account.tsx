@@ -87,11 +87,11 @@ const AccountPage = ({ navigation }: ProfilePageProp) => {
         <View className="p-4 items-center">
            <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t('profile:SocialMediaAccounts')}</Text>
           <View className="flex-row space-x-6">
-            <Icon name="linkedin" size={22} />
-            <Icon name="instagram" size={22} />
-            <Icon name="x" size={22} />
-            <Icon name="youtube" size={22} />
-            <Icon name="facebook" size={22} />
+            <Icon name="linkedin" size={22} className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+            <Icon name="instagram" size={22} className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+            <Icon name="x" size={22} className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+            <Icon name="youtube" size={22} className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+            <Icon name="facebook" size={22} className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
           </View>
           <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'} mt-3`}>{t('profile:version')}</Text>
           <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>01.01</Text>

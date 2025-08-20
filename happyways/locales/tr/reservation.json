@@ -54,5 +54,9 @@
   "differentDropoffLocation": "Farklı Bırakış Yeri",
   "continueReservation": "Rezervasyonu Devam Ettir",
   "recentSearches": "Son Aramalar",
-  "clearHistory": "Geçmişi Temizle"
+  "clearHistory": "Geçmişi Temizle",
+  "deleteReservation": "Rezervasyonu Sil",
+  "deleteReservationConfirm": "Bu rezervasyonu silmek istediğinizden emin misiniz?",
+  "deleteReservationSuccess": "Rezervasyon başarıyla silindi",
+  "deleteReservationError": "Rezervasyon silinemedi"
 }

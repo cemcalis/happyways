@@ -57,5 +57,9 @@
   "differentDropoffLocation": "Different Drop Off Location",
   "continueReservation": "Continue Reservation",
   "recentSearches": "Recent Searches",
-  "clearHistory": "Clear History"
+  "clearHistory": "Clear History",
+  "deleteReservation": "Delete Reservation",
+  "deleteReservationConfirm": "Are you sure you want to delete this reservation?",
+  "deleteReservationSuccess": "Reservation deleted successfully",
+  "deleteReservationError": "Failed to delete reservation"
 }

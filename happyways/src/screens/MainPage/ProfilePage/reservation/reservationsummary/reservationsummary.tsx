@@ -48,13 +48,15 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
   const route = useRoute<ReservationSummaryRouteProp>();
   const { reservationId, fallback } = route.params;
   const { t } = useTranslation("reservation");
+   const { t: tCommon } = useTranslation("common");
   const { isDark } = useTheme();
   const { token } = useAuth();
 
   const [detail, setDetail] = useState<ReservationDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  // Görsel/dil stiliyle aynı: kısa TR tarih
+
   const formatDateTime = (dateStr?: string, timeStr?: string) => {
     if (!dateStr) return "-";
     try {
@@ -142,6 +144,52 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
     if (!m && !y) return "";
     return `${m ?? ""}${m && y ? " " : ""}${y ?? ""}`;
   }, [detail]);
+
+
+   const handleDelete = async () => {
+    if (!detail) return;
+    try {
+      setDeleteLoading(true);
+      const res = await fetch(
+        `http://10.0.2.2:3000/api/reservation/${detail.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        Alert.alert(
+          tCommon("success"),
+          t("deleteReservationSuccess", "Rezervasyon silindi"),
+          [{ text: tCommon("ok"), onPress: () => navigation.goBack() }]
+        );
+      } else {
+        Alert.alert(
+          tCommon("error"),
+          data.message || t("deleteReservationError", "Silme başarısız")
+        );
+      }
+    } catch (e) {
+      console.error("Delete reservation error:", e);
+      Alert.alert(
+        tCommon("error"),
+        t("deleteReservationError", "Silme başarısız")
+      );
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert(tCommon("delete"), t("deleteReservationConfirm", "Rezervasyonu silmek istiyor musunuz?"), [
+      { text: tCommon("cancel"), style: "cancel" },
+      { text: tCommon("delete"), style: "destructive", onPress: handleDelete },
+    ]);
+  };
 
   return (
     <View className={`flex-1 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
@@ -264,7 +312,20 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
               <Text className={`${isDark ? "text-gray-300" : "text-gray-600"} text-xs mt-1`}>Güncelleme: {formatDateTime(detail.updated_at)}</Text>
             ) : null}
           </View>
-
+ <TouchableOpacity
+            onPress={confirmDelete}
+            disabled={deleteLoading}
+            className="mx-4 mt-4 p-4 rounded-lg items-center"
+            style={{ backgroundColor: "#DC2626" }}
+          >
+            {deleteLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-white font-semibold">
+                {t("deleteReservation", "Rezervasyonu Sil")}
+              </Text>
+            )}
+          </TouchableOpacity>
           <View style={{ height: 24 }} />
         </ScrollView>
       )}
