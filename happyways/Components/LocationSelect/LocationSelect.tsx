@@ -46,9 +46,9 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
 
   return (
     <View className="relative flex-row items-center">
-      <LocationSvg width={16} height={16} />
+      <LocationSvg width={16} height={16} fill={isDark ? '#fff' : '#000'} />
       <TouchableOpacity onPress={() => setShowLocationList(!showLocationList)}>
-        <Text className={`text-sm ml-1.5 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+        <Text className={`text-sm ml-1.5 ${isDark ? 'text-white' : 'text-black'}`}>
           {selectedLocation ? selectedLocation.name + ', ' + (selectedLocation.country || '') : 'Konum Seç'}
         </Text>
       </TouchableOpacity>
@@ -56,8 +56,8 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
         <LeftArrowSvg
           width={12}
           height={12}
-          className={`${showLocationList ? 'rotate-180' : 'rotate-90'}`}
-          fill={isDark ? "#9CA3AF" : "#6B7280"}
+          className={`${showLocationList ? 'rotate-180' : 'rotate-90'} ${isDark ? 'text-white' : 'text-black'}`}
+          fill={isDark ? '#fff' : '#000'}
         />
       </TouchableOpacity>
       {showLocationList && (
@@ -71,7 +71,7 @@ const LocationSelect: React.FC<Props> = ({ onSelect }) => {
                 onPress={() => handleSelect(loc)}
                 className={`p-2 border-b ${isDark ? 'border-gray-600' : 'border-gray-100'}`}
               >
-                <Text className={`text-sm ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{loc.name}, {loc.country}</Text>
+                <Text className={`text-sm ${isDark ? 'text-white' : 'text-black'}`}>{loc.name}, {loc.country}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>

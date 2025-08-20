@@ -6,7 +6,7 @@ import { sendReservationEmail } from "./emailService.js";
 
 const router = express.Router();
 
-// --- normalize full name -> firstName + lastName ---
+
 function normalizeNameOnReq(req) {
   try {
     let { firstName, lastName, name, fullName } = req.body || {};
@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
       console.log("/api/payment -> araç ID eksik");
       return res.status(400).json({ success: false, message: "Araç ID gerekli" });
     }
-    // fiyat normalize (FormValidation'da da yapıyoruz; burada da emniyet)
+  
     const priceNum = Number(
       carInfo.price ??
         carInfo.total ??
@@ -120,7 +120,7 @@ router.post("/", async (req, res) => {
     }
     console.log("/api/payment -> kullanıcı bulundu", user_id);
 
-    // Uygunluk kontrolü
+  
     console.log("/api/payment -> uygunluk kontrolü başlıyor");
     const availability = await checkCarAvailability(
       carId,
@@ -147,7 +147,7 @@ router.post("/", async (req, res) => {
     }
     console.log("/api/payment -> ödeme başarılı");
 
-    // Rezervasyon oluştur
+   
     console.log("/api/payment -> rezervasyon kaydı hazırlanıyor");
     const uniqueId = Date.now();
     const payment_id = `PAY_${uniqueId}_${Math.random().toString(36).substr(2, 9)}`;
@@ -169,7 +169,7 @@ router.post("/", async (req, res) => {
         resolvedDropDate,
         resolvedPickupTime,
         resolvedDropTime,
-        priceNum, // normalize edilmiş
+        priceNum, 
         "confirmed",
         currentTimestamp,
         currentTimestamp,
@@ -177,7 +177,7 @@ router.post("/", async (req, res) => {
     );
     console.log("/api/payment -> rezervasyon kaydı tamam", reservation_id);
 
-    // Rezervasyon kaydedildi, hızlıca yanıt döndür
+
     console.log("/api/payment -> yanıt gönderiliyor");
     res.status(200).json({
       success: true,
@@ -187,7 +187,7 @@ router.post("/", async (req, res) => {
     });
     console.log("/api/payment -> yanıt gönderildi");
 
-    // E-posta gönderimini yanıtı bekletmeden arka planda çalıştır
+    
     console.log("/api/payment -> email gönderimi başlıyor");
     sendReservationEmail({
       to: userEmail || user.email,

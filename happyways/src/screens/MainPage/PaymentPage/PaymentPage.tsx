@@ -5,7 +5,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useTheme } from "../../../../contexts/ThemeContext";
 import ReservationSummary from "./PaymentPageComponent/ReservationSummary";
 import CreditCardForm from "./PaymentPageComponent/CreditCardForm";
-import { RootStackParamList } from "../../../../types"; // veya ../../../../utils/types
+import { RootStackParamList } from "../../../../types"; 
 
 type PaymentNav = NativeStackNavigationProp<RootStackParamList, "PaymentPage">;
 type PaymentRoute = RouteProp<RootStackParamList, "PaymentPage">;
@@ -17,15 +17,15 @@ export type CarInfo = {
   subtotal: number;
   kdv: number;
   total: number;
-  /** Bileşenlerin beklediği alan (toplam tutarı yansıtır) */
+ 
   price: number;
   dayDifference: number;
   discountAmount: number;
   discountCode: string | null;
    pickup_location: string;
   dropoff_location: string;
-  pickup_date: string;   // "DD.MM.YYYY"
-  dropoff_date: string;  // "DD.MM.YYYY"
+  pickup_date: string;   
+  dropoff_date: string;  
   insuranceAmount?: number;
   insuranceOptions?: string[];
   breakdown?: Record<string, any>;
@@ -72,7 +72,7 @@ const PaymentPage = () => {
  const {
     car_id,
     car_model,
-    car_price,        // günlük fiyat (string olabilir)
+    car_price,        
     pickup_date,
     dropoff_date,
     pickup_time,
@@ -88,13 +88,13 @@ const PaymentPage = () => {
     total_days: totalDaysParam,
   } = route.params || {};
 
-  // gün sayısı
+ 
   const days = useMemo(() => {
     if (typeof totalDaysParam === "number") return Math.max(1, totalDaysParam);
     return diffDaysClamp1(pickup_date, dropoff_date);
   }, [pickup_date, dropoff_date, totalDaysParam]);
 
-  // hesaplanmış carInfo
+ 
   const computed = useMemo<CarInfo>(() => {
     const dailyPrice = Number(car_price) || 0;
     const basePrice = basePriceParam ? Number(basePriceParam) : dailyPrice * days;
@@ -117,7 +117,7 @@ const PaymentPage = () => {
       subtotal,
       kdv,
       total,
-      price: total, // <- BİLEŞENLERİN BEKLEDİĞİ ALAN
+      price: total, 
       dayDifference: days,
       discountAmount: 0,
       discountCode: null,
@@ -159,7 +159,7 @@ const PaymentPage = () => {
     console.log("PaymentPage total:", computed.total);
   }, [computed, days]);
 
-  const email = user_email || ""; // AuthContext'ten user alma ihtiyacı yok (tip hatasını kaldırır)
+  const email = user_email || ""; 
 
   return (
     <ScrollView className={`${isDark ? "bg-gray-900" : "bg-gray-50"} flex-1`} contentContainerStyle={{ paddingBottom: 24 }}>
@@ -167,10 +167,9 @@ const PaymentPage = () => {
         <Text className={`text-lg font-bold ${isDark ? "text-white" : "text-black"}`}>Ödeme</Text>
       </View>
 
-      {/* Özet */}
       <ReservationSummary carInfo={computed} />
 
-      {/* Kart Formu */}
+      
       <CreditCardForm
         carInfo={computed}
         user_email={email}

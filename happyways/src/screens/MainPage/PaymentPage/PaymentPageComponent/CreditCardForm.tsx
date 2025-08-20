@@ -250,7 +250,7 @@ const CreditCardForm: React.FC<Props> = ({
         <View className="flex-1 bg-black/40 justify-center items-center px-8">
           <View className={`${isDark ? "bg-white" : "bg-white"} w-full rounded-2xl p-5`}>
             <View className="items-center mb-3">
-              {/* Daire + icon */}
+           
               <View
                 style={{
                   width: 68,
