@@ -1,8 +1,11 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import { getDB } from "../../../database/db.js";
+import authenticateToken from "../../../middleware.js";
 
 const router = express.Router();
+
+router.use(authenticateToken);
 router.get("/:id", async (req, res) => {
   const db = getDB();
   const { id } = req.params;
@@ -44,7 +47,12 @@ router.put("/:id", async (req, res) => {
         id,
       ]
     );
-     res.status(200).json(user);
+      const updatedUser = await db.get(
+      "SELECT id, first_name, last_name, email, phone FROM users WHERE id = ?",
+      [id]
+    );
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Profile data fetch error:", error);
     res.status(500).json({

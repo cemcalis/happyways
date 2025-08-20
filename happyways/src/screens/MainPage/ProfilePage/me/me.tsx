@@ -40,6 +40,7 @@ const MePage = ({ navigation }: MeProp) => {
 
  
     const fetchProfile = async () => {
+      if (!token || !userId) return;
       try {
         const res = await fetch(API_URL, {
           headers: { Authorization: `Bearer ${token}` },
@@ -51,7 +52,7 @@ const MePage = ({ navigation }: MeProp) => {
           setEmail(data.email || "");
           setPhone(data.phone || "");
         }
-        if (!token || !userId) return;
+       
       } catch (error) {
         console.log("Profil bilgileri alınamadı:", error);
       }
@@ -73,13 +74,28 @@ const MePage = ({ navigation }: MeProp) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ firstName, lastName, email, phone, password }),
+      body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          password,
+        }),
       });
+      const data = await res.json();
 
       if (res.ok) {
+        setFirstName(data.first_name || "");
+        setLastName(data.last_name || "");
+        setEmail(data.email || "");
+        setPhone(data.phone || "");
+        setPassword("");
         Alert.alert(t("common:success"), t("profile:profileUpdated"));
       } else {
-        Alert.alert(t("profile:error"), t("profile:profileUpdateFailed"));
+        Alert.alert(
+          t("profile:error"),
+          data?.message || t("profile:profileUpdateFailed"),
+        );
       }
     } catch (error) {
       Alert.alert(t("profile:error"), "Sunucuya bağlanılamadı.");

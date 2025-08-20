@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { WebView } from "react-native-webview";
@@ -15,9 +15,35 @@ type ContactProp = {
 const ContactPage = ({ navigation }: ContactProp) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('contact');
-  
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
 
-  
+  const handleSend = async () => {
+    if (!fullName || !phone || !message) {
+      Alert.alert("Error", "Please fill in all fields before sending.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://10.0.2.2:3000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fullName, phone, message }),
+      });
+
+      if (response.ok) {
+        Alert.alert("Success", "Message sent successfully.");
+        setFullName("");
+        setPhone("");
+        setMessage("");
+      } else {
+        Alert.alert("Error", "Failed to send message.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to send message.");
+    }
+  };
   const latitude = 35.1856;
   const longitude = 33.3823;
 
@@ -68,12 +94,16 @@ const ContactPage = ({ navigation }: ContactProp) => {
         <Text className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>{t('writeToUs')}</Text>
         <TextInput
           placeholder={t('fullName')}
+          value={fullName}
+          onChangeText={setFullName}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
         <TextInput
           placeholder={t('phoneNumber')}
           keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
@@ -81,11 +111,13 @@ const ContactPage = ({ navigation }: ContactProp) => {
           placeholder={t('message')}
           multiline
           numberOfLines={4}
+          value={message}
+          onChangeText={setMessage}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-5 text-sm h-28`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
 
-        <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8">
+        <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8" onPress={handleSend}>
           <Text className="text-white text-center text-base font-semibold">{t('send')}</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -96,4 +128,3 @@ const ContactPage = ({ navigation }: ContactProp) => {
 };
 
 export default ContactPage;
-  
