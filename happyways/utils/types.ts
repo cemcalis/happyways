@@ -82,18 +82,18 @@ export interface Campaign {
 
 export interface ReservationDetails {
   id: number;
-  carId: number;
+  car_id: number;
   car: Car;
-  userId: number;
-  pickupLocation: string;
-  dropoffLocation: string;
-  pickupDateTime: string;
-  dropoffDateTime: string;
-  totalPrice: number;
+  user_id: number;
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_datetime: string;
+  dropoff_datetime: string;
+  total_price: number;
   status: ReservationStatus;
-  paymentStatus: PaymentStatus;
-  createdAt: string;
-  updatedAt: string;
+  payment_status: PaymentStatus;
+  created_at: string;
+  updated_at: string;
   notes?: string;
 }
 
@@ -111,12 +111,13 @@ export type PaymentStatus =
   | 'refunded';
 
 export interface SearchParams {
-  pickup: string;
-  drop: string;
-  pickupDate: string;
-  dropDate: string;
-  pickupTime: string;
-  dropTime: string;
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_date: string;
+  dropoff_date: string;
+  pickup_time: string;
+  dropoff_time: string;
+
 }
 
 export interface SearchResult {

@@ -172,17 +172,18 @@ class ReservationAPI {
     }
   }
 
-  async searchAvailableCars(searchParams: {
-    pickupLocation: string;
-    dropoffLocation: string;
-    pickupDate: string;
-    dropoffDate: string;
-    pickupTime: string;
-    dropoffTime: string;
+async searchAvailableCars(searchParams: {
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
   }): Promise<any[]> {
     try {
-      const queryParams = new URLSearchParams(searchParams);
+      const queryParams = new URLSearchParams(searchParams as any);
       const response = await fetch(`${this.baseURL}/api/cars/search?${queryParams}`);
+
 
       const data = await response.json();
       

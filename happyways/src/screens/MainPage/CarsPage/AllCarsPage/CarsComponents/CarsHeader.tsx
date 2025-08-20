@@ -30,10 +30,10 @@ const CarsHeader = ({ navigation, searchInfo }: CarsHeaderProps) => {
       {searchInfo && (
         <View className={`${isDark ? 'bg-orange-900/30 border-orange-600' : 'bg-orange-50 border-orange-200'} rounded-xl p-3 mb-6 border`}>
           <Text className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-1`}>
-            {searchInfo.pickup} - {searchInfo.drop}
+            {searchInfo.pickup_location} - {searchInfo.dropoff_location}
           </Text>
           <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}
+            {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}{searchInfo.pickup_date} {searchInfo.pickup_time} - {searchInfo.dropoff_date} {searchInfo.dropoff_time}
           </Text>
           <Text className="text-xs text-orange-600 font-semibold mt-1">
             {t('availableCount', { count: searchInfo.availableCarsCount })}

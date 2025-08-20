@@ -38,9 +38,9 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   const { t } = useTranslation('reservation');
   
 
-   const { carId, carModel, carPrice, source, pickupDate, dropDate, pickupTime, dropTime, pickup, drop, userEmail: userEmailParam } = route.params || {};
+   const { car_id, car_model, car_price, source, pickup_date, dropoff_date, pickup_time, dropoff_time, pickup_location, dropoff_location, user_email: userEmailParam } = route.params || {};
   const { getUserFromToken } = useAuth();
-  const userEmail = userEmailParam || getUserFromToken()?.email;
+  const user_email = userEmailParam || getUserFromToken()?.email;
 
   const [pickupLocation, setPickupLocation] = useState<LocationType | null>(null);
   const [dropoffLocation, setDropoffLocation] = useState<LocationType | null>(null);
@@ -56,7 +56,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
 
 
   const calculateTotalPrice = (startDate: string, endDate: string) => {
-    if (!startDate || !endDate || !carPrice) return;
+    if (!startDate || !endDate || !car_price) return;
     
     try {
   
@@ -74,7 +74,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
       const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
       
       if (dayDiff > 0) {
-        const dailyPrice = parseFloat(carPrice.replace(/[^0-9]/g, '')) || 0;
+        const dailyPrice = parseFloat(car_price.replace(/[^0-9]/g, '')) || 0;
         const total = dailyPrice * dayDiff;
         setDaysDifference(dayDiff);
         setCalculatedPrice(total.toString());
@@ -89,7 +89,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
     if (getdate && backdate) {
       calculateTotalPrice(getdate, backdate);
     }
-  }, [getdate, backdate, carPrice]);
+  }, [getdate, backdate, car_price]);
 
   useEffect(() => {
     const fetchSearches = async () => {
@@ -137,21 +137,20 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
 
       const dropLocation = usePickupAsDropoff ? pickupLocation : dropoffLocation || pickupLocation;
 
-      const searchData = {
-        pickup: pickupLocation.name,
-        drop: dropLocation.name,
+     const searchData = {
+        pickup_location: pickupLocation.name,
+        dropoff_location: dropLocation.name,
         date: `${getdate}, ${gettime} - ${backdate}, ${backtime}`,
       };
 
       const searchParams = {
-        pickup: pickupLocation.name,
-        drop: dropLocation.name,
-        pickupLocationId: pickupLocation.id,
-        dropoffLocationId: dropLocation.id,
-        pickupDate: getdate,
-        dropDate: backdate,
-        pickupTime: gettime,
-        dropTime: backtime,
+        pickup_location: pickupLocation.name,
+        dropoff_location: dropLocation.name,
+        pickup_date: getdate,
+        dropoff_date: backdate,
+        pickup_time: gettime,
+        dropoff_time: backtime,
+
       };
 
       const existingSearches = await AsyncStorage.getItem("lastSearches");
@@ -167,7 +166,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
       await AsyncStorage.setItem("lastSearches", JSON.stringify(updatedSearches));
       setLastSearches(updatedSearches);
 
-       navigation.navigate("AllCarsPage", { searchParams, userEmail, source: "ReservationPage" });
+        navigation.navigate("AllCarsPage", { searchParams, user_email, source: "ReservationPage" });
     } catch (error) {
       console.log("Arama hatası:", error);
       Alert.alert("Hata", "Arama sırasında bir hata oluştu");
@@ -182,7 +181,7 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
   };
 
   const handleReservation = () => {
-   if (carId) {
+  if (car_id) {
      
       if (!pickupLocation) {
         Alert.alert("Eksik Bilgi", "Lütfen alış lokasyonunu seçin");
@@ -214,19 +213,18 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
         return;
       }
 
-   
-      navigation.navigate("AdditionalRequests", {
-        carId: carId,
-        carModel: carModel || "",
-        carPrice: carPrice || "",
-        pickupDate: getdate,
-        dropDate: backdate,
-        pickupTime: gettime,
-        dropTime: backtime,
-        pickup: pickupLocation.name,
-        drop: usePickupAsDropoff ? pickupLocation.name : (dropoffLocation?.name || ""),
+    navigation.navigate("AdditionalRequests", {
+        car_id: car_id,
+        car_model: car_model || "",
+        car_price: car_price || "",
+        pickup_date: getdate,
+        dropoff_date: backdate,
+        pickup_time: gettime,
+        dropoff_time: backtime,
+        pickup_location: pickupLocation.name,
+        dropoff_location: usePickupAsDropoff ? pickupLocation.name : (dropoffLocation?.name || ""),
         source: source || "ReservationPage",
-        userEmail 
+        user_email
       });
     } else {
    
@@ -261,11 +259,11 @@ const ReservationPage = ({ navigation, route }: ReservationPageProps) => {
           onBackTimeChange={setBackTime}
           onSearch={handleReservation}
           source={source}
-          carId={carId}
-          carModel={carModel}
-          carPrice={carPrice}
-          calculatedPrice={calculatedPrice}
-          daysDifference={daysDifference}
+            car_id={car_id}
+          car_model={car_model}
+          car_price={car_price}
+          calculated_price={calculatedPrice}
+          days_difference={daysDifference}
         />
 
         <SearchHistory

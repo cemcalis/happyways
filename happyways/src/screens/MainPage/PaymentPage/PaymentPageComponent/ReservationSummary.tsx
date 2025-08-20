@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 interface ReservationSummaryProps {
   carInfo: {
     model: string;
-    pickup: string;
-    dropoff: string;
-    pickupDate: string;
-    dropoffDate: string;
-    pickupTime?: string;
-    dropoffTime?: string;
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time?: string;
+    dropoff_time?: string;
     price: number;
     kdv: number;
     total: number;
@@ -21,17 +21,17 @@ interface ReservationSummaryProps {
   insurance?: boolean;
   insurancePrice?: string;
   totalPrice?: string;
-  userEmail?: string; 
+  user_email?: string;
 }
 
 const ReservationSummary: React.FC<ReservationSummaryProps> = ({ 
-  carInfo, 
-  extraDriver, 
+  carInfo,
+  extraDriver,
   extraDriverPrice,
   insurance,
   insurancePrice,
   totalPrice,
-  userEmail
+  user_email
 }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('payment');
@@ -56,7 +56,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         <Text style={{ 
           marginBottom: 4, 
           color: isDark ? "#D1D5DB" : "#000000" 
-        }}>{t("duration")}: {carInfo.pickupDate} / {carInfo.dropoffDate}</Text>
+         }}>{t("duration")}: {carInfo.pickup_date} / {carInfo.dropoff_date}</Text>
         {carInfo.totalDays && (
           <Text style={{ 
             marginBottom: 4, 
@@ -64,25 +64,25 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
             fontWeight: "600"
           }}>{t("rentalPeriod")}: {carInfo.totalDays} {t("days")}</Text>
         )}
-        {carInfo.pickupTime && carInfo.dropoffTime && (
-          <Text style={{ 
-            marginBottom: 4, 
-            color: isDark ? "#D1D5DB" : "#000000" 
-          }}>{t("time")}: {carInfo.pickupTime} - {carInfo.dropoffTime}</Text>
-        )}
-        <Text style={{ 
-          marginBottom: 4, 
-          color: isDark ? "#D1D5DB" : "#000000" 
-        }}>{t("pickupLocation")}: {carInfo.pickup}</Text>
-        <Text style={{
-          marginBottom: 4,
-          color: isDark ? "#D1D5DB" : "#000000"
-        }}>{t("dropoffLocation")}: {carInfo.dropoff}</Text>
-        {userEmail && (
+        {carInfo.pickup_time && carInfo.dropoff_time && (
           <Text style={{
             marginBottom: 4,
             color: isDark ? "#D1D5DB" : "#000000"
-          }}>{t("email")}: {userEmail}</Text>
+          }}>{t("time")}: {carInfo.pickup_time} - {carInfo.dropoff_time}</Text>
+        )}
+        <Text style={{
+          marginBottom: 4,
+          color: isDark ? "#D1D5DB" : "#000000"
+        }}>{t("pickupLocation")}: {carInfo.pickup_location}</Text>
+        <Text style={{
+          marginBottom: 4,
+          color: isDark ? "#D1D5DB" : "#000000"
+        }}>{t("dropoffLocation")}: {carInfo.dropoff_location}</Text>
+        {user_email && (
+          <Text style={{
+            marginBottom: 4,
+            color: isDark ? "#D1D5DB" : "#000000"
+          }}>{t("email")}: {user_email}</Text>
         )}
         <View style={{
           borderTopWidth: 1,
