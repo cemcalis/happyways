@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { validateAndSanitize } from "./utils/requestValidator.js";
 import { errorHandler } from "./utils/errorHandler.js";
+import logger from "./utils/logger.js";
 
 import registerRoute from "./api/Register/route.js";
 import loginRoute from "./api/Login/route.js";
@@ -64,23 +65,19 @@ app.use("/api/contact", contactRoute);
 
 app.use((req, res) => res.status(404).json({ message: "Not Found" }));
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500).json({ message: "Internal Server Error" });
-});
-
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
     await initDB();
      const server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Sunucu http://0.0.0.0:${PORT} adresinde çalışıyor.`);
+       logger.info(`Sunucu http://0.0.0.0:${PORT} adresinde çalışıyor.`);
     });
     
     const shutdown = async () => {
       await closeDB();
       server.close(() => {
-        console.log("Sunucu kapatıldı.");
+        logger.info("Sunucu kapatıldı.");
         process.exit(0);
       });
     };
@@ -89,7 +86,7 @@ const startServer = async () => {
     process.on("SIGTERM", shutdown);
 
   } catch (error) {
-    console.error(" Veritabanı çalışmıyo:", error.message);
+    logger.error(`Veritabanı çalışmıyor: ${error.message}`);
   }
 };
 

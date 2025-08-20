@@ -23,10 +23,18 @@ export async function initDB() {
       password TEXT NOT NULL,
       first_name TEXT,
       last_name TEXT,
+      full_name TEXT,
       phone TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+   const userColumns = await db.all("PRAGMA table_info(users)");
+  const userColumnNames = userColumns.map((c) => c.name);
+  if (!userColumnNames.includes("full_name")) {
+    await db.exec("ALTER TABLE users ADD COLUMN full_name TEXT");
+  }
+
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS campaigns (

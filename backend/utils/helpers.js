@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import logger from './logger.js';
 
 
 export const hashPassword = (password) => {
@@ -173,11 +174,9 @@ export const paginate = (array, page = 1, limit = 10) => {
 };
 
 export const logInfo = (message, data = null) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[INFO] ${timestamp}: ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  logger.info(`${message} ${data ? JSON.stringify(data, null, 2) : ''}`);
 };
 
 export const logError = (message, error = null) => {
-  const timestamp = new Date().toISOString();
-  console.error(`[ERROR] ${timestamp}: ${message}`, error);
-};
+  logger.error(`${message} ${error ? error : ''}`);
+};  
