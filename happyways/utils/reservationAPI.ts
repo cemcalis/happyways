@@ -1,5 +1,5 @@
 import { API_CONFIG } from './config';
-
+import i18n from '../i18n';
 export interface ReservationData {
   carId: number;
   pickupLocation: string;
@@ -52,15 +52,14 @@ class ReservationAPI {
 
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.message || 'Rezervasyon oluşturulamadı');
+       if (!response.ok) {
+        throw new Error(data.message || i18n.t('reservation:errors.create'));
       }
-
       return data;
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Rezervasyon oluşturulurken hata oluştu',
+        message: error.message || i18n.t('reservation:errors.create'),
         error: error.message,
       };
     }

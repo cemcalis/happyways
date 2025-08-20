@@ -1,5 +1,6 @@
 import express from "express";
 import { getDB } from "../../database/db.js";
+import { handleError } from "../../utils/errorHandler.js";
 
 const router = express.Router();
 
@@ -14,12 +15,7 @@ router.get("/", async (req, res) => {
       cars: cars
     });
   } catch (error) {
-    console.error("Araç listesi getirme hatası:", error);
-    res.status(500).json({
-      success: false,
-      message: "Araçlar getirilemedi",
-      error: error.message
-    });
+    return handleError(res, error, 500, "Araçlar getirilemedi");
   }
 });
 
@@ -64,12 +60,7 @@ router.post("/available", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Müsait araç arama hatası:", error);
-    res.status(500).json({
-      success: false,
-      message: "Müsait araçlar getirilemedi",
-      error: error.message
-    });
+    return handleError(res, error, 500, "Müsait araçlar getirilemedi");
   }
 });
 
@@ -94,6 +85,7 @@ router.post("/check-availability", async (req, res) => {
         message: "Araç bulunamadı"
       });
     }
+
 
     const conflictingReservations = await db.all(`
       SELECT id, pickup_date, dropoff_date, status, user_email
@@ -122,12 +114,7 @@ router.post("/check-availability", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Araç müsaitlik kontrol hatası:", error);
-    res.status(500).json({
-      success: false,
-      message: "Araç müsaitlik durumu kontrol edilemedi",
-      error: error.message
-    });
+    return handleError(res, error, 500, "Araç müsaitlik durumu kontrol edilemedi");
   }
 });
 
@@ -161,12 +148,7 @@ router.get("/:id", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Araç detay getirme hatası:", error);
-    res.status(500).json({
-      success: false,
-      message: "Araç detayları getirilemedi",
-      error: error.message
-    });
+    return handleError(res, error, 500, "Araç detayları getirilemedi");
   }
 });
 

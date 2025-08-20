@@ -1,10 +1,12 @@
+import i18n from '../i18n';
+
 interface ValidationRule {
   required?: boolean;
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
   custom?: (value: string) => boolean;
-  message: string;
+  messageKey: string;
 }
 
 interface ValidationRules {
@@ -32,7 +34,7 @@ export class FormValidator {
       for (const rule of fieldRules) {
    
         if (rule.required && !value.trim()) {
-          errors[field] = rule.message;
+          errors[field] = i18n.t(rule.messageKey);
           break;
         }
 
@@ -41,21 +43,21 @@ export class FormValidator {
         }
 
         if (rule.minLength && value.length < rule.minLength) {
-          errors[field] = rule.message;
+          errors[field] = i18n.t(rule.messageKey);
           break;
         }
 
         if (rule.maxLength && value.length > rule.maxLength) {
-          errors[field] = rule.message;
+          errors[field] = i18n.t(rule.messageKey);
           break;
         }
 
         if (rule.pattern && !rule.pattern.test(value)) {
-          errors[field] = rule.message;
+          errors[field] = i18n.t(rule.messageKey);
           break;
         }
         if (rule.custom && !rule.custom(value)) {
-          errors[field] = rule.message;
+          errors[field] = i18n.t(rule.messageKey);
           break;
         }
       }
@@ -82,33 +84,33 @@ export const ValidationPatterns = {
 
 export const CommonValidationRules = {
   email: [
-    { required: true, message: 'E-posta adresi gerekli' },
-    { pattern: ValidationPatterns.email, message: 'Geçerli bir e-posta adresi girin' }
+    { required: true, messageKey: 'validation.emailRequired' },
+    { pattern: ValidationPatterns.email, messageKey: 'validation.emailInvalid' }
   ],
   password: [
-    { required: true, message: 'Şifre gerekli' },
-    { minLength: 8, message: 'Şifre en az 8 karakter olmalı' },
-    { pattern: ValidationPatterns.password, message: 'Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermeli' }
+    { required: true, messageKey: 'validation.passwordRequired' },
+    { minLength: 8, messageKey: 'validation.passwordMin' },
+    { pattern: ValidationPatterns.password, messageKey: 'validation.passwordPattern' }
   ],
   phone: [
-    { required: true, message: 'Telefon numarası gerekli' },
-    { pattern: ValidationPatterns.turkishPhone, message: 'Geçerli bir Türk telefon numarası girin (05xxxxxxxxx)' }
+    { required: true, messageKey: 'validation.phoneRequired' },
+    { pattern: ValidationPatterns.turkishPhone, messageKey: 'validation.phoneInvalid' }
   ],
   name: [
-    { required: true, message: 'Ad gerekli' },
-    { minLength: 2, message: 'Ad en az 2 karakter olmalı' },
-    { maxLength: 50, message: 'Ad en fazla 50 karakter olabilir' },
-    { pattern: ValidationPatterns.onlyLetters, message: 'Ad sadece harflerden oluşmalı' }
+    { required: true, messageKey: 'validation.nameRequired' },
+    { minLength: 2, messageKey: 'validation.nameMin' },
+    { maxLength: 50, messageKey: 'validation.nameMax' },
+    { pattern: ValidationPatterns.onlyLetters, messageKey: 'validation.namePattern' }
   ],
   surname: [
-    { required: true, message: 'Soyad gerekli' },
-    { minLength: 2, message: 'Soyad en az 2 karakter olmalı' },
-    { maxLength: 50, message: 'Soyad en fazla 50 karakter olabilir' },
-    { pattern: ValidationPatterns.onlyLetters, message: 'Soyad sadece harflerden oluşmalı' }
+    { required: true, messageKey: 'validation.surnameRequired' },
+    { minLength: 2, messageKey: 'validation.surnameMin' },
+    { maxLength: 50, messageKey: 'validation.surnameMax' },
+    { pattern: ValidationPatterns.onlyLetters, messageKey: 'validation.surnamePattern' }
   ],
   confirmPassword: (password: string) => [
-    { required: true, message: 'Şifre onayı gerekli' },
-    { custom: (value: string) => value === password, message: 'Şifreler eşleşmiyor' }
+    { required: true, messageKey: 'validation.confirmPasswordRequired' },
+    { custom: (value: string) => value === password, messageKey: 'validation.passwordsNotMatch' }
   ]
 };
 

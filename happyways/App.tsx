@@ -10,13 +10,14 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import AppNavigator from "./navigation/AppNavigator";
-
+import { useTranslation } from "react-i18next";
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState<
+  
     keyof RootStackParamList | null
   >(null);
-
+  const {t}=useTranslation('common');
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -53,7 +54,7 @@ export default function App() {
             Happy Ways
           </Text>
           <Text className="text-white/90 text-base font-medium mt-1 tracking-wider">
-            Happiest Way to Rent a Car
+            {t("happiestWayToRentACar")}
           </Text>
         </View>
         <View className="absolute top-64">
@@ -67,7 +68,7 @@ export default function App() {
   if (initialRoute === null) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
-        <Text className="text-lg text-gray-600">Yükleniyor...</Text>
+        <Text className="text-lg text-gray-600">{t("loading")}</Text>
       </View>
     );
   }

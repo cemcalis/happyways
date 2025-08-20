@@ -1,8 +1,12 @@
++2
+-1
+
 import express from "express";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "../../database/db.js";
 import jwt from "jsonwebtoken";
 import { generateRefreshToken } from "../auth/refresh.js";
+import { handleError } from "../../utils/errorHandler.js";
 
 const router = express.Router();
 
@@ -48,7 +52,7 @@ router.post("/", async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    return handleError(res, error, 500, "Sunucu hatası");
   }
 });
 

@@ -13,6 +13,7 @@ import { useAuth } from "../../../../../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
+import { API_CONFIG } from "../../../../../utils/config";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -89,7 +90,7 @@ const CreditCardForm: React.FC<Props> = ({
       setLoading(true);
       console.log("CreditCardForm -> form validasyonu için istek atılıyor");
 
-      const validateRes = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
+      const validateRes = await fetch(`${API_CONFIG.BASE_URL}/api/payment/validate-form`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,7 +118,7 @@ const CreditCardForm: React.FC<Props> = ({
       }
 
       console.log("CreditCardForm -> ödeme isteği gönderiliyor");
-      const payRes = await fetch("http://10.0.2.2:3000/api/payment", {
+      const payRes = await fetch(`${API_CONFIG.BASE_URL}/api/payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

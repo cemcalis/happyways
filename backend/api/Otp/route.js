@@ -1,11 +1,8 @@
 import express from "express";
-import {
-  getOtpForEmail,
-  deleteOtpForEmail,
-} from "../../utils/otpStore.js";
+import { getOtpForEmail, deleteOtpForEmail } from "../../utils/otpStore.js";
+import { handleError } from "../../utils/errorHandler.js";
 
 const router = express.Router();
-
 
 router.post("/verify", (req, res) => {
   const { email, code } = req.body;
@@ -13,28 +10,28 @@ router.post("/verify", (req, res) => {
   if (!email || !code) {
     return res.status(400).json({ message: "Email ve kod zorunludur" });
   }
-try{
-  const record = getOtpForEmail(email);
 
-  if (!record) {
-    return res.status(400).json({ message: "Kod bulunamadı ya da süresi doldu" });
-  }
+  try {
+    const record = getOtpForEmail(email);
 
-  if (Date.now() > record.expiresAt) {
+    if (!record) {
+      return res.status(400).json({ message: "Kod bulunamadı ya da süresi doldu" });
+    }
+
+    if (Date.now() > record.expiresAt) {
+      deleteOtpForEmail(email);
+      return res.status(400).json({ message: "Kodun süresi doldu" });
+    }
+
+    if (record.code !== code) {
+      return res.status(401).json({ message: "Kod geçersiz" });
+    }
+
     deleteOtpForEmail(email);
-    return res.status(400).json({ message: "Kodun süresi doldu" });
+    return res.status(200).json({ message: "Doğrulama başarılı" });
+  } catch (error) {
+    return handleError(res, error, 500, "Sunucu hatası");
   }
-
-  if (record.code !== code) {
-    return res.status(401).json({ message: "Kod geçersiz" });
-  }
-
-  deleteOtpForEmail(email);
-  return res.status(200).json({ message: "Doğrulama başarılı" });
-}
-catch (error) {
-    return res.status(500).json({ message: "Sunucu hatası", error: error.message });
-}
 });
 
 export default router;

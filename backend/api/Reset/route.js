@@ -1,6 +1,7 @@
 import express from "express";
 import { getDB } from "../../database/db.js";
 import bcrypt from "bcryptjs";
+import { handleError } from "../../utils/errorHandler.js";
 
 const router = express.Router();
 
@@ -37,7 +38,7 @@ router.post("/", async (req, res) => {
     return res.status(200).json({ message: "Şifre başarıyla güncellendi" });
 
   } catch (error) {
-    return res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    return handleError(res, error, 500, "Sunucu hatası");
   }
 });
 

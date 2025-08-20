@@ -61,5 +61,26 @@
   "deleteReservation": "Delete Reservation",
   "deleteReservationConfirm": "Are you sure you want to delete this reservation?",
   "deleteReservationSuccess": "Reservation deleted successfully",
-  "deleteReservationError": "Failed to delete reservation"
+  "deleteReservationError": "Failed to delete reservation",
+  "errors": {
+    "missingInfo": "Missing Information",
+    "fillAllFields": "Please fill all fields",
+    "selectPickupLocation": "Please select pickup location",
+    "selectDropoffLocation": "Please select dropoff location",
+    "selectPickupDate": "Please select pickup date",
+    "selectDropoffDate": "Please select dropoff date",
+    "selectPickupTime": "Please select pickup time",
+    "selectDropoffTime": "Please select dropoff time",
+    "search": "An error occurred during search",
+    "create": "Reservation could not be created",
+    "createGeneric": "An error occurred while creating reservation",
+    "fetch": "Could not retrieve reservations",
+    "notFound": "Reservation not found",
+    "delete": "Reservation could not be deleted",
+    "deleteGeneric": "An error occurred while deleting reservation",
+    "update": "Reservation could not be updated",
+    "updateGeneric": "An error occurred while updating reservation",
+    "searchCars": "An error occurred while searching cars",
+    "load": "An error occurred while loading reservations"
+  }
 }

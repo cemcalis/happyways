@@ -19,7 +19,7 @@ import { apiRequest, handleApiError, showErrorAlert } from "../../../../utils/er
 import LoadingSpinner from "../../../../Components/LoadingSpinner/LoadingSpinner";
 import NotificationsSvg from "../../../../assets/HomePage/notification.svg";
 import { useTranslation } from "react-i18next";
-
+import { API_CONFIG } from "../../../../utils/config";  
 
 import { SearchFilter, FilterModal, CampaignSection, CarSection } from "./HomePageComponent";
 
@@ -135,7 +135,7 @@ const HomePage = ({navigation} : HomePageProps) => {
       }
 
       try {
-        const data = await apiRequest("http://10.0.2.2:3000/api/home", {
+       const data = await apiRequest(`${API_CONFIG.BASE_URL}/api/home`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`
