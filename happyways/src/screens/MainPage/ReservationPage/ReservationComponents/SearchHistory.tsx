@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
-
+import { useTranslation } from "react-i18next";
 interface SearchHistoryItem {
   pickup: string;
   drop: string;
@@ -18,15 +18,18 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
   onClearHistory,
 }) => {
   const { isDark } = useTheme();
-
+  const {t} = useTranslation('reservation');
   if (lastSearches.length === 0) {
     return null;
   }
 
   return (
-    <View className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl shadow-lg border p-4 mb-4`}>
+    <View 
+      className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border p-4 mb-4`}
+      style={styles.shadowContainer}
+    >
       <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-4`}>
-        Son Aramalar
+        {t('recentSearches')}
       </Text>
       
       <FlatList
@@ -50,11 +53,24 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
       
       <TouchableOpacity onPress={onClearHistory} className="mt-2">
         <Text className="text-red-500 text-sm text-center font-semibold">
-          Geçmişi Temizle
+          {t('clearHistory')}
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+});
 
 export default SearchHistory;

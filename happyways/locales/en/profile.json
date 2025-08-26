@@ -28,5 +28,9 @@
   "profileLoading": "Loading profile information...",
   "logout": "Logout",
   "logoutConfirm": "Are you sure you want to logout?",
-  "error": "Error"
+  "error": "Error",
+  "firstName":"First Name",
+  "lastName":"Last Name",
+  "currency":"Currency",
+  "SocialMediaAccounts": "Social Media Accounts"
 }

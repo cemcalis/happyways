@@ -1,5 +1,5 @@
 import { API_CONFIG } from './config';
-
+import i18n from '../i18n';
 export interface ReservationData {
   carId: number;
   pickupLocation: string;
@@ -52,15 +52,14 @@ class ReservationAPI {
 
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.message || 'Rezervasyon oluşturulamadı');
+       if (!response.ok) {
+        throw new Error(data.message || i18n.t('reservation:errors.create'));
       }
-
       return data;
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Rezervasyon oluşturulurken hata oluştu',
+        message: error.message || i18n.t('reservation:errors.create'),
         error: error.message,
       };
     }
@@ -113,29 +112,29 @@ class ReservationAPI {
     }
   }
 
-  async cancelReservation(
+   async deleteReservation(
     reservationId: number,
     token: string
   ): Promise<ReservationResponse> {
     try {
-      const response = await fetch(`${this.baseURL}/api/reservation/${reservationId}/cancel`, {
-        method: 'PUT',
+      const response = await fetch(`${this.baseURL}/api/reservation/${reservationId}`, {
+        method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Rezervasyon iptal edilemedi');
+        throw new Error(data.message || 'Rezervasyon silinemedi');
       }
 
       return data;
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Rezervasyon iptal edilirken hata oluştu',
+        message: error.message || 'Rezervasyon silinirken hata oluştu',
         error: error.message,
       };
     }
@@ -172,17 +171,18 @@ class ReservationAPI {
     }
   }
 
-  async searchAvailableCars(searchParams: {
-    pickupLocation: string;
-    dropoffLocation: string;
-    pickupDate: string;
-    dropoffDate: string;
-    pickupTime: string;
-    dropoffTime: string;
+async searchAvailableCars(searchParams: {
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
   }): Promise<any[]> {
     try {
-      const queryParams = new URLSearchParams(searchParams);
+      const queryParams = new URLSearchParams(searchParams as any);
       const response = await fetch(`${this.baseURL}/api/cars/search?${queryParams}`);
+
 
       const data = await response.json();
       

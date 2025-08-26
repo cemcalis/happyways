@@ -17,11 +17,10 @@ const CarsHeader = ({ navigation, searchInfo }: CarsHeaderProps) => {
   
   return (
     <View className={`px-4 pt-4 pb-4 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-      <View className="flex-row items-center justify-between mb-8">
-        <View className="items-center">
+      <View className="flex-row items-center justify-center mb-8 ">
           <BackButton onPress={() => navigation.goBack()} />
-        </View>
-        <Text className={`text-xl font-semibold text-center flex-1 ${isDark ? 'text-white' : 'text-black'}`}>
+        <Text className={`text-xl font-semibold text-center flex-1 ${isDark ? 'text-white' : 'text-black'}`}
+          style={{ transform: [{ translateY: 9 }] }}>
           {searchInfo ? t('availableCars') : t('allCars')}
         </Text>
         <View className="w-8" />
@@ -30,10 +29,10 @@ const CarsHeader = ({ navigation, searchInfo }: CarsHeaderProps) => {
       {searchInfo && (
         <View className={`${isDark ? 'bg-orange-900/30 border-orange-600' : 'bg-orange-50 border-orange-200'} rounded-xl p-3 mb-6 border`}>
           <Text className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-1`}>
-            {searchInfo.pickup} - {searchInfo.drop}
+            {searchInfo.pickup_location} - {searchInfo.dropoff_location}
           </Text>
           <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}
+            {searchInfo.pickupDate} {searchInfo.pickupTime} - {searchInfo.dropDate} {searchInfo.dropTime}{searchInfo.pickup_date} {searchInfo.pickup_time} - {searchInfo.dropoff_date} {searchInfo.dropoff_time}
           </Text>
           <Text className="text-xs text-orange-600 font-semibold mt-1">
             {t('availableCount', { count: searchInfo.availableCarsCount })}

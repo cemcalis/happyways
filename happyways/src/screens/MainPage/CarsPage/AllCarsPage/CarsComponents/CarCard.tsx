@@ -23,16 +23,18 @@ type CarCardProps = {
   isGrid: boolean;
   navigation: NativeStackNavigationProp<RootStackParamList, "AllCarsPage">;
   searchParams?: {
-    pickup: string;
-    drop: string;
-    pickupDate: string;
-    dropDate: string;
-    pickupTime: string;
-    dropTime: string;
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
   };
+  source?: string;
+  user_email?: string;
 };
 
-const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
+const CarCard = ({ car, isGrid, navigation, searchParams, source, user_email }: CarCardProps) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
   
@@ -67,14 +69,16 @@ const CarCard = ({ car, isGrid, navigation, searchParams }: CarCardProps) => {
         </View>
         <TouchableOpacity
           className="bg-orange-500 py-2 rounded-lg"
-          onPress={() => navigation.navigate("CarsDetailPage", { 
-            carId: car.id,
-            pickupLocation: searchParams?.pickup,
-            dropoffLocation: searchParams?.drop,
-            pickupDate: searchParams?.pickupDate,
-            dropoffDate: searchParams?.dropDate,
-            pickupTime: searchParams?.pickupTime,
-            dropoffTime: searchParams?.dropTime,
+          onPress={() => navigation.navigate("CarsDetailPage", {
+            car_id: car.id,
+            pickup_location: searchParams?.pickup_location,
+            dropoff_location: searchParams?.dropoff_location,
+            pickup_date: searchParams?.pickup_date,
+            dropoff_date: searchParams?.dropoff_date,
+            pickup_time: searchParams?.pickup_time,
+            dropoff_time: searchParams?.dropoff_time,
+            source,
+            user_email
           })}
         >
           <Text className="text-white font-bold text-center text-sm">

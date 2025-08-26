@@ -1,0 +1,17 @@
+{
+  "tabs": {
+    "home": "Anasayfa",
+    "cars": "Araçlar",
+    "reservation": "Rezervasyon",
+    "campaigns": "Kampanyalar",
+    "account": "Hesabım"
+  },
+  "headquarters": "Genel Merkez",
+  "address": "Adres: Lefkoşa, KKTC - Yakın Doğu Bulvarı No: 123",
+  "phone": "Telefon",
+  "writeToUs": "Bize Yazın",
+  "fullName": "Ad Soyad",
+  "phoneNumber": "Telefon Numaranız",
+  "message": "Mesajınız",
+  "send": "Gönder"
+}

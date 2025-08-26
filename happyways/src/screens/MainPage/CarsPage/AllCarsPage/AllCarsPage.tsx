@@ -46,13 +46,14 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
   const { t } = useTranslation('cars');
   const { t: tAuth } = useTranslation('auth');
 
-  const searchParams = route.params?.searchParams;
+  const { searchParams, user_email } = route.params || {};
+  const source = route.params?.source;
 
   const handleApplyFilters = useCallback(async (fuelTypes: string[], gearTypes: string[]) => {
     setActiveFilters({ fuelTypes, gearTypes });
     
     try {
-      // Backend'den filtreleme yap
+   
       const response = await fetch("http://10.0.2.2:3000/api/cars/filter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,7 +71,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
       if (data.success) {
         setFilteredCars(data.cars);
       } else {
-        // Fallback: eski filtreleme mantığı
+     
         let filtered = cars;
         
         if (searchText.trim() !== "") {
@@ -92,7 +93,7 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
       }
     } catch (error) {
       console.error("Filtreleme hatası:", error);
-      // Fallback: eski filtreleme mantığı
+   
       let filtered = cars;
       
       if (searchText.trim() !== "") {
@@ -124,30 +125,30 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
 
   useEffect(() => {
     const fetchCars = async () => {
-      // Geçici olarak token kontrolü kaldırıldı
-      // if (!token) {
-      //   Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
-      //   return;
-      // }
+      setLoading(true);
+      if (!token) {
+        Alert.alert("Hata", "Oturum süreniz dolmuş, lütfen tekrar giriş yapın");
+        return;
+      }
 
       try {
         let url = "http://10.0.2.2:3000/api/cars/allcars";
     
         if (searchParams) {
           const queryParams = new URLSearchParams({
-            pickup: searchParams.pickup,
-            drop: searchParams.drop,
-            pickupDate: searchParams.pickupDate,
-            dropDate: searchParams.dropDate,
-            pickupTime: searchParams.pickupTime,
-            dropTime: searchParams.dropTime,
+            pickup_location: searchParams.pickup_location,
+            dropoff_location: searchParams.dropoff_location,
+            pickup_date: searchParams.pickup_date,
+            dropoff_date: searchParams.dropoff_date,
+            pickup_time: searchParams.pickup_time,
+            dropoff_time: searchParams.dropoff_time,
           });
           url += `?${queryParams.toString()}`;
         }
 
         console.log("API Request URL:", url);
 
-        // Basit fetch denemesi - token kaldırıldı
+        
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -281,13 +282,15 @@ const AllCarsPage = ({ navigation, route }: AllCarsPageProp) => {
             filteredCarsCount={filteredCars.length}
             onApplyFilters={handleApplyFilters}
             currentFilters={activeFilters}
-          />
+          /> 
           
           <CarsList
             filteredCars={filteredCars}
             isGrid={isGrid}
             navigation={navigation}
             searchParams={searchParams}
+            source={source}
+            user_email={user_email}
           />
         </>
       )}

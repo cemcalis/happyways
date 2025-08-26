@@ -22,7 +22,8 @@ export const ProfileScreens = {
   MePage: "MePage", 
   ProfilePage: "ProfilePage",
   MineReservationPage: "MineReservationPage",
-  NotificationPage: "NotificationPage"
+  NotificationPage: "NotificationPage",
+  ReservationSummaryPage: "ReservationSummaryPage"
 } as const;
 
 

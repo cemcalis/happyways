@@ -1,4 +1,3 @@
-// src/screens/Otp/Otp.tsx
 import React, { useState } from "react";
 import {
   Text,
@@ -8,6 +7,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -122,7 +122,8 @@ const Otp = () => {
 
         <TouchableOpacity
           onPress={handleOtp}
-          className="bg-orange-500 py-3 rounded-xl shadow-md mx-10"
+          className="bg-orange-500 py-3 rounded-xl mx-10"
+          style={styles.shadowButton}
         >
           <Text className="text-white font-semibold text-center text-base">
             {t('continue')}
@@ -132,5 +133,18 @@ const Otp = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});
 
 export default Otp;

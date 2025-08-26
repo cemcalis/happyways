@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -20,22 +21,31 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const systemColorScheme = useColorScheme();
   const [theme, setThemeState] = useState<ThemeMode>('system');
+  const {t} = useTranslation('common');
+  // Language support
+  const [language, setLanguage] = useState<'tr' | 'en'>('tr');
 
-  const themeOptions = [
-    { label: 'Açık', value: 'light' as ThemeMode },
-    { label: 'Koyu', value: 'dark' as ThemeMode },
-    { label: 'Sistem', value: 'system' as ThemeMode },
-  ];
+  const themeOptions = language === 'en'
+    ? [
+        { label: 'Light', value: 'light' as ThemeMode },
+        { label: 'Dark', value: 'dark' as ThemeMode },
+        { label: 'System', value: 'system' as ThemeMode },
+      ]
+    : [
+        { label: t("light"), value: 'light' as ThemeMode },
+        { label: t("dark"), value: 'dark' as ThemeMode },
+        { label: t("system"), value: 'system' as ThemeMode },
+      ];
 
-  // Hangi tema aktif olacağını belirle
+
   const isDark = theme === 'dark' || (theme === 'system' && systemColorScheme === 'dark');
 
-  // AsyncStorage'dan tema yükle
   useEffect(() => {
     loadTheme();
+    loadLanguage();
   }, []);
 
-  // Tema değiştiğinde hiçbir şey yapmayalım, sadece state tutalım
+
   useEffect(() => {
     console.log('Theme changed:', theme, 'isDark:', isDark);
   }, [theme, isDark]);
@@ -47,7 +57,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         setThemeState(savedTheme as ThemeMode);
       }
     } catch (error) {
-      console.error('Theme yüklenirken hata:', error);
+      console.error(language === 'en' ? 'Error loading theme:' : 'Theme yüklenirken hata:', error);
+    }
+  };
+
+  const loadLanguage = async () => {
+    try {
+      const savedLang = await AsyncStorage.getItem('language');
+      if (savedLang && ['tr', 'en'].includes(savedLang)) {
+        setLanguage(savedLang as 'tr' | 'en');
+      }
+    } catch (error) {
+      console.error(language === 'en' ? 'Error loading language:' : 'Dil yüklenirken hata:', error);
     }
   };
 
@@ -56,15 +77,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       setThemeState(newTheme);
       await AsyncStorage.setItem('theme', newTheme);
     } catch (error) {
-      console.error('Theme kaydedilirken hata:', error);
+      console.error(language === 'en' ? 'Error saving theme:' : 'Theme kaydedilirken hata:', error);
     }
   };
 
-  const value: ThemeContextType = {
+  const setLanguageAsync = async (lang: 'tr' | 'en') => {
+    try {
+      setLanguage(lang);
+      await AsyncStorage.setItem('language', lang);
+    } catch (error) {
+      console.error(language === 'en' ? 'Error saving language:' : 'Dil kaydedilirken hata:', error);
+    }
+  };
+
+  const value: ThemeContextType & { language: 'tr' | 'en'; setLanguage: (lang: 'tr' | 'en') => void } = {
     theme,
     isDark,
     setTheme,
-    themeOptions
+    themeOptions,
+    language,
+    setLanguage: setLanguageAsync
   };
 
   return (

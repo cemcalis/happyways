@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -75,7 +76,10 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
       <ScrollView className="flex-1 px-6">
         
         <View className="items-center mt-12 mb-8">
-          <View className="w-20 h-20 bg-orange-500 rounded-full items-center justify-center mb-4 shadow-lg">
+          <View 
+            className="w-20 h-20 bg-orange-500 rounded-full items-center justify-center mb-4"
+            style={styles.shadowContainer}
+          >
             <Text className="text-white text-3xl font-bold">HW</Text>
           </View>
           <Text className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'} mb-2`}>{t('welcome')}</Text>
@@ -152,8 +156,9 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
 
       
           <TouchableOpacity 
-            className="bg-orange-500 py-4 rounded-xl shadow-lg active:bg-orange-600 mt-6"
+            className="bg-orange-500 py-4 rounded-xl active:bg-orange-600 mt-6"
             onPress={handleLogin}
+            style={styles.shadowButton}
           >
             <Text className="text-white font-bold text-center text-lg">
               {t('loginButton')}
@@ -178,5 +183,28 @@ const LoginPage = ({ navigation }: LoginPageProp) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+});
 
 export default LoginPage;

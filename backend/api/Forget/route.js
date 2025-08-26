@@ -2,6 +2,10 @@ import express from "express";
 import nodemailer from "nodemailer";
 import { saveOtpForEmail } from "../../utils/otpStore.js";
 import { getUserByEmail } from "../../database/db.js";
+import { handleError } from "../../utils/errorHandler.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const router = express.Router();
 
@@ -28,13 +32,13 @@ router.post("/", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "caliscem18@gmail.com",
-        pass: "skkf birt pmlk dtxb",
+         user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
     const mailOptions = {
-      from: "HappyWays <caliscem18@gmail.com>",
+      from: `HappyWays <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "Şifre Sıfırlama Talebi",
       text: `Şifrenizi sıfırlamak için doğrulama kodunuz: ${resetCode}`,
@@ -44,7 +48,7 @@ router.post("/", async (req, res) => {
 
     return res.status(200).json({ message: "Şifre sıfırlama kodu gönderildi" });
   } catch (error) {
-    return res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    return handleError(res, error, 500, "Sunucu hatası");
   }
 });
 

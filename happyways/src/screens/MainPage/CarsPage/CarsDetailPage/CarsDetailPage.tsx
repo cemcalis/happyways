@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../../../../types";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import BackButton from "../../../../../Components/BackButton/BackButton";
 type CarsDetailPageProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "CarsDetailPage">;
 };
@@ -22,7 +23,7 @@ type CarDetail = {
 
 const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   const route = useRoute<RouteProp<RootStackParamList, "CarsDetailPage">>();
-  const { carId, pickupLocation, dropoffLocation, pickupDate, pickupTime, dropoffDate, dropoffTime } = route.params;
+ const { car_id, pickup_location, dropoff_location, pickup_date, pickup_time, dropoff_date, dropoff_time, source, user_email } = route.params;
   const { isDark } = useTheme();
   const { t } = useTranslation('cars');
 
@@ -32,8 +33,8 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   useEffect(() => {
     const fetchCarDetail = async () => {
       try {
-        const response = await fetch(`http://10.0.2.2:3000/api/cars/carsdetail/${carId}`);
-        const data = await response.json();
+         const response = await fetch(`http://10.0.2.2:3000/api/cars/carsdetail/${car_id}`);
+          const data = await response.json();
         setCar(data.car);
       } catch (error) {
         console.error("Araç detayı alınamadı:", error);
@@ -43,7 +44,7 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
     };
 
     fetchCarDetail();
-  }, [carId]);
+ }, [car_id]);
 
   if (loading) {
     return (
@@ -66,6 +67,10 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
   return (
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <View className={`flex-row items-center justify-between px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+        <BackButton onPress={() => navigation.goBack()} />
+          <Text className={`text-lg font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('carDetails')}</Text>
+      </View>
       <ScrollView>
 
         <Image
@@ -83,21 +88,44 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
 
           <Text className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{t('pickupLocation')} - {t('returnLocation')}</Text>
           <Text className="text-gray-600">Ercan - Lefkoşa</Text>
-          <Text className="text-gray-600 mb-6">4 Gün İçin Toplam {car.price}</Text>
+          <Text className="text-gray-600 mb-6">{t('totalPrice', { price: car.price })}</Text>
 
           <TouchableOpacity 
-            className="bg-orange-500 py-4 rounded-lg mt-3 shadow-md active:opacity-80"
-            onPress={() => navigation.navigate("AdditionalRequests", {
-              carId: car.id,
-              carModel: car.model,
-              carPrice: car.price,
-              pickupDate: pickupDate || "",
-              dropDate: dropoffDate || "",
-              pickupTime: pickupTime || "",
-              dropTime: dropoffTime || "",
-              pickup: pickupLocation || "",
-              drop: dropoffLocation || "",
-            })}
+            className="bg-orange-500 py-4 rounded-lg mt-3 active:opacity-80"
+            style={styles.shadowButton}
+            onPress={() => {
+            
+           if (source === "ReservationPage") {
+                navigation.navigate("AdditionalRequests", {
+                  car_id: car.id,
+                  car_model: car.model,
+                  car_price: car.price,
+                  pickup_date: pickup_date || "",
+                  dropoff_date: dropoff_date || "",
+                  pickup_time: pickup_time || "",
+                  dropoff_time: dropoff_time || "",
+                  pickup_location: pickup_location || "",
+                  dropoff_location: dropoff_location || "",
+                  source: source || "ReservationPage",
+                  user_email
+                });
+              } else {
+                  navigation.navigate("ReservationPage", {
+
+                  car_id: car.id,
+                  car_model: car.model,
+                  car_price: car.price,
+                  pickup_date: pickup_date || "",
+                  dropoff_date: dropoff_date || "",
+                  pickup_time: pickup_time || "",
+                  dropoff_time: dropoff_time || "",
+                  pickup_location: pickup_location || "",
+                  dropoff_location: dropoff_location || "",
+                  source: source || "CarsDetailPage",
+                  user_email
+                });
+              }
+            }}
           >
             <Text className="text-white text-center font-bold text-lg">{t('rentThisCar')}</Text>
           </TouchableOpacity>
@@ -108,4 +136,21 @@ const CarsDetailPage = ({ navigation }: CarsDetailPageProp) => {
   );
 };
 
+const styles = StyleSheet.create({
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});
+
 export default CarsDetailPage;
+
+
+
+

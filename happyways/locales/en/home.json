@@ -34,7 +34,7 @@
   "selectLocation": "Select Location",
   "selectDate": "Select Date",
   "dailyRental": "Daily Rental",
-  "perDay": "per day",
+  "perDay": "Per Day",
   "available": "Available",
   "unavailable": "Unavailable",
   "loadingHomePage": "Loading home page",
@@ -51,6 +51,9 @@
   "showAll": "Show All",
   "noCampaignFound": "No campaigns found for",
   "carsWithSearch": "Cars: \"{{searchText}}\" ({{count}} results)",
-  "result": "result",
-  "results": "results"
+  "result": "Result",
+  "results": "Results",
+  "firstName":"First Name",
+  "home": "Home",
+  "reservation": "Reservation"
 }

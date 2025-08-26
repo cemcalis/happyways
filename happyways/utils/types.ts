@@ -82,18 +82,18 @@ export interface Campaign {
 
 export interface ReservationDetails {
   id: number;
-  carId: number;
+  car_id: number;
   car: Car;
-  userId: number;
-  pickupLocation: string;
-  dropoffLocation: string;
-  pickupDateTime: string;
-  dropoffDateTime: string;
-  totalPrice: number;
+  user_id: number;
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_datetime: string;
+  dropoff_datetime: string;
+  total_price: number;
   status: ReservationStatus;
-  paymentStatus: PaymentStatus;
-  createdAt: string;
-  updatedAt: string;
+  payment_status: PaymentStatus;
+  created_at: string;
+  updated_at: string;
   notes?: string;
 }
 
@@ -111,12 +111,13 @@ export type PaymentStatus =
   | 'refunded';
 
 export interface SearchParams {
-  pickup: string;
-  drop: string;
-  pickupDate: string;
-  dropDate: string;
-  pickupTime: string;
-  dropTime: string;
+  pickup_location: string;
+  dropoff_location: string;
+  pickup_date: string;
+  dropoff_date: string;
+  pickup_time: string;
+  dropoff_time: string;
+
 }
 
 export interface SearchResult {
@@ -179,7 +180,8 @@ export interface PaymentInfo {
   expiryMonth: string;
   expiryYear: string;
   cvv: string;
-  cardHolderName: string;
+cardHolderFirstName: string;
+  cardHolderLastName: string;
   use3DSecure: boolean;
 }
 
@@ -210,3 +212,20 @@ export interface ValidationError {
 export interface FormErrors {
   [field: string]: string;
 }
+
+
+
+
+
+
+
+
+// Rezervasyon Detay endpoint’i yok
+// Backend route.js’te GET /api/reservation/:id tanımı yok. Detay sayfası hep fallback ile çalıştığı için kullanıcı/şartlar/ödeme kalemleri gibi alanlar boş kalıyor.
+
+// Süre (NaN saat) ve Invalid Date
+// Backend’te calculateDuration() **new Date(\${pickup_date}T${time}`)** ile parse ediyor. pickup_date ISO değilse (DD.MM.YYYYvb.)Invalid Date→NaN` üretiyor. Bu da “NaN saat” sorununa neden oluyor.
+// (Aynı neden, ekranda Invalid Date görülmesine de yol açıyor.)
+
+// mineReservation.tsx ve reservationsummary.tsx
+// İçerik kararlı değil (bazı satırlar bozulmuş/eksik). Filtre–sıralama–navigasyon ve özet görünümü stabil hale getirildi.

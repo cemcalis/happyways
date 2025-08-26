@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { saveToken, getToken, deleteToken, saveRefreshToken, getRefreshToken, deleteRefreshToken } from "../lib/secureStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type AuthContextType = {
   token: string | null;
@@ -63,8 +64,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshTokens = async (): Promise<boolean> => {
     try {
       const refreshToken = await getRefreshToken();
-      if (!refreshToken) return false;
+      if (!refreshToken) {
+        console.log("Refresh token yok");
+        return false;
+      }
 
+      console.log("Token yenileme başlatılıyor...");
+      
       const response = await fetch("http://10.0.2.2:3000/api/auth/refresh", {
         method: "POST",
         headers: {
@@ -73,17 +79,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         body: JSON.stringify({ refreshToken }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
+      console.log("Token yenileme response:", data);
+
+      if (response.ok && data.accessToken) {
+  
+        if (typeof data.accessToken !== 'string') {
+          console.error("Geçersiz access token response:", data.accessToken);
+          return false;
+        }
+        
         await saveToken(data.accessToken);
-        await saveRefreshToken(data.refreshToken);
+        
+        if (data.refreshToken) {
+          if (typeof data.refreshToken !== 'string') {
+            console.error("Geçersiz refresh token response:", data.refreshToken);
+          } else {
+            await saveRefreshToken(data.refreshToken);
+          }
+        }
+        
         setToken(data.accessToken);
+        console.log("Token başarıyla yenilendi");
         return true;
+      } else {
+        console.log("Token yenileme başarısız:", data.message);
+        return false;
       }
       
-      return false;
     } catch (error) {
       console.error("Token yenileme hatası:", error);
+
       return false;
     }
   };
@@ -93,16 +119,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const storedToken = await getToken();
       
       if (storedToken) {
+        console.log("Stored token bulundu, kontrol ediliyor...");
         if (isTokenValid(storedToken)) {
+          console.log("Token geçerli");
           setToken(storedToken);
         } else {
-     
+          console.log("Token süresi dolmuş, yenileme deneniyor...");
           const refreshed = await refreshTokens();
           if (!refreshed) {
-     
+            console.log("Token yenileme başarısız, logout yapılıyor");
             await logout();
           }
         }
+      } else {
+        console.log("Stored token bulunamadı");
       }
       
       setIsLoading(false);
@@ -116,26 +146,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const interval = setInterval(async () => {
       if (!isTokenValid(token)) {
+        console.log("Token süresi dolmuş, otomatik yenileme...");
         const refreshed = await refreshTokens();
         if (!refreshed) {
-          await logout();
+          console.log("Otomatik token yenileme başarısız");
+     
         }
       }
-    }, 5 * 60 * 1000); 
+    }, 10 * 60 * 1000); 
 
     return () => clearInterval(interval);
   }, [token]);
 
   const login = async (accessToken: string, refreshToken: string) => {
-    setToken(accessToken);
-    await saveToken(accessToken);
-    await saveRefreshToken(refreshToken);
+    console.log("Login fonksiyonu çağrıldı", { 
+      accessTokenType: typeof accessToken, 
+      refreshTokenType: typeof refreshToken,
+      accessTokenLength: accessToken?.length,
+      refreshTokenLength: refreshToken?.length
+    });
+    
+
+    if (!accessToken || typeof accessToken !== 'string') {
+      console.error("Geçersiz access token:", accessToken);
+      throw new Error("Geçersiz access token");
+    }
+    
+    if (!refreshToken || typeof refreshToken !== 'string') {
+      console.error("Geçersiz refresh token:", refreshToken);
+      throw new Error("Geçersiz refresh token");
+    }
+    
+    try {
+      setToken(accessToken);
+      await saveToken(accessToken);
+      await saveRefreshToken(refreshToken);
+      console.log("Token'lar başarıyla kaydedildi");
+    } catch (error) {
+      console.error("Token kaydetme hatası:", error);
+      throw error;
+    }
   };
 
   const logout = async () => {
     setToken(null);
     await deleteToken();
     await deleteRefreshToken();
+    await AsyncStorage.removeItem("user");
   };
 
   const isAuthenticated = !!token && isTokenValid(token);

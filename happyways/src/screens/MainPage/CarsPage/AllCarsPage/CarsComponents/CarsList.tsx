@@ -22,16 +22,20 @@ type CarsListProps = {
   isGrid: boolean;
   navigation: NativeStackNavigationProp<RootStackParamList, "AllCarsPage">;
   searchParams?: {
-    pickup: string;
-    drop: string;
-    pickupDate: string;
-    dropDate: string;
-    pickupTime: string;
-    dropTime: string;
+    pickup_location: string;
+    dropoff_location: string;
+    pickup_date: string;
+    dropoff_date: string;
+    pickup_time: string;
+    dropoff_time: string;
+
+    
   };
+  source?: string;
+  user_email?: string;
 };
 
-const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListProps) => {
+const CarsList = ({ filteredCars, isGrid, navigation, searchParams, source, user_email }: CarsListProps) => {
   const { isDark } = useTheme();
   
   const renderItem = ({ item }: { item: Car }) => (
@@ -40,6 +44,8 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListPr
       isGrid={isGrid}
       navigation={navigation}
       searchParams={searchParams}
+      source={source}
+      user_email={user_email}
     />
   );
 
@@ -49,7 +55,7 @@ const CarsList = ({ filteredCars, isGrid, navigation, searchParams }: CarsListPr
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       numColumns={isGrid ? 2 : 1}
-      key={isGrid ? 'grid' : 'list'} // Force re-render when layout changes
+      key={isGrid ? 'grid' : 'list'} 
       contentContainerStyle={{ 
         paddingHorizontal: 16, 
         paddingTop: 24, 

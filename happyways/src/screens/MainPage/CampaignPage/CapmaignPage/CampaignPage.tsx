@@ -6,6 +6,7 @@ import { RootStackParamList } from "../../../../../types";
 import TabBar from "../../../../../Components/TabBar/TapBar";
 import { useTheme } from "../../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import BackButton from "../../../../../Components/BackButton/BackButton";
 
 type Campaign = {
   id: number;
@@ -53,10 +54,10 @@ const CampaignPage = () => {
   }
 
   return (
-    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-
-      <View className={`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
+    <View className={`flex-1  ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <View className={`relative h-20 justify-center ${`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}`}>
+        <BackButton onPress={() => navigation.goBack()}  />
+        <Text className={`text-lg text-center font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
       </View>
 
 
@@ -69,8 +70,18 @@ const CampaignPage = () => {
         contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
         renderItem={({ item }) => (
           <TouchableOpacity
-            className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-lg shadow-md mb-4 w-[48%] border`}
+            className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-lg mb-4 w-[48%] border`}
             onPress={() => navigation.navigate("CampaignDetailPage", { campaignId: item.id })}
+            style={{
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.1,
+              shadowRadius: 3.84,
+              elevation: 3,
+            }}
           >
   
             <Image

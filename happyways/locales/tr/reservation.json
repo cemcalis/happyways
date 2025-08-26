@@ -49,5 +49,36 @@
   "rentalPeriod": "Kiralama Süresi",
   "from": "Başlangıç",
   "to": "Bitiş",
-  "duration": "Süre"
+  "duration": "Süre",
+  "Pickup": "Alış",
+  "differentDropoffLocation": "Farklı Bırakış Yeri",
+  "continueReservation": "Rezervasyonu Devam Ettir",
+  "recentSearches": "Son Aramalar",
+  "clearHistory": "Geçmişi Temizle",
+  "deleteReservation": "Rezervasyonu Sil",
+  "deleteReservationConfirm": "Bu rezervasyonu silmek istediğinizden emin misiniz?",
+  "deleteReservationSuccess": "Rezervasyon başarıyla silindi",
+
+  "deleteReservationError": "Rezervasyon silinemedi",
+  "errors": {
+    "missingInfo": "Eksik Bilgi",
+    "fillAllFields": "Lütfen tüm alanları doldurun",
+    "selectPickupLocation": "Lütfen alış lokasyonunu seçin",
+    "selectDropoffLocation": "Lütfen dönüş lokasyonunu seçin",
+    "selectPickupDate": "Lütfen alış tarihini seçin",
+    "selectDropoffDate": "Lütfen dönüş tarihini seçin",
+    "selectPickupTime": "Lütfen alış saatini seçin",
+    "selectDropoffTime": "Lütfen dönüş saatini seçin",
+    "search": "Arama sırasında bir hata oluştu",
+    "create": "Rezervasyon oluşturulamadı",
+    "createGeneric": "Rezervasyon oluşturulurken hata oluştu",
+    "fetch": "Rezervasyonlar alınamadı",
+    "notFound": "Rezervasyon bulunamadı",
+    "delete": "Rezervasyon silinemedi",
+    "deleteGeneric": "Rezervasyon silinirken hata oluştu",
+    "update": "Rezervasyon güncellenemedi",
+    "updateGeneric": "Rezervasyon güncellenirken hata oluştu",
+    "searchCars": "Araçlar aranırken hata oluştu",
+    "load": "Rezervasyonlar yüklenirken bir hata oluştu"
+  }
 }

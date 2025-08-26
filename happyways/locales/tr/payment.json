@@ -28,5 +28,22 @@
   "pickupDate": "Alış Tarihi",
   "dropoffDate": "Bırakış Tarihi",
   "rentalPeriod": "Kiralama Süresi",
-  "days": "gün"
+  "days": "gün",
+  "deposit": "Depozito",
+  "extraDriver": "Ek Sürücü",
+  "insurance": "Sigorta",
+  "kdv": "KDV",
+  "reservationSummary": "Rezervasyon Özeti",
+  "fullName": "Tam Ad",
+  "expiryMonth": "Son Kullanma Ayı",
+  "expiryYear": "Son Kullanma Yılı",
+  "3DSecurePayment": "3D Secure Ödeme",
+  "pay": "Öde",
+  "email": "E-posta",
+  "creditCardInformation": "Kredi Kartı Bilgileri",
+  "communicationPreference": "İletişim Tercihi",
+  "car": "Araç",
+  "duration": "Süre",
+  "time": "Saat"
+
 }

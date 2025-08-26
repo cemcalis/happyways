@@ -15,8 +15,23 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  console.log("çağrıldı.");
-  res.json({ message: "Location endpoint çalıştı." });
+  try {
+    const { name, address } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: "Lokasyon adı gerekli." });
+    }
+
+    const db = getDB();
+    const result = await db.run(
+      "INSERT INTO locations (name, address) VALUES (?, ?)",
+      [name, address || ""]
+    );
+
+    res.status(201).json({ id: result.lastID, name, address: address || "" });
+  } catch (err) {
+    res.status(500).json({ error: "Lokasyon eklenemedi." });
+  }
 });
 
 export default router;

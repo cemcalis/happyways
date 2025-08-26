@@ -15,7 +15,7 @@ export const APP_CONFIG = {
 
 export const STORAGE_KEYS = {
   USER_TOKEN: '@happyways_token',
-  USER_DATA: '@happyways_user',
+  USER_DATA: 'user',
   LAST_SEARCHES: '@happyways_searches',
   SETTINGS: '@happyways_settings',
   ONBOARDING_COMPLETED: '@happyways_onboarding',

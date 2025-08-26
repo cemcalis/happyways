@@ -23,7 +23,7 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
         },
         {
           text: t('continue'),
-          onPress: () => navigation.navigate("AllCarsPage", {})
+         onPress: () => navigation.navigate("AllCarsPage", { source: "CampaignDetailPage" })
         }
       ]
     );
@@ -35,8 +35,18 @@ const CampaignActions: React.FC<CampaignActionsProps> = ({ navigation, campaignI
     <View className="px-4 pb-6">
     
       <TouchableOpacity 
-        className="bg-orange-500 rounded-xl py-4 shadow-md active:opacity-80 mb-4"
+        className="bg-orange-500 rounded-xl py-4 active:opacity-80 mb-4"
         onPress={handleJoinCampaign}
+        style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        }}
       >
         <Text className="text-white text-center font-bold text-lg">
           {t('joinCampaignButton')}

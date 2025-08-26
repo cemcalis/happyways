@@ -13,15 +13,34 @@ const migrateDatabaseSchema = async () => {
 
     console.log("Database migration başlıyor...");
 
+     const userInfo = await db.all("PRAGMA table_info(users)");
+    const hasFirstName = userInfo.some(column => column.name === 'first_name');
+    const hasLastName = userInfo.some(column => column.name === 'last_name');
+
+    if (!hasFirstName) {
+      console.log("'first_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN first_name TEXT");
+      console.log("'first_name' column başarıyla eklendi");
+    }
+
+    if (!hasLastName) {
+      console.log("'last_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN last_name TEXT");
+      console.log("'last_name' column başarıyla eklendi");
+    }
+
+    
+
     const tableInfo = await db.all("PRAGMA table_info(cars)");
     const hasAvailableColumn = tableInfo.some(column => column.name === 'available');
 
+   
     if (!hasAvailableColumn) {
       console.log("'available' column ekleniyor...");
       await db.exec("ALTER TABLE cars ADD COLUMN available BOOLEAN DEFAULT 1");
       console.log("'available' column başarıyla eklendi");
     } else {
-      console.log("ℹ️ 'available' column zaten mevcut");
+      console.log(" 'available' column zaten mevcut");
     }
 
     const reservationInfo = await db.all("PRAGMA table_info(reservations)");
@@ -41,11 +60,47 @@ const migrateDatabaseSchema = async () => {
     }
 
     await db.exec(`
-      UPDATE reservations 
+      UPDATE reservations
       SET pickup_datetime = pickup_date || ' ' || pickup_time,
           dropoff_datetime = dropoff_date || ' ' || dropoff_time
       WHERE pickup_datetime IS NULL OR dropoff_datetime IS NULL
     `);
+
+    const usersInfo = await db.all("PRAGMA table_info(users)");
+    const hasFirstNameColumn = usersInfo.some(column => column.name === 'first_name');
+    const hasLastNameColumn = usersInfo.some(column => column.name === 'last_name');
+
+    if (!hasFirstNameColumn) {
+      console.log("'first_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN first_name TEXT");
+      console.log("'first_name' column başarıyla eklendi");
+    } else {
+      console.log(" 'first_name' column zaten mevcut");
+    }
+
+    if (!hasLastNameColumn) {
+      console.log("'last_name' column ekleniyor...");
+      await db.exec("ALTER TABLE users ADD COLUMN last_name TEXT");
+      console.log("'last_name' column başarıyla eklendi");
+    } else {
+      console.log("'last_name' column zaten mevcut");
+    }
+
+    if (!hasFirstNameColumn || !hasLastNameColumn) {
+      await db.exec(`
+        UPDATE users
+        SET first_name = CASE
+            WHEN full_name IS NOT NULL THEN TRIM(substr(full_name, 1, instr(full_name, ' ') - 1))
+            ELSE first_name
+          END,
+          last_name = CASE
+            WHEN full_name IS NOT NULL THEN TRIM(substr(full_name, instr(full_name, ' ') + 1))
+            ELSE last_name
+          END
+        WHERE full_name IS NOT NULL AND (first_name IS NULL OR last_name IS NULL)
+      `);
+      console.log("Kullanıcı isimleri güncellendi");
+    }
 
     console.log("Database migration tamamlandı!");
     await db.close();

@@ -66,9 +66,9 @@ const CampaignDetailPage = ({ navigation }: CampaignDetailPageProps) => {
     <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView showsVerticalScrollIndicator={false}>
     
-        <View className={`flex-row items-center justify-between px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+        <View className={`flex-row items-center justify-center px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
           <BackButton onPress={() => navigation.goBack()} />
-          <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaignDetails')}</Text>
+          <Text className={`text-lg text-center  font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaignDetails')}</Text>
           <View className="w-8" />
         </View>
 

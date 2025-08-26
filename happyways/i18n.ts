@@ -11,6 +11,7 @@ import trCampaign from './locales/tr/campaign.json';
 import trReservation from './locales/tr/reservation.json';
 import trNotifications from './locales/tr/notifications.json';
 import trPayment from './locales/tr/payment.json';
+import trContact from './locales/tr/contact.json';
 
 import enCommon from './locales/en/common.json';
 import enAuth from './locales/en/auth.json';
@@ -21,6 +22,7 @@ import enCampaign from './locales/en/campaign.json';
 import enReservation from './locales/en/reservation.json';
 import enNotifications from './locales/en/notifications.json';
 import enPayment from './locales/en/payment.json';
+import enContact from './locales/en/contact.json';
 
 const resources = {
   tr: {
@@ -33,6 +35,7 @@ const resources = {
     reservation: trReservation,
     notifications: trNotifications,
     payment: trPayment,
+    contact: trContact,
   },
   en: {
     common: enCommon,
@@ -44,38 +47,29 @@ const resources = {
     reservation: enReservation,
     notifications: enNotifications,
     payment: enPayment,
+    contact: enContact,
   },
 };
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'tr',
+  fallbackLng: 'tr',
+  debug: false,
+  interpolation: {
+    escapeValue: false,
+  },
+  defaultNS: 'common',
+  ns: ['common', 'auth', 'profile'],
+});
 
-const initI18n = async () => {
-  let savedLanguage = 'tr'; 
-  
-  try {
-    const storedLanguage = await AsyncStorage.getItem('selectedLanguage');
-    if (storedLanguage) {
-      savedLanguage = storedLanguage;
+AsyncStorage.getItem('selectedLanguage')
+  .then(storedLanguage => {
+    if (storedLanguage && storedLanguage !== i18n.language) {
+      i18n.changeLanguage(storedLanguage);
     }
-  } catch (error) {
+  })
+  .catch(error => {
     console.log('Dil yüklenirken hata:', error);
-  }
-
-  i18n
-    .use(initReactI18next)
-    .init({
-      resources,
-      lng: savedLanguage,
-      fallbackLng: 'tr',
-      debug: false,
-      
-      interpolation: {
-        escapeValue: false,
-      },
-      
-      defaultNS: 'common',
-      ns: ['common', 'auth', 'profile'],
-    });
-};
-
-initI18n();
+  });
 
 export default i18n;

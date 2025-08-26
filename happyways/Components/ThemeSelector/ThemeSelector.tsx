@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList } from 'react-native';
 import { useTheme, ThemeMode } from '../../contexts/ThemeContext';
 import Icon from '../Icons/Icons';
-
+import { useTranslation } from 'react-i18next';
 const ThemeSelector: React.FC = () => {
   const { theme, setTheme, themeOptions, isDark } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
-
+  const {t} = useTranslation('common');
   const selectedOption = themeOptions.find(option => option.value === theme);
 
   const handleSelect = (selectedTheme: ThemeMode) => {
@@ -46,11 +46,11 @@ const ThemeSelector: React.FC = () => {
       >
         <View className="flex-row items-center space-x-3">
           <Icon name="thema" size={20} />
-          <Text className={`${isDark ? 'text-white' : 'text-black'}`}>Tema</Text>
+          <Text className={`${isDark ? 'text-white' : 'text-black'}`}>{t("Theme")}</Text>
         </View>
         <View className="flex-row items-center space-x-2">
           <Text className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            {selectedOption?.label || 'Sistem'}
+            {selectedOption?.label || t("system")}
           </Text>
           <Text className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{'>'}</Text>
         </View>
@@ -63,16 +63,16 @@ const ThemeSelector: React.FC = () => {
         onRequestClose={() => setIsVisible(false)}
       >
         <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-          {/* Header */}
+          
           <View className={`flex-row items-center justify-between p-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <TouchableOpacity onPress={() => setIsVisible(false)}>
-              <Text className={`text-base ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>İptal</Text>
+              <Text className={`text-base ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>{t("cancel")}</Text>
             </TouchableOpacity>
-            <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>Tema Seçin</Text>
+            <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-black'}`}>{t("selectTheme")}</Text>
             <View style={{ width: 50 }} />
           </View>
 
-          {/* Options List */}
+          
           <FlatList
             data={themeOptions}
             keyExtractor={(item) => item.value}
@@ -80,10 +80,10 @@ const ThemeSelector: React.FC = () => {
             className="flex-1"
           />
 
-          {/* Info */}
+          
           <View className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} text-center`}>
-              Sistem seçeneği cihazınızın tema ayarlarını kullanır
+              {t("infoPage.mescription")}
             </Text>
           </View>
         </View>

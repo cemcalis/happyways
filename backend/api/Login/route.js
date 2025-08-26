@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { getUserByEmail } from "../../database/db.js";
 import jwt from "jsonwebtoken";
 import { generateRefreshToken } from "../auth/refresh.js";
+import { handleError } from "../../utils/errorHandler.js";
 
 const router = express.Router();
 
@@ -32,10 +33,10 @@ router.post("/", async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" } 
+      { expiresIn: "2h" } 
     );
 
-    const refreshToken = generateRefreshToken(user.id);
+    const refreshToken = await generateRefreshToken(user.id);
 
     return res.status(200).json({
       message: "Giriş başarılı",
@@ -48,7 +49,7 @@ router.post("/", async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    return handleError(res, error, 500, "Sunucu hatası");
   }
 });
 

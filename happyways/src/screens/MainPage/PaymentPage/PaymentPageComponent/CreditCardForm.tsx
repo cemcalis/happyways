@@ -1,42 +1,99 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import CheckBox from 'react-native-check-box';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  Modal,
+} from "react-native";
 import { useTheme } from "../../../../../contexts/ThemeContext";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../../../types";
+import { API_CONFIG } from "../../../../../utils/config";
 import { useTranslation } from "react-i18next";
 
-interface CreditCardFormProps {
-  carInfo: {
-    model: string;
-    pickup: string;
-    dropoff: string;
-    pickupDate: string;
-    dropoffDate: string;
-    price: number;
-    kdv: number;
-    total: number;
-  };
-  userEmail: string;
-  onSuccess: () => void;
-}
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onSuccess }) => {
+type Props = {
+  carInfo: any | null;
+  user_email?: string;
+  car_id?: number;
+  pickup_date?: string;
+  dropoff_date?: string;
+  pickup_time?: string;
+  dropoff_time?: string;
+  car_model?: string;
+};
+
+const CreditCardForm: React.FC<Props> = ({
+  carInfo,
+  user_email,
+  car_id,
+  pickup_date,
+  dropoff_date,
+  pickup_time,
+  dropoff_time,
+  car_model,
+}) => {
+  const { isDark } = useTheme();
+  const { token } = useAuth();
+  const navigation = useNavigation<Nav>();
+  const { t } = useTranslation('payment');
+
+
   const [name, setName] = useState("");
   const [cardNo, setCardNo] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
-  const [expiryYear, setExpiryYear] = useState("");
+ const [expiryYear, setExpiryYear] = useState("");
   const [cvv, setCvv] = useState("");
-  const [secure, setSecure] = useState(false);
-  const [emailChecked, setEmailChecked] = useState(false);
-  const [smsChecked, setSmsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { isDark } = useTheme();
-  const { t } = useTranslation('payment');
 
-  const handlePayment = async () => {
-    setLoading(true);
-    
+
+  const [resultModal, setResultModal] = useState<{
+    visible: boolean;
+    ok: boolean; 
+    message: string;
+  }>({ visible: false, ok: false, message: "" });
+
+  const goHome = () => {
+    setResultModal((s) => ({ ...s, visible: false }));
+
+    navigation.reset({ index: 0, routes: [{ name: "HomePage" }] });
+  };
+
+  const showSuccess = (msg: string) =>
+    setResultModal({ visible: true, ok: true, message: msg });
+
+  const showError = (msg: string) =>
+    setResultModal({ visible: true, ok: false, message: msg });
+
+  const onPay = async () => {
     try {
-      const validationResponse = await fetch("http://10.0.2.2:3000/api/payment/validate-form", {
+      console.log("CreditCardForm -> onPay çağrıldı");
+      if (!carInfo) {
+        console.log("CreditCardForm -> carInfo yok");
+        Alert.alert("Bekleyin", "Fiyat bilgileri hazırlanıyor. Lütfen tekrar deneyin.");
+        return;
+      }
+      if (!token) {
+        console.log("CreditCardForm -> token yok");
+        Alert.alert("Giriş gerekli", "Ödeme için lütfen giriş yapın.");
+        return;
+      }
+      if (!name || name.trim().length < 2) {
+        console.log("CreditCardForm -> isim eksik");
+        Alert.alert("Uyarı", "Kart üzerindeki Ad Soyad bilgisini girin.");
+        return;
+      }
+
+      setLoading(true);
+      console.log("CreditCardForm -> form validasyonu için istek atılıyor");
+
+      const validateRes = await fetch(`${API_CONFIG.BASE_URL}/api/payment/validate-form`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -45,206 +102,200 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ carInfo, userEmail, onS
           expiryMonth,
           expiryYear,
           cvv,
+          user_email,
           carInfo,
-          userEmail,
-          secure,
-          emailChecked,
-          smsChecked,
         }),
       });
-
-      const validationData = await validationResponse.json();
-      
-      if (!validationData.success) {
-        Alert.alert(
-          "Form Hatası", 
-          validationData.validation.errors.join("\n"), 
-          [{ text: "TAMAM" }]
-        );
+      console.log("CreditCardForm -> validate status", validateRes.status);
+      const validateJson = await validateRes.json();
+      console.log("CreditCardForm -> validate response", validateJson);
+      if (!validateRes.ok || !validateJson?.success) {
+        const errs =
+          validateJson?.validation?.errors?.join("\n") ??
+          validateJson?.message ??
+          "Form validasyonu başarısız";
         setLoading(false);
+        console.log("CreditCardForm -> validate hata", errs);
+        showError(errs);
         return;
       }
 
-      if (validationData.validation.warnings.length > 0) {
-        Alert.alert(
-          "Uyarı", 
-          validationData.validation.warnings.join("\n") + "\n\nDevam etmek istiyor musunuz?",
-          [
-            { text: "İptal", style: "cancel", onPress: () => setLoading(false) },
-            { text: "Devam Et", onPress: () => processPayment() }
-          ]
-        );
-        return;
-      }
-
-      await processPayment();
-      
-    } catch (err) {
-      console.error("Validasyon hatası:", err);
-      Alert.alert("Validasyon Hatası", "Form doğrulaması yapılamadı. Lütfen tekrar deneyiniz.", [{ text: "TAMAM" }]);
-      setLoading(false);
-    }
-  };
-
-  const processPayment = async () => {
-    try {
-      const res = await fetch("http://10.0.2.2:3000/api/payment", {
+      console.log("CreditCardForm -> ödeme isteği gönderiliyor");
+      const payRes = await fetch(`${API_CONFIG.BASE_URL}/api/payment`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           name,
           cardNo,
           expiryMonth,
           expiryYear,
           cvv,
+          userEmail: user_email,
           carInfo,
-          userEmail,
-          secure,
-          emailChecked,
-          smsChecked,
+          car_id,
+          pickup_date,
+          dropoff_date,
+          pickup_time,
+          dropoff_time,
         }),
       });
-   
-      const data = await res.json();
-      Alert.alert(data.message || (data.success ? "Ödemeniz Başarılı" : "İşlem başarısız"), "", [
-        { text: "TAMAM", onPress: data.success ? onSuccess : undefined }
-      ]);
-    } catch (err) {
-      Alert.alert("Sunucuya ulaşılamıyor.", "Lütfen daha sonra tekrar deneyiniz.", [{ text: "TAMAM" }]);
-    } finally {
+      console.log("CreditCardForm -> ödeme cevap status", payRes.status);
+
+      const payJson = await payRes.json();
+      console.log("CreditCardForm -> ödeme response", payJson);
       setLoading(false);
+
+      if (payRes.ok && payJson?.success && payJson?.reservation?.id) {
+        console.log("CreditCardForm -> ödeme başarılı");
+        showSuccess("Rezervasyon başarıyla oluşturulmuştur.");
+      } else {
+        const msg =
+          payJson?.message ||
+          "İşleminizi şu anda gerçekleştiremiyoruz. Lütfen daha sonra tekrar deneyiniz.";
+        console.log("CreditCardForm -> ödeme başarısız", msg);
+        showError(msg);
+      }
+    } catch (e: any) {
+      setLoading(false);
+      console.log("CreditCardForm -> hata", e);
+      showError(
+        e?.message ||
+          "İşleminizi şu anda gerçekleştiremiyoruz. Lütfen daha sonra tekrar deneyiniz."
+      );
     }
   };
-
   return (
-    <View style={{ padding: 16 }}>
-      <Text style={{ 
-        fontWeight: "bold", 
-        fontSize: 16, 
-        marginBottom: 8, 
-        color: isDark ? "#FFFFFF" : "#000000" 
-      }}>Kredi Kartı Bilgileri</Text>
-      <TextInput 
-        placeholder="Ad Soyad" 
-        value={name} 
-        onChangeText={setName} 
-        style={{ 
-          borderWidth: 1, 
-          marginBottom: 8, 
-          padding: 8,
-          borderColor: isDark ? "#374151" : "#D1D5DB",
-          backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
-          color: isDark ? "#FFFFFF" : "#000000"
-        }}
-        placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+    <View
+      className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-4 p-4 rounded-xl`}
+    >
+      <Text
+        className={`text-base font-semibold ${
+          isDark ? "text-white" : "text-black"
+        } mb-3`}
+      >
+        {t("payment:cardInfo")}
+      </Text>
+
+      <TextInput
+        placeholder={t("payment:name")}
+        placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
+        value={name}
+        onChangeText={setName}
+        autoCapitalize="words"
+        className={`${isDark ? "text-white" : "text-black"} border ${
+          isDark ? "border-gray-700" : "border-gray-300"
+        } rounded-lg px-3 py-2 mb-3`}
       />
-      <TextInput 
-        placeholder="Kart No" 
-        value={cardNo} 
-        onChangeText={setCardNo} 
-        style={{ 
-          borderWidth: 1, 
-          marginBottom: 8, 
-          padding: 8,
-          borderColor: isDark ? "#374151" : "#D1D5DB",
-          backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
-          color: isDark ? "#FFFFFF" : "#000000"
-        }} 
-        keyboardType="numeric"
-        placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+
+      <TextInput
+        placeholder={t("payment:cardNumber")}
+        keyboardType="number-pad"
+        placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
+        value={cardNo}
+        onChangeText={setCardNo}
+        maxLength={19}
+        className={`${isDark ? "text-white" : "text-black"} border ${
+          isDark ? "border-gray-700" : "border-gray-300"
+        } rounded-lg px-3 py-2 mb-3`}
       />
-      <View style={{ flexDirection: "row", marginBottom: 8 }}>
-        <TextInput 
-          placeholder="Ay" 
-          value={expiryMonth} 
-          onChangeText={setExpiryMonth} 
-          style={{ 
-            borderWidth: 1, 
-            flex: 1, 
-            marginRight: 4, 
-            padding: 8,
-            borderColor: isDark ? "#374151" : "#D1D5DB",
-            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
-            color: isDark ? "#FFFFFF" : "#000000"
-          }} 
-          keyboardType="numeric"
-          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+
+      <View className="flex-row">
+        <TextInput
+          placeholder="AA"
+          keyboardType="number-pad"
+          maxLength={2}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
+          value={expiryMonth}
+          onChangeText={setExpiryMonth}
+          className={`flex-1 ${isDark ? "text-white" : "text-black"} border ${
+            isDark ? "border-gray-700" : "border-gray-300"
+          } rounded-lg px-3 py-2 mb-3 mr-2`}
         />
-        <TextInput 
-          placeholder="Yıl" 
-          value={expiryYear} 
-          onChangeText={setExpiryYear} 
-          style={{ 
-            borderWidth: 1, 
-            flex: 1, 
-            marginLeft: 4, 
-            padding: 8,
-            borderColor: isDark ? "#374151" : "#D1D5DB",
-            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
-            color: isDark ? "#FFFFFF" : "#000000"
-          }} 
-          keyboardType="numeric"
-          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
-        />
-        <TextInput 
-          placeholder="CVV" 
-          value={cvv} 
-          onChangeText={setCvv} 
-          style={{ 
-            borderWidth: 1, 
-            flex: 1, 
-            marginLeft: 4, 
-            padding: 8,
-            borderColor: isDark ? "#374151" : "#D1D5DB",
-            backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
-            color: isDark ? "#FFFFFF" : "#000000"
-          }} 
-          keyboardType="numeric"
-          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
+        <TextInput
+          placeholder="YYYY"
+          keyboardType="number-pad"
+          maxLength={4}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
+          value={expiryYear}
+          onChangeText={setExpiryYear}
+          className={`flex-1 ${isDark ? "text-white" : "text-black"} border ${
+            isDark ? "border-gray-700" : "border-gray-300"
+          } rounded-lg px-3 py-2 mb-3`}
         />
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-        <CheckBox
-          isChecked={secure}
-          onClick={() => setSecure(!secure)}
-          checkBoxColor="orange"
-        />
-        <Text style={{ 
-          marginLeft: 8, 
-          color: isDark ? "#D1D5DB" : "#000000" 
-        }}>3D Secure ile ödemek istiyorum</Text>
-      </View>
-  
-      <Text style={{ 
-        fontWeight: "bold", 
-        fontSize: 16, 
-        marginBottom: 8, 
-        color: isDark ? "#FFFFFF" : "#000000" 
-      }}>İletişim Tercihiniz</Text>
-      <View style={{ flexDirection: "row", marginBottom: 8 }}>
-        <CheckBox
-          isChecked={emailChecked}
-          onClick={() => setEmailChecked(!emailChecked)}
-          checkBoxColor="orange"
-        />
-        <Text style={{ 
-          marginLeft: 8, 
-          color: isDark ? "#D1D5DB" : "#000000" 
-        }}>E-Posta</Text>
-        <CheckBox
-          isChecked={smsChecked}
-          onClick={() => setSmsChecked(!smsChecked)}
-          checkBoxColor="orange"
-          style={{ marginLeft: 16 }}
-        />
-        <Text style={{ 
-          marginLeft: 8, 
-          color: isDark ? "#D1D5DB" : "#000000" 
-        }}>SMS</Text>
-      </View>
-      <TouchableOpacity onPress={handlePayment} style={{ backgroundColor: "orange", padding: 12, borderRadius: 8, alignItems: "center" }} disabled={loading}>
-        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>Öde</Text>
+
+      <TextInput
+        placeholder="CVV"
+        keyboardType="number-pad"
+        maxLength={4}
+        placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
+        value={cvv}
+        onChangeText={setCvv}
+        className={`${isDark ? "text-white" : "text-black"} border ${
+          isDark ? "border-gray-700" : "border-gray-300"
+        } rounded-lg px-3 py-2 mb-4`}
+      />
+
+      <TouchableOpacity
+        onPress={onPay}
+        disabled={loading}
+        className={`rounded-lg py-3 items-center ${
+          loading ? "bg-orange-400" : "bg-orange-500"
+        }`}
+      >
+        {loading ? <ActivityIndicator /> : <Text className="text-white font-semibold">{t("payment:pay")}</Text>}
       </TouchableOpacity>
+
+      
+      <Modal transparent visible={resultModal.visible} animationType="fade">
+        <View className="flex-1 bg-black/40 justify-center items-center px-8">
+          <View className={`${isDark ? "bg-white" : "bg-white"} w-full rounded-2xl p-5`}>
+            <View className="items-center mb-3">
+           
+              <View
+                style={{
+                  width: 68,
+                  height: 68,
+                  borderRadius: 34,
+                  backgroundColor: "#fff",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderWidth: 3,
+                  borderColor: resultModal.ok ? "#22c55e" : "#ef4444", 
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 34,
+                    lineHeight: 34,
+                    color: resultModal.ok ? "#22c55e" : "#ef4444",
+                  }}
+                >
+                  {resultModal.ok ? "✓" : "✕"}
+                </Text>
+              </View>
+            </View>
+
+            <Text className="text-center text-sm font-semibold mb-2">
+              {resultModal.ok ? "Ödemeniz Başarı ile Alındı" : "İşlem başarısız"}
+            </Text>
+            <Text className="text-center text-xs mb-4">
+              {resultModal.message}
+            </Text>
+
+            <TouchableOpacity
+              onPress={goHome}
+              className="mt-1 py-3 rounded-xl items-center"
+              style={{ backgroundColor: "#2563eb" }}
+            >
+              <Text className="text-white font-semibold uppercase">{t("payment:confirm")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

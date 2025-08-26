@@ -1,8 +1,10 @@
 import express from "express";
+import jwt from "jsonwebtoken";
+import { getDB } from "../../../database/db.js";
 
 const router = express.Router();
 
-// Kredi kartı validasyonu için Luhn algoritması
+
 function validateCardNumber(cardNumber) {
   const number = cardNumber.replace(/\D/g, '');
   let sum = 0;
@@ -22,29 +24,115 @@ function validateCardNumber(cardNumber) {
     isEven = !isEven;
   }
   
-  return sum % 10 === 0;
+  return (sum % 10) === 0;
 }
 
-// Kart tipini tespit et
-function getCardType(cardNumber) {
+function detectCardType(cardNumber) {
   const number = cardNumber.replace(/\D/g, '');
-  
-  if (/^4/.test(number)) return 'Visa';
-  if (/^5[1-5]/.test(number)) return 'MasterCard';
-  if (/^3[47]/.test(number)) return 'American Express';
-  if (/^6(?:011|5)/.test(number)) return 'Discover';
-  
-  return 'Unknown';
+
+  if (/^4/.test(number)) {
+    return 'Visa';
+  } else if (/^(5[1-5]|2[2-7])/.test(number)) {
+    return 'MasterCard';
+  } else if (/^3[47]/.test(number)) {
+    return 'American Express';
+  } else if (/^6(?:011|5)/.test(number)) {
+    return 'Discover';
+  } else if (/^(?:2131|1800|35)/.test(number)) {
+    return 'JCB';
+  } else if (/^3(?:0[0-5]|[68])/.test(number)) {
+    return 'Diners Club';
+  } else {
+    return 'Unknown';
+  }
 }
 
-// Ödeme formu validasyonu endpoint'i
+function validateCvv(cvv, cardType) {
+  const cvvStr = String(cvv || '').replace(/\D/g, '');
+  
+  if (cardType === 'American Express') {
+    return /^\d{4}$/.test(cvvStr);
+  } else {
+    return /^\d{3}$/.test(cvvStr);
+  }
+}
+
+function validateExpiry(month, year) {
+  const m = parseInt(month, 10);
+  let y = parseInt(year, 10);
+  
+  if (y < 100) {
+    const currentYear = new Date().getFullYear();
+    const century = Math.floor(currentYear / 100) * 100;
+    y += century;
+    if (y < currentYear) y += 100;
+  }
+  
+  if (isNaN(m) || isNaN(y) || m < 1 || m > 12) return false;
+  
+  const now = new Date();
+  const expiryDate = new Date(y, m - 1, 1);
+  expiryDate.setMonth(expiryDate.getMonth() + 1);
+  
+  return expiryDate > now;
+}
+
+function sanitizeName(name) {
+  if (typeof name !== 'string') return '';
+  const trimmed = name.trim();
+  if (!trimmed) return '';
+  return trimmed.replace(/[^a-zA-ZığüşöçİĞÜŞÖÇ\s.-]/g, '');
+}
+
+function validateEmail(email) {
+  if (typeof email !== 'string') return false;
+  const trimmed = email.trim();
+  if (!trimmed) return false;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(trimmed);
+}
+
+function detectRiskFactors(request) {
+  const riskFactors = [];
+  const ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+  
+  if (!ip || ip === '::1' || ip.startsWith('127.')) {
+    riskFactors.push('LOCAL_IP');
+  }
+  
+  return riskFactors;
+}
+
 router.post("/", async (req, res) => {
+
+  (function normalizeNameOnReq(req){
+    try {
+      let { firstName, lastName, name, fullName } = req.body || {};
+      if ((!firstName || !lastName) && (name || fullName)) {
+        const raw = String(name || fullName).trim().replace(/\s+/g, " ");
+        if (raw.length > 0) {
+          const parts = raw.split(" ");
+          if (parts.length === 1) {
+            firstName = parts[0];
+            lastName = parts[0]; 
+          } else {
+            firstName = parts[0];
+            lastName = parts.slice(1).join(" ");
+          }
+          req.body.firstName = firstName;
+          req.body.lastName  = lastName;
+        }
+      }
+    } catch (_) {}
+  })(req);
+
   try {
-    const { 
-      name, 
-      cardNo, 
-      expiryMonth, 
-      expiryYear, 
+    const {
+      firstName,
+      lastName,
+      cardNo,
+      expiryMonth,
+      expiryYear,
       cvv,
       carInfo,
       userEmail,
@@ -55,43 +143,40 @@ router.post("/", async (req, res) => {
 
     const errors = [];
     const warnings = [];
+    const riskFactors = detectRiskFactors(req);
+    const securityLevel = riskFactors.length > 0 ? "high" : "normal";
 
-    // İsim validasyonu
-    if (!name || name.trim().length < 2) {
-      errors.push("Ad Soyad en az 2 karakter olmalıdır");
-    } else if (!/^[a-zA-ZğĞıİşŞöÖüÜçÇ\s]+$/.test(name.trim())) {
-      errors.push("Ad Soyad sadece harflerden oluşmalıdır");
+    const sanitizedFirstName = sanitizeName(firstName);
+    const sanitizedLastName = sanitizeName(lastName);
+
+    if (!sanitizedFirstName || sanitizedFirstName.length < 2) {
+      errors.push("Ad en az 2 karakter olmalıdır");
+    }
+    if (!sanitizedLastName || sanitizedLastName.length < 2) {
+      errors.push("Soyad en az 2 karakter olmalıdır");
     }
 
-    // Kart numarası validasyonu
-    if (!cardNo || cardNo.trim().length === 0) {
+    if (!cardNo) {
       errors.push("Kart numarası gereklidir");
     } else {
-      const cleanCardNo = cardNo.replace(/\D/g, '');
-      
-      if (cleanCardNo.length < 13 || cleanCardNo.length > 19) {
-        errors.push("Kart numarası 13-19 haneli olmalıdır");
-      } else if (!validateCardNumber(cleanCardNo)) {
-        errors.push("Geçersiz kart numarası");
-      } else {
-        const cardType = getCardType(cleanCardNo);
-        if (cardType === 'Unknown') {
-          warnings.push("Kart tipi tespit edilemedi");
-        }
+      const digits = cardNo.replace(/\D/g, '');
+      if (digits.length < 13 || digits.length > 19) {
+        errors.push("Geçersiz kart numarası uzunluğu");
+      }
+      if (!validateCardNumber(cardNo)) {
+        errors.push("Geçersiz kart numarası (Luhn başarısız)");
       }
     }
 
-    // Son kullanma tarihi validasyonu
     if (!expiryMonth || !expiryYear) {
       errors.push("Son kullanma tarihi gereklidir");
     } else {
-      const month = parseInt(expiryMonth);
-      const year = parseInt(expiryYear);
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear() % 100; // Son 2 hane
-      const currentMonth = currentDate.getMonth() + 1;
+      const month = parseInt(expiryMonth, 10);
+      const year = parseInt(expiryYear, 10);
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
 
-      if (month < 1 || month > 12) {
+      if (isNaN(month) || isNaN(year) || month < 1 || month > 12) {
         errors.push("Geçersiz ay (1-12)");
       }
       
@@ -104,82 +189,121 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // CVV validasyonu
+  
     if (!cvv) {
       errors.push("CVV gereklidir");
-    } else if (!/^\d{3,4}$/.test(cvv)) {
-      errors.push("CVV 3-4 haneli olmalıdır");
+    } else {
+      const cardType = detectCardType(cardNo);
+      if (!validateCvv(cvv, cardType)) {
+        errors.push(`CVV formatı geçersiz (${cardType === 'American Express' ? '4 haneli' : '3 haneli'})`);
+      }
     }
 
-    // Email validasyonu
-    if (!userEmail) {
-      errors.push("Email adresi gereklidir");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
+    if (userEmail && !validateEmail(userEmail)) {
       errors.push("Geçersiz email formatı");
     }
 
-    // Araç bilgileri validasyonu
-    if (!carInfo || !carInfo.total || carInfo.total <= 0) {
-      errors.push("Geçersiz ödeme tutarı");
+    if (!carInfo || typeof carInfo !== 'object') {
+      errors.push("Geçersiz rezervasyon verisi (carInfo)");
+    } else {
+      if (typeof carInfo.price !== 'number' || carInfo.price <= 0) {
+        errors.push("Geçersiz fiyat bilgisi");
+      }
+      if (!carInfo.model || typeof carInfo.model !== 'string') {
+        errors.push("Araç modeli eksik");
+      }
     }
 
-    // İletişim tercihi kontrolü
-    if (!emailChecked && !smsChecked) {
-      warnings.push("Bilgilendirme için en az bir iletişim yöntemi seçmeniz önerilir");
-    }
-
-    // Risk analizi
-    const riskFactors = [];
-    if (!secure) {
-      riskFactors.push("3D Secure kullanılmıyor");
-    }
-    
-    if (carInfo && carInfo.total > 10000) {
-      riskFactors.push("Yüksek tutar ödeme");
-    }
-
-    const validationResult = {
-      isValid: errors.length === 0,
-      errors,
-      warnings,
-      riskFactors,
-      cardInfo: cardNo ? {
-        type: getCardType(cardNo.replace(/\D/g, '')),
-        lastFourDigits: cardNo.replace(/\D/g, '').slice(-4),
-        isValid: validateCardNumber(cardNo.replace(/\D/g, ''))
-      } : null,
-      securityLevel: secure ? 'high' : 'medium',
-      recommendations: []
+    const response = {
+      success: errors.length === 0,
+      message: errors.length === 0 ? "Form geçerli" : "Form validasyonu başarısız",
+      validation: {
+        isValid: errors.length === 0,
+        errors,
+        warnings,
+        riskFactors,
+        cardInfo: {
+          type: detectCardType(cardNo),
+          lastFourDigits: cardNo ? cardNo.replace(/\D/g, '').slice(-4) : undefined,
+          isValid: errors.length === 0
+        },
+        securityLevel,
+        recommendations: []
+      }
     };
 
-    // Öneriler ekle
-    if (!secure) {
-      validationResult.recommendations.push("Güvenlik için 3D Secure kullanmanız önerilir");
-    }
-    
-    if (riskFactors.length > 0) {
-      validationResult.recommendations.push("Ek güvenlik önlemleri alınması önerilir");
+    if (warnings.length > 0) {
+      response.validation.recommendations.push("Lütfen kart bilgilerini dikkatlice kontrol edin.");
     }
 
-    if (validationResult.isValid) {
-      res.json({
-        success: true,
-        message: "Form validasyonu başarılı",
-        validation: validationResult
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Form validasyonu başarısız",
-        validation: validationResult
-      });
-    }
-
+    res.status(response.success ? 200 : 400).json(response);
   } catch (error) {
     console.error("Form validasyon hatası:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Validasyon sırasında bir hata oluştu" 
+    res.status(500).json({
+      success: false,
+      message: "Validasyon sırasında bir hata oluştu",
+      validation: {
+        isValid: false,
+        errors: [],
+        warnings: [],
+        riskFactors: []
+      }
+    });
+  }
+});
+router.get("/history", async (req, res) => {
+  try {
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      return res.status(401).json({ message: "Token gerekli" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user_id = decoded.id;
+
+    const db = getDB();
+
+    const reservation = await db.get(
+      `SELECT
+         r.*,
+         c.model,
+         c.year,
+         u.name as user_full_name
+       FROM reservations r
+       LEFT JOIN cars c ON r.car_id = c.id
+       LEFT JOIN users u ON r.user_id = u.id
+       WHERE r.user_id = ?
+       ORDER BY r.created_at DESC`,
+      [user_id]
+    );
+
+    if (!reservation) {
+      return res.status(404).json({ message: "Rezervasyon bulunamadı" });
+    }
+
+    res.status(200).json({
+      success: true,
+      reservation: {
+        reservation_id: reservation.id,
+        car_model: reservation.model,
+        car_year: reservation.year,
+        user_name: reservation.user_full_name,
+        pickup_location: reservation.pickup_location,
+        dropoff_location: reservation.dropoff_location,
+        pickup_date: reservation.pickup_date,
+        dropoff_date: reservation.dropoff_date,
+        payment_status: reservation.payment_status || 'unknown',
+        total_amount: reservation.total_price,
+        created_at: reservation.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Ödeme durumu kontrol hatası:", error);
+    res.status(500).json({
+      message: "Ödeme durumu kontrol edilemedi",
+      error: error.message
     });
   }
 });

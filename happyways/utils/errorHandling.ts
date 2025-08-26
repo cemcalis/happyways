@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import i18n from '../i18n';
 
 export interface ApiError {
   message: string;
@@ -23,7 +24,7 @@ export const handleApiError = (error: any): ApiError => {
 
   if (error.name === 'NetworkError') {
     return {
-      message: 'İnternet bağlantınızı kontrol edin',
+      message: i18n.t('errors.network'),
       statusCode: error.statusCode,
       code: error.code
     };
@@ -32,17 +33,17 @@ export const handleApiError = (error: any): ApiError => {
   if (error.response) {
 
     const status = error.response.status;
-    const message = error.response.data?.message || 'Bir hata oluştu';
+    const message = error.response.data?.message || i18n.t('errors.generic');
 
     switch (status) {
       case 401:
-        return { message: 'Oturum süreniz dolmuş, lütfen tekrar giriş yapın', statusCode: 401 };
+        return { message: i18n.t('auth:sessionExpired'), statusCode: 401 };
       case 403:
-        return { message: 'Bu işlem için yetkiniz bulunmuyor', statusCode: 403 };
+        return { message: i18n.t('errors.forbidden'), statusCode: 403 };
       case 404:
-        return { message: 'Aranan kaynak bulunamadı', statusCode: 404 };
+        return { message: i18n.t('errors.notFound'), statusCode: 404 };
       case 500:
-        return { message: 'Sunucu hatası oluştu, lütfen daha sonra tekrar deneyin', statusCode: 500 };
+        return { message: i18n.t('errors.server'), statusCode: 500 };
       default:
         return { message, statusCode: status };
     }
@@ -51,28 +52,28 @@ export const handleApiError = (error: any): ApiError => {
   if (error.request) {
 
     return {
-      message: 'Sunucuya bağlanılamadı, lütfen internet bağlantınızı kontrol edin',
+      message: i18n.t('errors.cannotConnect'),
       code: 'NETWORK_ERROR'
     };
   }
 
   return {
-    message: error.message || 'Beklenmeyen bir hata oluştu'
+    message: error.message || i18n.t('errors.unexpected')
   };
 };
 
 export const showErrorAlert = (error: ApiError) => {
   Alert.alert(
-    'Hata',
+    i18n.t('common:error'),
     error.message,
-    [{ text: 'Tamam', style: 'default' }]
+    [{ text: i18n.t('common:ok'), style: 'default' }]
   );
 };
 
 export const apiRequest = async (url: string, options: RequestInit = {}): Promise<any> => {
   try {
     if (!url) {
-      throw new NetworkError('URL gerekli', undefined, 'INVALID_URL');
+      throw new NetworkError(i18n.t('errors.urlRequired'), undefined, 'INVALID_URL');
     }
 
     const response = await fetch(url, {
@@ -83,10 +84,21 @@ export const apiRequest = async (url: string, options: RequestInit = {}): Promis
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
+      if (!response.ok) {
+      let errorMessage: string | undefined;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData?.message;
+      } catch {
+        try {
+          errorMessage = await response.text();
+        } catch {
+          errorMessage = undefined;
+        }
+      }
+
       throw new NetworkError(
-        errorData?.message || `HTTP ${response.status}`,
+        errorMessage || `HTTP ${response.status}`,
         response.status,
         'HTTP_ERROR'
       );
@@ -94,7 +106,7 @@ export const apiRequest = async (url: string, options: RequestInit = {}): Promis
 
     const data = await response.json();
     if (data === null || data === undefined) {
-      throw new NetworkError('Sunucudan geçersiz yanıt alındı', 500, 'INVALID_RESPONSE');
+      throw new NetworkError(i18n.t('errors.invalidResponse'), 500, 'INVALID_RESPONSE');
     }
 
     return data;
@@ -104,7 +116,7 @@ export const apiRequest = async (url: string, options: RequestInit = {}): Promis
     }
     
     throw new NetworkError(
-      error.message || 'Bağlantı hatası oluştu',
+      error.message || i18n.t('errors.connection'),
       undefined,
       'CONNECTION_ERROR'
     );

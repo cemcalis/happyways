@@ -21,6 +21,8 @@
   "cancel": "İptal",
   "edit": "Düzenle",
   "profile": "Profil",
+  "firstName":"Ad",
+  "lastName":"Soyad",
   "updateProfile": "Profili Güncelle",
   "profileUpdated": "Profil güncellendi",
   "profileUpdateFailed": "Profil güncellenemedi",
@@ -28,5 +30,7 @@
   "profileLoading": "Profil bilgileri yükleniyor...",
   "logout": "Çıkış Yap",
   "logoutConfirm": "Çıkış yapmak istediğinizden emin misiniz?",
-  "error": "Hata"
+  "error": "Hata",
+  "currency": "Para Birimi",
+  "SocialMediaAccounts": "Sosyal Medya Hesapları"
 }

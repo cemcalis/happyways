@@ -28,11 +28,50 @@
   "register": "Register",
   "home": "Home",
   "cars": "Cars",
+  "Theme": "Theme",
+  "system": "System",
+  "selectTheme": "Select Theme",
+  "reservation": "Reservation",
   "myAccount": "My Account",
   "campaigns": "Campaigns",
-  "infoPage": {
+  "light": "Light",
+  "dark": "Dark",
+"infoPage": {
     "title": "Find Your Perfect Car Today!",
     "description": "Always start your journey with the car you want - discover the best opportunities.",
-    "callToAction": "Start now and find the car of your dreams!"
+    "callToAction": "Start now and find the car of your dreams!",
+    "mescription": "The system option uses your device's theme settings."
+  },
+  "errors": {
+    "network": "Check your internet connection",
+    "generic": "An error occurred",
+    "forbidden": "You do not have permission for this action",
+    "notFound": "Requested resource not found",
+    "server": "Server error occurred, please try again later",
+    "cannotConnect": "Unable to connect to server, please check your internet connection",
+    "unexpected": "An unexpected error occurred",
+    "invalidResponse": "Invalid response received from server",
+    "connection": "Connection error occurred",
+    "urlRequired": "URL is required",
+    "languageChangeFailed": "Unable to change language"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter and one number",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid Turkish phone number (05xxxxxxxxx)",
+    "nameRequired": "First name is required",
+    "nameMin": "First name must be at least 2 characters",
+    "nameMax": "First name can be at most 50 characters",
+    "namePattern": "First name must contain only letters",
+    "surnameRequired": "Last name is required",
+    "surnameMin": "Last name must be at least 2 characters",
+    "surnameMax": "Last name can be at most 50 characters",
+    "surnamePattern": "Last name must contain only letters",
+    "confirmPasswordRequired": "Password confirmation is required",
+    "passwordsNotMatch": "Passwords do not match"
   }
 }

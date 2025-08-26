@@ -30,9 +30,49 @@
   "cars": "Araçlar",
   "myAccount": "Hesabım",
   "campaigns": "Kampanyalar",
-  "infoPage": {
+  "Theme": "Tema",
+  "system": "Sistem",
+  "reservation": "Rezervasyon",
+  "light": "Açık",
+  "dark": "Koyu",
+  "selectTheme": "Tema Seç",
+  "firstName":"First Name",
+ "infoPage": {
     "title": "Bugün Mükemmel Arabanızı Bulun!",
     "description": "Her zaman istediğiniz arabayla yolculuğunuza başlayın - en iyi fırsatları keşfedin.",
-    "callToAction": "Şimdi başlayın ve hayalinizdeki aracı bulun!"
+    "callToAction": "Şimdi başlayın ve hayalinizdeki aracı bulun!",
+    "mescription": "Sistem seçeneği, cihazınızın tema ayarlarını kullanır."
+  },
+  "errors": {
+    "network": "İnternet bağlantınızı kontrol edin",
+    "generic": "Bir hata oluştu",
+    "forbidden": "Bu işlem için yetkiniz bulunmuyor",
+    "notFound": "Aranan kaynak bulunamadı",
+    "server": "Sunucu hatası oluştu, lütfen daha sonra tekrar deneyin",
+    "cannotConnect": "Sunucuya bağlanılamadı, lütfen internet bağlantınızı kontrol edin",
+    "unexpected": "Beklenmeyen bir hata oluştu",
+    "invalidResponse": "Sunucudan geçersiz yanıt alındı",
+    "connection": "Bağlantı hatası oluştu",
+    "urlRequired": "URL gerekli",
+    "languageChangeFailed": "Dil değiştirilemedi"
+  },
+  "validation": {
+    "emailRequired": "E-posta adresi gerekli",
+    "emailInvalid": "Geçerli bir e-posta adresi girin",
+    "passwordRequired": "Şifre gerekli",
+    "passwordMin": "Şifre en az 8 karakter olmalı",
+    "passwordPattern": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermeli",
+    "phoneRequired": "Telefon numarası gerekli",
+    "phoneInvalid": "Geçerli bir Türk telefon numarası girin (05xxxxxxxxx)",
+    "nameRequired": "Ad gerekli",
+    "nameMin": "Ad en az 2 karakter olmalı",
+    "nameMax": "Ad en fazla 50 karakter olabilir",
+    "namePattern": "Ad sadece harflerden oluşmalı",
+    "surnameRequired": "Soyad gerekli",
+    "surnameMin": "Soyad en az 2 karakter olmalı",
+    "surnameMax": "Soyad en fazla 50 karakter olabilir",
+    "surnamePattern": "Soyad sadece harflerden oluşmalı",
+    "confirmPasswordRequired": "Şifre onayı gerekli",
+    "passwordsNotMatch": "Şifreler eşleşmiyor"
   }
 }

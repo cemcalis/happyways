@@ -1,25 +1,49 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { WebView } from "react-native-webview";
 import { useTheme } from "../../../../../contexts/ThemeContext";
-import Icon from "../../../../../Components/Icons/Icons";
+import { useTranslation } from "react-i18next";
+import TabBar from "../../../../../Components/TabBar/TapBar";
+import BackButton from "../../../../../Components/BackButton/BackButton";   
 
 type ContactProp = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactPage">;
 };
 
-const tabItems = [
-  { icon: <Icon name="home" size={20} />, label: "Anasayfa", route: "HomePage" },
-  { icon: <Icon name="car" size={20} />, label: "Araçlar", route: "AllCarsPage" },
-  { icon: <Icon name="search" size={20} />, label: "Rezervasyon", route: "ReservationPage" },
-  { icon: <Icon name="campaign" size={20} />, label: "Kampanyalar", route: "CampaignPage" },
-  { icon: <Icon name="user" size={20} />, label: "Hesabım", route: "ProfilePage" },
-];
-
 const ContactPage = ({ navigation }: ContactProp) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('contact');
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSend = async () => {
+    if (!fullName || !phone || !message) {
+      Alert.alert("Error", "Please fill in all fields before sending.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://10.0.2.2:3000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fullName, phone, message }),
+      });
+
+      if (response.ok) {
+        Alert.alert("Success", "Message sent successfully.");
+        setFullName("");
+        setPhone("");
+        setMessage("");
+      } else {
+        Alert.alert("Error", "Failed to send message.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to send message.");
+    }
+  };
   const latitude = 35.1856;
   const longitude = 33.3823;
 
@@ -49,7 +73,7 @@ const ContactPage = ({ navigation }: ContactProp) => {
   return (
     <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
- 
+        <BackButton onPress={() => navigation.goBack()} />
         <View className={`w-full h-48 mb-5 rounded-lg overflow-hidden border ${isDark ? 'border-gray-600' : 'border-gray-200'}`}>
           <WebView
             originWhitelist={["*"]}
@@ -58,55 +82,49 @@ const ContactPage = ({ navigation }: ContactProp) => {
           />
         </View>
 
-        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>Genel Merkez</Text>
+        <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>{t('headquarters')}</Text>
         <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'} mb-4`}>
-          Adres: Lefkoşa, KKTC - Yakın Doğu Bulvarı No: 123
+          {t('address')}
         </Text>
 
-        <Text className={`text-sm ${isDark ? 'text-white' : 'text-[#000000]'} font-semibold`}>Telefon:</Text>
+        <Text className={`text-sm ${isDark ? 'text-white' : 'text-[#000000]'} font-semibold`}>{t('phone')}:</Text>
         <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'}`}>+90 533 111 22 33</Text>
         <Text className={`text-sm ${isDark ? 'text-gray-300' : 'text-[#565656]'} mb-6`}>+90 533 444 55 66</Text>
 
-        <Text className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>Bize Yazın</Text>
+        <Text className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-[#000000]'} mb-2`}>{t('writeToUs')}</Text>
         <TextInput
-          placeholder="Ad Soyad"
+          placeholder={t('fullName')}
+          value={fullName}
+          onChangeText={setFullName}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
         <TextInput
-          placeholder="Telefon Numaranız"
+          placeholder={t('phoneNumber')}
           keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-3 text-sm`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
         <TextInput
-          placeholder="Mesajınız"
+          placeholder={t('message')}
           multiline
           numberOfLines={4}
+          value={message}
+          onChangeText={setMessage}
           className={`border ${isDark ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-[#000000]'} rounded-md px-4 py-3 mb-5 text-sm h-28`}
           placeholderTextColor={isDark ? "#9CA3AF" : "#565656"}
         />
 
-        <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8">
-          <Text className="text-white text-center text-base font-semibold">Gönder</Text>
+        <TouchableOpacity className="bg-[#F37E08] py-3 rounded-md mb-8" onPress={handleSend}>
+          <Text className="text-white text-center text-base font-semibold">{t('send')}</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      <View className={`flex-row ${isDark ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} border-t py-1`}>
-        {tabItems.map(({ icon, label, route }, i) => (
-          <TouchableOpacity
-            key={i}
-            className="flex-1 items-center py-2"
-            onPress={() => navigation.navigate(route as any)}
-          >
-            <View>{icon}</View>
-            <Text className={`text-xs ${isDark ? 'text-white' : 'text-[#000000]'}`}>{label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <TabBar navigation={navigation} activeRoute="ContactPage" />
     </View>
   );
 };
 
 export default ContactPage;
-  

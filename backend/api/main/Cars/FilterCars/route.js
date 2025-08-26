@@ -2,7 +2,6 @@ import express from "express";
 
 const router = express.Router();
 
-// Araç filtreleme endpoint'i - frontend'deki filter logic'ini burada yap
 router.post("/", async (req, res) => {
   try {
     const { 
@@ -23,7 +22,7 @@ router.post("/", async (req, res) => {
 
     let filteredCars = [...cars];
 
-    // Search text filtresi
+
     if (searchText && searchText.trim() !== "") {
       const searchLower = searchText.toLowerCase().trim();
       filteredCars = filteredCars.filter((car) => 
@@ -33,8 +32,7 @@ router.post("/", async (req, res) => {
         car.fuel.toLowerCase().includes(searchLower)
       );
     }
-    
-    // Fuel type filtresi
+   
     if (fuelTypes && fuelTypes.length > 0) {
       filteredCars = filteredCars.filter(car => 
         fuelTypes.some(fuelType => 
@@ -43,7 +41,6 @@ router.post("/", async (req, res) => {
       );
     }
     
-    // Gear type filtresi
     if (gearTypes && gearTypes.length > 0) {
       filteredCars = filteredCars.filter(car => 
         gearTypes.some(gearType => 
@@ -52,7 +49,6 @@ router.post("/", async (req, res) => {
       );
     }
 
-    // Fiyat aralığı filtresi
     if (priceRange && priceRange.min !== undefined && priceRange.max !== undefined) {
       filteredCars = filteredCars.filter(car => {
         const carPrice = Number(car.price.replace(/[^0-9]/g, "")) || 0;
@@ -60,31 +56,27 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Yıl aralığı filtresi
     if (yearRange && yearRange.min !== undefined && yearRange.max !== undefined) {
       filteredCars = filteredCars.filter(car => 
         car.year >= yearRange.min && car.year <= yearRange.max
       );
     }
 
-    // Koltuk sayısı filtresi
     if (seatCount && seatCount > 0) {
       filteredCars = filteredCars.filter(car => car.seats >= seatCount);
     }
 
-    // Klima filtresi
     if (hasAC === true) {
       filteredCars = filteredCars.filter(car => car.ac === true);
     }
 
-    // Sıralama
     switch (sortBy) {
       case 'price_asc':
-        filteredCars.sort((a, b) => {
-          const priceA = Number(a.price.replace(/[^0-9]/g, "")) || 0;
-          const priceB = Number(b.price.replace(/[^0-9]/g, "")) || 0;
-          return priceA - priceB;
-        });
+          filteredCars.sort((a, b) => {
+            const priceA = typeof a.price === "string" ? Number(a.price.replace(/[^0-9]/g, "")) : Number(a.price);
+            const priceB = typeof b.price === "string" ? Number(b.price.replace(/[^0-9]/g, "")) : Number(b.price);
+            return priceA - priceB;
+          });
         break;
       case 'price_desc':
         filteredCars.sort((a, b) => {
@@ -107,7 +99,6 @@ router.post("/", async (req, res) => {
         break;
     }
 
-    // Filtreleme istatistikleri
     const stats = {
       totalCars: cars.length,
       filteredCount: filteredCars.length,
