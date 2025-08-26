@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Token yenileme response:", data);
 
       if (response.ok && data.accessToken) {
-        // Token'ların string olduğundan emin ol
+  
         if (typeof data.accessToken !== 'string') {
           console.error("Geçersiz access token response:", data.accessToken);
           return false;

@@ -1,6 +1,3 @@
-+17
--17
-
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

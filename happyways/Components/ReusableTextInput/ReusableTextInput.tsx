@@ -28,7 +28,8 @@ const ReusableTextInput: React.FC<ReusableTextInputProps> = ({
       >
         {icon && <View className="mr-3">{icon}</View>}
         <TextInput
-          className={`flex-1 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base`}
+          className={`flex-1 ${isDark ? 'text-gray-200' : 'text-gray-800'} text-base `}
+          style={{ textAlignVertical: 'center' }}
           placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
           {...props}
         />

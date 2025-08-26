@@ -40,7 +40,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   const isDark = theme === 'dark' || (theme === 'system' && systemColorScheme === 'dark');
 
-  // AsyncStorage'dan tema ve dil yükle
   useEffect(() => {
     loadTheme();
     loadLanguage();

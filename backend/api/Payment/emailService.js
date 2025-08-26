@@ -1,5 +1,3 @@
-
-
 const transporter = {
   sendMail: async (mailOptions) => {
     console.log("\n EMAIL GÖNDERİLDİ:");
@@ -28,7 +26,7 @@ export async function sendReservationEmail({
   insurance,
 }) {
   const mailOptions = {
-    from: "happyways.rental@gmail.com",
+    from: "happywayse@gmail.com",
     to,
     subject: "HappyWays - Rezervasyon Onayı",
     html: `

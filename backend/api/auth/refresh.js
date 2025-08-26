@@ -11,7 +11,7 @@ export const generateRefreshToken = async (userId) => {
     { expiresIn: '7d' }
   );
 
-  // Database'e kaydet
+
   try {
     const db = getDB();
     await db.run(
@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Refresh token gerekli" });
     }
 
-    // Database'den kontrol et
+  
     const db = getDB();
     const tokenRecord = await db.get(
       "SELECT * FROM refresh_tokens WHERE token = ? AND expires_at > ?",
@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
     } catch (error) {
-      // Geçersiz token'ı database'den sil
+  
       await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
       return res.status(401).json({ message: "Geçersiz refresh token" });
     }
@@ -66,12 +66,11 @@ router.post("/", async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "2h" } // 15 dakikadan 2 saate çıkarıldı
+      { expiresIn: "2h" } 
     );
 
     const newRefreshToken = await generateRefreshToken(user.id);
     
-    // Eski refresh token'ı sil
     await db.run("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
 
     res.status(200).json({

@@ -4,22 +4,9 @@ yarn-debug.log*
 yarn-error.log*
 
 
-.expo/
-.expo-shared/
-web-build/
-android/
-ios/
-
-
-build/
-dist/
-
-
 .env
 .env.local
 .env.*.local
-app-env.d.ts
-nativewind-env.d.ts
 
 
 *.db
@@ -30,6 +17,10 @@ nativewind-env.d.ts
 
 logs/
 *.log
+
+
+dist/
+build/
 
 
 .DS_Store

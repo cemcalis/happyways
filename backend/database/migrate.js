@@ -40,7 +40,7 @@ const migrateDatabaseSchema = async () => {
       await db.exec("ALTER TABLE cars ADD COLUMN available BOOLEAN DEFAULT 1");
       console.log("'available' column başarıyla eklendi");
     } else {
-      console.log("ℹ️ 'available' column zaten mevcut");
+      console.log(" 'available' column zaten mevcut");
     }
 
     const reservationInfo = await db.all("PRAGMA table_info(reservations)");
@@ -75,7 +75,7 @@ const migrateDatabaseSchema = async () => {
       await db.exec("ALTER TABLE users ADD COLUMN first_name TEXT");
       console.log("'first_name' column başarıyla eklendi");
     } else {
-      console.log("ℹ️ 'first_name' column zaten mevcut");
+      console.log(" 'first_name' column zaten mevcut");
     }
 
     if (!hasLastNameColumn) {
@@ -83,7 +83,7 @@ const migrateDatabaseSchema = async () => {
       await db.exec("ALTER TABLE users ADD COLUMN last_name TEXT");
       console.log("'last_name' column başarıyla eklendi");
     } else {
-      console.log("ℹ️ 'last_name' column zaten mevcut");
+      console.log("'last_name' column zaten mevcut");
     }
 
     if (!hasFirstNameColumn || !hasLastNameColumn) {

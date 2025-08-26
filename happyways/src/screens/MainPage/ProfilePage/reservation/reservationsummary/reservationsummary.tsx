@@ -31,8 +31,6 @@ type ReservationDetail = {
   status: string;
   duration?: string;
   status_info?: { status: string; message: string; color: string; icon: string };
-
-  // genişletilmiş alanlar (backend dönerse doldurulur)
   user_full_name?: string;
   user_email?: string;
   user_phone?: string;
@@ -70,7 +68,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
 
   useEffect(() => {
     const run = async () => {
-      // Önce API'den detay dene; yoksa fallback kullan
       try {
         const res = await fetch(`http://10.0.2.2:3000/api/reservation/${reservationId}`, {
           method: "GET",
@@ -78,7 +75,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
         });
         if (res.ok) {
           const data = await res.json();
-          // API dönüşünüz farklı isimler verebilir; en çok kullanılanlara eşleştirme yapıyoruz:
           const d: ReservationDetail = {
             id: data?.reservation?.id ?? fallback?.id!,
             reservation_code: data?.reservation?.reservation_code ?? `RSV-${reservationId}`,
@@ -109,7 +105,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
           };
           setDetail(d);
         } else {
-          // API yoksa fallback göster
           if (fallback) {
             setDetail({
               ...fallback,
@@ -193,7 +188,7 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
 
   return (
     <View className={`flex-1 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
-      {/* Header */}
+    
       <View className={`flex-row justify-between items-center px-4 py-4 border-b ${isDark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"}`}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="leftarrow" size={20} />
@@ -209,7 +204,7 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
         </View>
       ) : (
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {/* Üst Bilgi Kartı */}
+       
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-4 p-4 rounded-lg`}>
             <View className="flex-row items-center justify-between">
               <Text className={`text-base font-semibold ${isDark ? "text-white" : "text-black"}`}>
@@ -228,10 +223,9 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
             ) : null}
           </View>
 
-          {/* Güzergâh Kartı (görseldeki çizgi ile) */}
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-3 p-4 rounded-lg`}>
             <View className="flex-row items-center">
-              {/* Sol */}
+          
               <View className="w-28">
                 <Text className={`text-base font-semibold ${isDark ? "text-white" : "text-black"}`} numberOfLines={1}>
                   {detail.pickup_location}
@@ -241,14 +235,12 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
                 </Text>
               </View>
 
-              {/* Orta çizgi */}
               <View className="flex-1 mx-3 flex-row items-center justify-center">
                 <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#F7992B" }} />
                 <View style={{ flex: 1, height: 1, borderStyle: "dashed", borderWidth: 1, borderColor: isDark ? "#555" : "#DADADA", marginHorizontal: 6 }} />
                 <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#F7992B" }} />
               </View>
 
-              {/* Sağ */}
               <View className="w-28 items-end">
                 <Text className={`text-base font-semibold ${isDark ? "text-white" : "text-black"}`} numberOfLines={1}>
                   {detail.dropoff_location}
@@ -260,7 +252,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
             </View>
           </View>
 
-          {/* Araç Bilgisi */}
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-3 p-4 rounded-lg`}>
             <Text className={`text-sm font-semibold ${isDark ? "text-white" : "text-black"} mb-2`}>Araç</Text>
             <View className="flex-row items-center">
@@ -280,7 +271,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
             </View>
           </View>
 
-          {/* Kullanıcı Bilgisi */}
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-3 p-4 rounded-lg`}>
             <Text className={`text-sm font-semibold ${isDark ? "text-white" : "text-black"} mb-2`}>Kullanıcı</Text>
             <Text className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>{detail.user_full_name ?? "-"}</Text>
@@ -290,7 +280,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
             ) : null}
           </View>
 
-          {/* Fiyat / Ödeme */}
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-3 p-4 rounded-lg`}>
             <Text className={`text-sm font-semibold ${isDark ? "text-white" : "text-black"} mb-2`}>Ödeme</Text>
             <Text className="text-base font-semibold" style={{ color: "#00A35A" }}>
@@ -301,7 +290,6 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
             ) : null}
           </View>
 
-          {/* Meta */}
           <View className={`${isDark ? "bg-gray-800" : "bg-white"} mx-4 mt-3 p-4 rounded-lg`}>
             <Text className={`text-sm font-semibold ${isDark ? "text-white" : "text-black"} mb-2`}>Detaylar</Text>
             <Text className={`${isDark ? "text-gray-300" : "text-gray-600"} text-xs`}>Rezervasyon ID: {detail.id}</Text>
@@ -322,7 +310,7 @@ const ReservationSummaryPage = ({ navigation }: Props) => {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text className="text-white font-semibold">
-                {t("deleteReservation", "Rezervasyonu Sil")}
+                {t("deleteReservation")}
               </Text>
             )}
           </TouchableOpacity>

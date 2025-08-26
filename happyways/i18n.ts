@@ -50,36 +50,26 @@ const resources = {
     contact: enContact,
   },
 };
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'tr',
+  fallbackLng: 'tr',
+  debug: false,
+  interpolation: {
+    escapeValue: false,
+  },
+  defaultNS: 'common',
+  ns: ['common', 'auth', 'profile'],
+});
 
-const initI18n = async () => {
-  let savedLanguage = 'tr'; 
-  
-  try {
-    const storedLanguage = await AsyncStorage.getItem('selectedLanguage');
-    if (storedLanguage) {
-      savedLanguage = storedLanguage;
+AsyncStorage.getItem('selectedLanguage')
+  .then(storedLanguage => {
+    if (storedLanguage && storedLanguage !== i18n.language) {
+      i18n.changeLanguage(storedLanguage);
     }
-  } catch (error) {
+  })
+  .catch(error => {
     console.log('Dil yüklenirken hata:', error);
-  }
-
-  i18n
-    .use(initReactI18next)
-    .init({
-      resources,
-      lng: savedLanguage,
-      fallbackLng: 'tr',
-      debug: false,
-      
-      interpolation: {
-        escapeValue: false,
-      },
-      
-      defaultNS: 'common',
-      ns: ['common', 'auth', 'profile'],
-    });
-};
-
-initI18n();
+  });
 
 export default i18n;

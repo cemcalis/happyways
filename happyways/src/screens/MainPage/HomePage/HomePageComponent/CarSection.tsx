@@ -101,7 +101,7 @@ const CarSection = ({ cars, searchText, navigation, user_email }: CarSectionProp
         horizontal={false}
         numColumns={2}
         showsVerticalScrollIndicator={false}
-        data={cars.slice(0, 4)} // Homepage'de sadece 4 araba göster
+        data={cars.slice(0, 4)} 
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCarItem}
         columnWrapperStyle={{ 
@@ -110,7 +110,7 @@ const CarSection = ({ cars, searchText, navigation, user_email }: CarSectionProp
         }}
         contentContainerStyle={{ paddingHorizontal: 16 }}
         className="mb-6"
-        scrollEnabled={false} // HomePage'de scroll kapalı
+        scrollEnabled={false} 
         ListEmptyComponent={() => 
           searchText && cars.length === 0 ? (
             <View className="w-full items-center justify-center py-8">

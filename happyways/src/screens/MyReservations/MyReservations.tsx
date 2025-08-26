@@ -153,33 +153,33 @@ const MyReservations: React.FC = () => {
 
               <View style={styles.cardContent}>
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>📅 Alış Tarihi:</Text>
+                  <Text style={styles.infoLabel}> Alış Tarihi:</Text>
                   <Text style={styles.infoValue}>
                     {formatDate(reservation.pickup_date)} {reservation.pickup_time}
                   </Text>
                 </View>
 
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>📅 Teslim Tarihi:</Text>
+                  <Text style={styles.infoLabel}>Teslim Tarihi:</Text>
                   <Text style={styles.infoValue}>
                     {formatDate(reservation.dropoff_date)} {reservation.dropoff_time}
                   </Text>
                 </View>
 
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>📍 Alış Yeri:</Text>
+                  <Text style={styles.infoLabel}> Alış Yeri:</Text>
                   <Text style={styles.infoValue}>{reservation.pickup_location}</Text>
                 </View>
 
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>📍 Teslim Yeri:</Text>
+                  <Text style={styles.infoLabel}> Teslim Yeri:</Text>
                   <Text style={styles.infoValue}>{reservation.dropoff_location}</Text>
                 </View>
 
                 {reservation.extra_driver && (
                   <View style={styles.extraService}>
                     <Text style={styles.extraServiceText}>
-                      ✅ Ek Sürücü (+{reservation.extra_driver_price} TL)
+                       Ek Sürücü (+{reservation.extra_driver_price} TL)
                     </Text>
                   </View>
                 )}
@@ -187,7 +187,7 @@ const MyReservations: React.FC = () => {
                 {reservation.insurance && (
                   <View style={styles.extraService}>
                     <Text style={styles.extraServiceText}>
-                      ✅ Sigorta (+{reservation.insurance_price} TL)
+                      Sigorta (+{reservation.insurance_price} TL)
                     </Text>
                   </View>
                 )}
@@ -203,7 +203,7 @@ const MyReservations: React.FC = () => {
 
               <View style={styles.paymentInfo}>
                 <Text style={styles.paymentText}>
-                  💳 Ödeme: {reservation.payment_status === 'paid' ? '✅ Tamamlandı' : '⏳ Beklemede'}
+                  Ödeme: {reservation.payment_status === 'paid' ? ' Tamamlandı' : '⏳ Beklemede'}
                 </Text>
                 <Text style={styles.dateText}>
                   Oluşturulma: {formatDate(reservation.created_at)}

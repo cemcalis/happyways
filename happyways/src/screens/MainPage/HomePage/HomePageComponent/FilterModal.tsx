@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTranslation } from "react-i18next";
 import { RootStackParamList } from "../../../../../types";
-import Icon from "../../../../../Components/Icons/Icons";
+
 import { useTheme } from "../../../../../contexts/ThemeContext";
 
 type FilterModalProps = {

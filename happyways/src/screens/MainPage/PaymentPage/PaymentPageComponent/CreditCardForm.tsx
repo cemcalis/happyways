@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../../types";
 import { API_CONFIG } from "../../../../../utils/config";
+import { useTranslation } from "react-i18next";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -41,6 +42,8 @@ const CreditCardForm: React.FC<Props> = ({
   const { isDark } = useTheme();
   const { token } = useAuth();
   const navigation = useNavigation<Nav>();
+  const { t } = useTranslation('payment');
+
 
   const [name, setName] = useState("");
   const [cardNo, setCardNo] = useState("");
@@ -173,11 +176,11 @@ const CreditCardForm: React.FC<Props> = ({
           isDark ? "text-white" : "text-black"
         } mb-3`}
       >
-        Kart Bilgileri
+        {t("payment:cardInfo")}
       </Text>
 
       <TextInput
-        placeholder="Ad Soyad"
+        placeholder={t("payment:name")}
         placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
         value={name}
         onChangeText={setName}
@@ -188,7 +191,7 @@ const CreditCardForm: React.FC<Props> = ({
       />
 
       <TextInput
-        placeholder="Kart Numarası"
+        placeholder={t("payment:cardNumber")}
         keyboardType="number-pad"
         placeholderTextColor={isDark ? "#9CA3AF" : "#9CA3AF"}
         value={cardNo}
@@ -240,10 +243,10 @@ const CreditCardForm: React.FC<Props> = ({
         onPress={onPay}
         disabled={loading}
         className={`rounded-lg py-3 items-center ${
-          loading ? "bg-blue-400" : "bg-blue-600"
+          loading ? "bg-orange-400" : "bg-orange-500"
         }`}
       >
-        {loading ? <ActivityIndicator /> : <Text className="text-white font-semibold">Öde</Text>}
+        {loading ? <ActivityIndicator /> : <Text className="text-white font-semibold">{t("payment:pay")}</Text>}
       </TouchableOpacity>
 
       
@@ -288,7 +291,7 @@ const CreditCardForm: React.FC<Props> = ({
               className="mt-1 py-3 rounded-xl items-center"
               style={{ backgroundColor: "#2563eb" }}
             >
-              <Text className="text-white font-semibold uppercase">TAMAM</Text>
+              <Text className="text-white font-semibold uppercase">{t("payment:confirm")}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -111,7 +111,7 @@ const MePage = ({ navigation }: MeProp) => {
             source={{ uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }}
             className="w-20 h-20 rounded-full mb-2"
           />
-          <Text className={`text-lg font-semibold ${isDark ? "text-white" : "text-black"}`}>
+          <Text className={`text-lg font-semibold ${isDark ? 'text-gray-300' : 'text-black'}`}>
             {t("profile:personalInfo")}
           </Text>
         </View>
@@ -121,6 +121,7 @@ const MePage = ({ navigation }: MeProp) => {
           value={firstName}
           onChangeText={setFirstName}
           placeholder={t('profile:firstName')}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
           className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-black"
         />
 
@@ -129,6 +130,7 @@ const MePage = ({ navigation }: MeProp) => {
           value={lastName}
           onChangeText={setLastName}
           placeholder={t('profile:lastName')}
+          placeholderTextColor={isDark ? "#9CA3AF" : "#6B7280"}
           className="border border-gray-300 rounded-md px-4 py-3 mb-3 text-sm text-black"
         />
 

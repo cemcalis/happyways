@@ -44,5 +44,6 @@
   "pay": "Pay",
   "email": "Email",
   "creditCardInformation": "Credit Card Information",
-  "communicationPreference": "Communication Preference"
+  "communicationPreference": "Communication Preference",
+  "confirm": "Confirm"
 }

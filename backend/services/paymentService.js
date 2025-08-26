@@ -110,7 +110,6 @@ export const handlePayment = async (body, headers) => {
     };
   }
 
-  // Ödeme simülasyonu
   const payment_success = true;
   if (!payment_success) {
     throw { status: 400, message: 'Ödeme başarısız' };
@@ -143,7 +142,6 @@ export const handlePayment = async (body, headers) => {
     ]
   );
 
-  // email gönderimi
   sendReservationEmail({
     to: userEmail || user.email,
     reservationId: reservation_id,

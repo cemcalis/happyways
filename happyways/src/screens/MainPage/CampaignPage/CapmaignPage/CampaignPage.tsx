@@ -54,11 +54,10 @@ const CampaignPage = () => {
   }
 
   return (
-    <View className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-
-      <View className={`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <BackButton onPress={() => navigation.goBack()} />
-        <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
+    <View className={`flex-1  ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <View className={`relative h-20 justify-center ${`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}`}>
+        <BackButton onPress={() => navigation.goBack()}  />
+        <Text className={`text-lg text-center font-bold ${isDark ? 'text-white' : 'text-black'}`}>{t('campaigns')}</Text>
       </View>
 
 

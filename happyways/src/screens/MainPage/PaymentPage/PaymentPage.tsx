@@ -152,7 +152,7 @@ const PaymentPage = () => {
   ]);
 
   useEffect(() => {
-    // debug
+    
     console.log("PaymentPage dailyPrice:", computed.dailyPrice);
     console.log("PaymentPage days:", days);
     console.log("PaymentPage basePrice:", computed.basePrice);

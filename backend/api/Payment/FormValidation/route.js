@@ -105,7 +105,6 @@ function detectRiskFactors(request) {
 
 router.post("/", async (req, res) => {
 
-  // --- normalize full name -> firstName + lastName ---
   (function normalizeNameOnReq(req){
     try {
       let { firstName, lastName, name, fullName } = req.body || {};
@@ -115,7 +114,7 @@ router.post("/", async (req, res) => {
           const parts = raw.split(" ");
           if (parts.length === 1) {
             firstName = parts[0];
-            lastName = parts[0]; // tek kelimeyse ikisine de yaz
+            lastName = parts[0]; 
           } else {
             firstName = parts[0];
             lastName = parts.slice(1).join(" ");

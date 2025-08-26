@@ -30,9 +30,9 @@ type Reservation = {
   dropoff_location: string;
   pickup_date: string;   
   dropoff_date: string;
-  pickup_time: string;   // "HH:mm"
+  pickup_time: string;  
   dropoff_time: string;
-  total_price: string;   // "4000" veya "₺4.000,00"
+  total_price: string;  
   status: string;
   duration: string;
   status_info: { status: string; message: string; color: string; icon: string };
@@ -56,7 +56,6 @@ type ReservationStats = {
 
 const MENU_WIDTH = 200;
 
-// Filtre/Sıralama tipleri
 type DateFilter = "all" | "upcoming" | "past";
 type SortBy = "new" | "old" | "priceHigh" | "priceLow";
 type Filters = { date: DateFilter; pickup?: string | null; dropoff?: string | null };
@@ -83,8 +82,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
   });
   const [stats, setStats] = useState<ReservationStats | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Popover görünürlüğü ve seçim state'leri
   const [sortVisible, setSortVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const [sortBy, setSortBy] = useState<SortBy>("new");
@@ -127,9 +124,8 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
   const parseDateOnly = (str: string): number => {
     if (!str) return Number.NaN;
 
-    // YYYY-MM-DD veya YYYY/MM/DD
     const iso = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/;
-    const dmy = /^(\d{1,2})[./](\d{1,2})[./](\d{4})$/; // DD.MM.YYYY
+    const dmy = /^(\d{1,2})[./](\d{1,2})[./](\d{4})$/; 
 
     let y = 0, m = 0, d = 0;
 
@@ -147,8 +143,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       const t = new Date(str).getTime();
       return t;
     }
-
-    // Zaman dilimi sapmalarını önlemek için yerel tarih (saat 00:00)
     return new Date(y, m, d).getTime();
   };
 
@@ -156,10 +150,8 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     const cleaned = String(v).replace(/[^\d.,]/g, "").replace(/\./g, "").replace(",", ".");
     const n = Number(cleaned);
     return isNaN(n) ? 0 : n;
-    // örn: "₺4.000,00" -> 4000
+ 
   };
-
-  // Tüm kayıtları tek listede topla
   const allReservations = useMemo(
     () => [
       ...categorizedReservations.active,
@@ -169,8 +161,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     ],
     [categorizedReservations]
   );
-
-  // Filtre seçenekleri (dinamik)
   const pickupOptions = useMemo(() => {
     const s = new Set<string>();
     allReservations.forEach((r) => r.pickup_location && s.add(r.pickup_location));
@@ -182,8 +172,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     allReservations.forEach((r) => r.dropoff_location && s.add(r.dropoff_location));
     return Array.from(s);
   }, [allReservations]);
-
-  // Görünen veri: filtre + sıralama
   const visibleData = useMemo(() => {
     const today = new Date();
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
@@ -191,18 +179,13 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     let arr = allReservations.filter((r) => {
       const t = parseDateOnly(r.pickup_date);
 
-      // Tarih filtresi
       if (filters.date === "upcoming" && !Number.isNaN(t) && t < startOfToday) return false;
       if (filters.date === "past" && !Number.isNaN(t) && t >= startOfToday) return false;
-
-      // Lokasyon filtreleri
       if (filters.pickup && r.pickup_location !== filters.pickup) return false;
       if (filters.dropoff && r.dropoff_location !== filters.dropoff) return false;
 
       return true;
     });
-
-    // Sıralama
     const cmpDateNew = (a: Reservation, b: Reservation) =>
       (parseDateOnly(b.pickup_date) || 0) - (parseDateOnly(a.pickup_date) || 0);
     const cmpDateOld = (a: Reservation, b: Reservation) =>
@@ -216,8 +199,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
       priceHigh: cmpPriceHigh,
       priceLow: cmpPriceLow,
     };
-
-    // filter() yeni dizi döndürüyor; sort() ile güvenle mutate edebiliriz
     return arr.sort(map[sortBy]);
   }, [allReservations, filters, sortBy]);
 
@@ -231,7 +212,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     }
   };
 
-  // ✅ EKLENDİ: karta tıklayınca özet sayfasına git
   const onPressReservation = (item: Reservation) => {
     navigation.navigate("ReservationSummaryPage", {
       reservationId: item.id,
@@ -264,7 +244,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
     >
       <View className="px-3 py-4">
         <View className="flex-row items-center">
-          {/* Sol (Kalkış) */}
+ 
           <View className="w-28">
             <Text className={`text-base font-semibold ${isDark ? "text-white" : "text-black"}`} numberOfLines={1}>
               {item.pickup_location}
@@ -274,7 +254,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
             </Text>
           </View>
 
-          {/* Orta (çizgi) */}
+     
           <View className="flex-1 mx-3 flex-row items-center justify-center">
             <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#F7992B" }} />
             <View
@@ -290,7 +270,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
             <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#F7992B" }} />
           </View>
 
-          {/* Sağ (Varış) */}
+   
           <View className="w-28 items-end">
             <Text className={`text-base font-semibold ${isDark ? "text-white" : "text-black"}`} numberOfLines={1}>
               {item.dropoff_location}
@@ -306,7 +286,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
 
   return (
     <View className={`flex-1 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
-      {/* Header */}
+
       <View className={`flex-row justify-between items-center px-4 py-4 border-b ${isDark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"}`}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="leftarrow" size={20} />
@@ -314,20 +294,16 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
         <Text className={`text-lg font-semibold ${isDark ? "text-white" : "text-black"}`}>{t("reservations")}</Text>
         <View style={{ width: 20 }} />
       </View>
-
-      {/* Küçük Filtre (sol) & Sıralama (sağ) */}
       <View className="flex-row items-center justify-between px-4 pt-3">
         <TouchableOpacity className="flex-row items-center" onPress={() => setFilterVisible(true)}>
           <Icon name="filter" size={14} />
           <Text className={`ml-2 text-xs ${isDark ? "text-white" : "text-black"}`}>{t("filter")}</Text>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={() => setSortVisible(true)}>
           <Icon name="sort" size={16} />
         </TouchableOpacity>
       </View>
 
-      {/* Liste */}
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#0066cc" />
@@ -346,8 +322,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
           }
         />
       )}
-
-      {/* ---- SIRALAMA POPOVER (sağ üst, küçük) ---- */}
       <Modal visible={sortVisible} transparent animationType="fade" onRequestClose={() => setSortVisible(false)}>
         <TouchableOpacity activeOpacity={1} className="flex-1" onPress={() => setSortVisible(false)}>
           <View className="flex-1">
@@ -377,20 +351,17 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* ---- FİLTRE POPOVER (sol üst, küçük) ---- */}
       <Modal visible={filterVisible} transparent animationType="fade" onRequestClose={() => setFilterVisible(false)}>
         <TouchableOpacity activeOpacity={1} className="flex-1" onPress={() => setFilterVisible(false)}>
           <View className="flex-1">
             <View style={{ position: "absolute", top: 68, left: 12, width: MENU_WIDTH }}>
               <View className={`${isDark ? "bg-gray-800" : "bg-white"} rounded-xl`} style={{ shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 8, elevation: 6 }}>
-                {/* Tarih */}
                 <View className={`px-3 py-2 ${isDark ? "border-b border-gray-700" : "border-b border-gray-200"}`}>
-                  <Text className={`${isDark ? "text-white" : "text-black"} text-xs font-semibold mb-2`}>Tarih</Text>
+                  <Text className={`${isDark ? "text-white" : "text-black"} text-xs font-semibold mb-2`}>{t("date")}</Text>
                   {[
-                    { key: "all", label: "Tümü" },
-                    { key: "upcoming", label: "Bugün ve sonrası" },
-                    { key: "past", label: "Bugün öncesi" },
+                    { key: "all", label: t("all") },
+                    { key: "upcoming", label: t("upcoming") },
+                    { key: "past", label: t("past") },
                   ].map((opt) => (
                     <TouchableOpacity
                       key={opt.key}
@@ -406,8 +377,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
                     </TouchableOpacity>
                   ))}
                 </View>
-
-                {/* Kalkış */}
                 <View className={`px-3 py-2 ${isDark ? "border-b border-gray-700" : "border-b border-gray-200"}`}>
                   <Text className={`${isDark ? "text-white" : "text-black"} text-xs font-semibold mb-2`}>Kalkış</Text>
                   <TouchableOpacity
@@ -436,8 +405,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
                     </TouchableOpacity>
                   ))}
                 </View>
-
-                {/* Varış */}
                 <View className="px-3 py-2">
                   <Text className={`${isDark ? "text-white" : "text-black"} text-xs font-semibold mb-2`}>Varış</Text>
                   <TouchableOpacity
@@ -448,7 +415,7 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
                     }}
                   >
                     <Text className={`${isDark ? "text-gray-200" : "text-gray-800"} text-xs`}>
-                      {filters.dropoff == null ? "• " : ""}Hepsi
+                      {filters.dropoff == null ? "• " : ""}{t("all")}
                     </Text>
                   </TouchableOpacity>
                   {dropoffOptions.map((d) => (
@@ -466,11 +433,9 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
                     </TouchableOpacity>
                   ))}
                 </View>
-
-                {/* Alt satır */}
                 <View className={`flex-row justify-between px-3 py-2 ${isDark ? "border-t border-gray-700" : "border-t border-gray-200"}`}>
                   <TouchableOpacity onPress={() => setFilters({ date: "all", pickup: null, dropoff: null })}>
-                    <Text className="text-xs text-red-500 font-semibold">Temizle</Text>
+                    <Text className="text-xs text-red-500 font-semibold">{t("clear") || "Temizle"}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => setFilterVisible(false)}>
                     <Text className="text-xs font-semibold">{t("cancel") || "Kapat"}</Text>
@@ -481,8 +446,6 @@ const ReservationListPage = ({ navigation }: ReservationPageProp) => {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Alt sekme çubuğu */}
       <View className={`flex-row ${isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} border-t py-2`}>
         {tabItems.map(({ icon, label, route }, i) => {
           const highlight = route === "ProfilePage";

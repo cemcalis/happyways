@@ -17,11 +17,10 @@ const CarsHeader = ({ navigation, searchInfo }: CarsHeaderProps) => {
   
   return (
     <View className={`px-4 pt-4 pb-4 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-      <View className="flex-row items-center justify-between mb-8">
-        <View className="items-center">
+      <View className="flex-row items-center justify-center mb-8 ">
           <BackButton onPress={() => navigation.goBack()} />
-        </View>
-        <Text className={`text-xl font-semibold text-center flex-1 ${isDark ? 'text-white' : 'text-black'}`}>
+        <Text className={`text-xl font-semibold text-center flex-1 ${isDark ? 'text-white' : 'text-black'}`}
+          style={{ transform: [{ translateY: 9 }] }}>
           {searchInfo ? t('availableCars') : t('allCars')}
         </Text>
         <View className="w-8" />

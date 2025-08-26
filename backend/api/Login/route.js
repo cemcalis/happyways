@@ -1,6 +1,3 @@
-+2
--1
-
 import express from "express";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "../../database/db.js";
