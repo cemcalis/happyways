@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { getDB } from "../../../database/db.js";
+import { JWT_SECRET } from "../../../utils/tokenUtils.js";
 
 const router = express.Router();
 
@@ -259,7 +260,12 @@ router.get("/history", async (req, res) => {
       return res.status(401).json({ message: "Token gerekli" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (error) {
+      return res.status(401).json({ message: "Token doğrulanamadı" });
+    }
     const user_id = decoded.id;
 
     const db = getDB();
@@ -269,7 +275,7 @@ router.get("/history", async (req, res) => {
          r.*,
          c.model,
          c.year,
-         u.name as user_full_name
+         COALESCE(u.full_name, TRIM(COALESCE(u.first_name,'') || ' ' || COALESCE(u.last_name,''))) AS user_full_name
        FROM reservations r
        LEFT JOIN cars c ON r.car_id = c.id
        LEFT JOIN users u ON r.user_id = u.id

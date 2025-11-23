@@ -2,8 +2,18 @@ import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { calculateDuration, getStatusInfo } from "../Helpers/helpers.js";
+import { JWT_SECRET } from "../../../utils/tokenUtils.js";
 
 dotenv.config();
+
+const decodeUserId = (token) => {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded.id;
+  } catch (error) {
+    return null;
+  }
+};
 
 export async function listReservations(req, res) {
   try {
@@ -12,8 +22,10 @@ export async function listReservations(req, res) {
       return res.status(401).json({ message: "Token gerekli" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user_id = decoded.id;
+    const user_id = decodeUserId(token);
+    if (!user_id) {
+      return res.status(401).json({ message: "Token doğrulanamadı" });
+    }
 
     const db = getDB();
 
@@ -73,6 +85,8 @@ export async function listReservations(req, res) {
       }
     });
 
+    const name = user.full_name || `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email;
+
     const stats = {
       total: reservations.length,
       active: categorizedReservations.active.length,
@@ -80,7 +94,7 @@ export async function listReservations(req, res) {
       completed: categorizedReservations.completed.length,
       cancelled: categorizedReservations.cancelled.length,
       user_info: {
-        name: user.name,
+        name,
         email: user.email,
         total_reservations: reservations.length
       }

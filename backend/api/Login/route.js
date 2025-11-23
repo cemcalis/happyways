@@ -4,6 +4,7 @@ import { getUserByEmail } from "../../database/db.js";
 import jwt from "jsonwebtoken";
 import { generateRefreshToken } from "../auth/refresh.js";
 import { handleError } from "../../utils/errorHandler.js";
+import { JWT_SECRET } from "../../utils/tokenUtils.js";
 
 const router = express.Router();
 
@@ -32,8 +33,8 @@ router.post("/", async (req, res) => {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" } 
+      JWT_SECRET,
+      { expiresIn: "2h" }
     );
 
     const refreshToken = await generateRefreshToken(user.id);
@@ -42,10 +43,10 @@ router.post("/", async (req, res) => {
       message: "Giriş başarılı",
       accessToken,
       refreshToken,
-      user: { 
+      user: {
         id: user.id,
-        email: user.email, 
-        phone: user.phone 
+        email: user.email,
+        phone: user.phone,
       },
     });
   } catch (error) {

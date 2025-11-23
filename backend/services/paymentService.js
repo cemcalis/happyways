@@ -3,6 +3,7 @@ import { getDB } from '../database/db.js';
 import checkCarAvailability from '../api/Payment/availability.js';
 import { sendReservationEmail } from '../api/Payment/emailService.js';
 import logger from '../utils/logger.js';
+import { JWT_SECRET } from '../utils/tokenUtils.js';
 
 function normalizeName(data) {
   try {
@@ -25,6 +26,12 @@ function normalizeName(data) {
   } catch (e) {
     logger.error(e);
   }
+}
+
+function resolveDateTime(date, time) {
+  const safeDate = date || '';
+  const safeTime = time || '00:00';
+  return `${safeDate}T${safeTime}`;
 }
 
 export const handlePayment = async (body, headers) => {
@@ -92,7 +99,13 @@ export const handlePayment = async (body, headers) => {
     throw { status: 401, message: 'Token gerekli' };
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  let decoded;
+  try {
+    decoded = jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    throw { status: 401, message: 'Token doğrulanamadı' };
+  }
+
   const user_id = decoded.id;
 
   const db = getDB();
@@ -115,32 +128,48 @@ export const handlePayment = async (body, headers) => {
     throw { status: 400, message: 'Ödeme başarısız' };
   }
 
-  const uniqueId = Date.now();
-  const payment_id = `PAY_${uniqueId}_${Math.random().toString(36).substr(2, 9)}`;
-  const reservation_id = uniqueId;
+  const payment_id = `PAY_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   const currentTimestamp = new Date().toISOString();
+  const pickupDatetime = resolveDateTime(resolvedPickupDate, resolvedPickupTime);
+  const dropoffDatetime = resolveDateTime(resolvedDropDate, resolvedDropTime);
 
-  await db.run(
+  const insertResult = await db.run(
     `INSERT INTO reservations (
-        id, user_id, car_id, pickup_location, dropoff_location, pickup_date, dropoff_date,
-        pickup_time, dropoff_time, total_price, status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        user_id, car_id, user_name, user_email, user_phone,
+        car_model, car_year, car_image,
+        pickup_location, dropoff_location, pickup_location_id, dropoff_location_id,
+        pickup_date, dropoff_date, pickup_time, dropoff_time, pickup_datetime, dropoff_datetime,
+        total_price, status, payment_status, payment_id, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      reservation_id,
       user_id,
       carId,
+      `${firstName} ${lastName}`.trim(),
+      userEmail || user.email,
+      user.phone || null,
+      carInfo?.model || null,
+      carInfo?.year || null,
+      carInfo?.image || null,
       carInfo?.pickup_location || carInfo?.pickup || '',
       carInfo?.dropoff_location || carInfo?.dropoff || '',
+      carInfo?.pickup_location_id || null,
+      carInfo?.dropoff_location_id || null,
       resolvedPickupDate,
       resolvedDropDate,
       resolvedPickupTime,
       resolvedDropTime,
+      pickupDatetime,
+      dropoffDatetime,
       priceNum,
       'confirmed',
+      'paid',
+      payment_id,
       currentTimestamp,
       currentTimestamp,
     ]
   );
+
+  const reservation_id = insertResult.lastID;
 
   sendReservationEmail({
     to: userEmail || user.email,
@@ -165,12 +194,20 @@ export const handlePayment = async (body, headers) => {
 export const fetchPaymentStatus = async (id, headers) => {
   const token = headers.authorization?.replace('Bearer ', '');
   if (!token) throw { status: 401, message: 'Token gerekli' };
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    throw { status: 401, message: 'Token doğrulanamadı' };
+  }
+
   const user_id = decoded.id;
   const db = getDB();
 
   const reservation = await db.get(
-    `SELECT r.*, c.model, c.year, u.name as user_full_name
+    `SELECT r.*, c.model, c.year,
+            COALESCE(u.full_name, TRIM(COALESCE(u.first_name,'') || ' ' || COALESCE(u.last_name,''))) AS user_full_name
        FROM reservations r
        LEFT JOIN cars c ON r.car_id = c.id
        LEFT JOIN users u ON r.user_id = u.id
@@ -193,6 +230,7 @@ export const fetchPaymentStatus = async (id, headers) => {
       dropoff_date: reservation.dropoff_date,
       payment_status: reservation.payment_status || 'unknown',
       total_amount: reservation.total_price,
+      payment_id: reservation.payment_id,
       created_at: reservation.created_at,
     },
   };
