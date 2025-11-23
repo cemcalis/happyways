@@ -1,8 +1,18 @@
 import { getDB } from "../../../database/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { JWT_SECRET } from "../../../utils/tokenUtils.js";
 
 dotenv.config();
+
+const decodeUserId = (token) => {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded.id;
+  } catch (error) {
+    return null;
+  }
+};
 
 export async function createReservation(req, res) {
   try {
@@ -24,8 +34,10 @@ export async function createReservation(req, res) {
       return res.status(401).json({ message: "Token gerekli" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user_id = decoded.id;
+    const user_id = decodeUserId(token);
+    if (!user_id) {
+      return res.status(401).json({ message: "Token doğrulanamadı" });
+    }
 
     if (!car_id || (!pickup_location && !pickup_location_id) || !pickup_date || !dropoff_date || !pickup_time || !dropoff_time) {
       return res.status(400).json({ message: "Tüm gerekli alanlar doldurulmalıdır" });
